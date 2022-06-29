@@ -1,0 +1,3 @@
+p, root, *, persist
+p, root, *, query
+p, client, *, query

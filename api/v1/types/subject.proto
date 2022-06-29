@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package api.types;
+
+option go_package = "github.com/bhatti/GSSI/api/v1/types";
+import "api/v1/types/common.proto";
+
+// Examples of CredentialSubjects
+
+// AlumniOf
+message AlumniOf {
+  // id, e.g. did:example:c276e12ec21ebfeb1f712ebc6f1
+  string id = 1;
+  repeated LangValue name = 2;
+}
+
+// AlumniCredential
+message AlumniCredential {
+  // id, e.g. did:example:ebfeb1f712ebc6f1c276e12ec21
+  string id = 1;
+  // e.g. https://example.edu/images/58473
+  string image = 2;
+  AlumniOf alumniOf = 3;
+}
+

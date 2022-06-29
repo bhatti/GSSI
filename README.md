@@ -1,2 +1,41 @@
 # GSSI
 Self-sovereign identity (SSI) implementation using GRPC
+
+## Resources
+- https://www.w3.org/TR/did-core/
+- https://www.w3.org/community/credentials
+- https://www.blockcerts.org/
+- https://www.w3.org/TR/vc-data-model/
+- https://www.w3.org/TR/json-ld/
+- https://www.w3.org/TR/did-spec-registries/
+- https://www.w3.org/community/credentials
+- https://w3c.github.io/did-core/
+- https://github.com/w3c-ccg/vc-api/
+- https://w3c-ccg.github.io/vc-api/
+- https://identity.foundation/hub-sdk-js/
+- https://identity.foundation/presentation-exchange/
+- https://identity.foundation/working-groups/secure-data-storage.html
+- https://identity.foundation/peer-did-method-spec/
+- https://identity.foundation/working-groups/did-comm.html
+- https://identity.foundation/sidetree/spec/
+- https://identity.foundation/specs/did-configuration/
+- https://identity.foundation/did-siop/
+- https://identity.foundation/presentation-exchange/
+- https://decentralized-id.com/organizations/identity-foundation/keri/
+- https://github.com/hyperledger/aries
+- https://github.com/hyperledger/aries-framework-go
+- https://github.com/decentralized-identity
+- https://github.com/WebOfTrustInfo/rwot1-sf/blob/master/final-documents/dpki.pdf
+- https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0051-dkms/dkms-v4.md
+- https://github.com/WebOfTrustInfo/rwot8-barcelona/blob/master/topics-and-advance-readings/verifiable-credentials-primer.md
+- https://github.com/microsoft/Decentralized-Identity-and-Verifiable-Credentials
+- https://github.com/Decentralized-ID
+- https://github.com/decentralized-identity/waci-didcomm
+- https://gist.github.com/creatornader/c8a20c534d3cf8f65a9b34ce2ad81725
+- https://www.hyperledger.org/use/aries
+- https://didcomm.org/
+- https://www.uport.me/
+- https://sovrin.org/
+- https://veres.one/
+- https://keri.one/
+

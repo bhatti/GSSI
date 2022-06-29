@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package api.types;
+
+// References
+// https://developers.google.com/protocol-buffers/docs/proto3
+// https://w3c-ccg.github.io/vc-api
+// https://w3c.github.io/vc-data-model/
+
+option go_package = "github.com/bhatti/GSSI/api/v1/types";
+
+import "google/protobuf/timestamp.proto";
+
+message Void {
+}
+
+message Bool {
+  bool ok = 1;
+}
+
+// LangValue
+message LangValue {
+  string value = 1;
+  string lang = 2;
+}
+
+
+// holder - A role an entity might perform by possessing one or more verifiable credentials and
+// generating verifiable presentations from them. Example holders include students, employees, and customers.
+
+// issuer - A role an entity performs by asserting claims about one or more subjects, creating a verifiable
+// credential from these claims, and transmitting the verifiable credential to a holder.
+// Example issuers include corporations, non-profit organizations, trade associations, governments, and individuals.
+
+// Issuer - A JSON-LD Verifiable Credential Issuer.
+message Issuer {
+  string id = 1;
+}
+
+// subject - An entity about which claims are made. Example subjects include human beings, animals, and things.
+// In many cases the holder of a verifiable credential is the subject, but in certain cases it is not.
+// For example, a parent (the holder) might hold the verifiable credentials of a child (the subject),
+// or a pet owner (the holder) might hold the verifiable credentials of their pet (the subject).
+
+// verifier - A role an entity performs by receiving one or more verifiable credentials, optionally inside a
+// verifiable presentation, for processing. Example verifiers include employers, security personnel, and websites.
+
+// verifiable data registry - A role a system might perform by mediating the creation and verification of identifiers,
+// keys, and other relevant data, such as verifiable credential schemas, revocation registries, issuer public keys,
+// and so on, which might be required to use verifiable credentials. Some configurations might require
+// correlatable identifiers for subjects.
+
+// RefreshService for Verifiable Credential
+message RefreshService {
+  // The id for refresh
+  // e.g. https://example.edu/exchanges/refresh-degree or https://example.edu/refresh/3732
+  string id = 1;
+  // type of refresh, e.g. ManualRefreshService2018
+  string type = 2;
+  // validAfter
+  google.protobuf.Timestamp validAfter = 3;
+  // validUntil
+  google.protobuf.Timestamp validUntil = 4;
+}
+
+message Prohibition {
+  // The assigner, e.g. https://example.edu/issuers/14
+  string assigner = 1;
+  // The assignee, e.g. AllVerifiers
+  string assignee = 2;
+  // The target, e.g. http://example.edu/credentials/3732
+  string target = 3;
+  // The actions, e.g ["Archival"]
+  repeated string actions = 4;
+}
+
+message TermsOfUse {
+  // The id for terms
+  // e.g. http://example.com/policies/credential/4
+  string id = 1;
+  // type of terms , e.g. IssuerPolicy
+  string type = 2;
+  // profile, http://example.com/profiles/credential
+  string profile = 3;
+  // prohibition
+  repeated Prohibition prohibition = 4;
+}
+

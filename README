@@ -1,0 +1,12 @@
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+
+https://elewis.dev/charming-cobras-with-bubbletea-part-1
+https://github.com/wasmCloud/capability-providers
+https://github.com/wasmCloud/wash
+https://github.com/wasmCloud/interfaces
+https://github.com/wasmCloud/wasmCloud
+mix format and mix credo 
+go get github.com/cloudflare/cfssl/cmd/cfssl
+go get github.com/cloudflare/cfssl/cmd/cfssljson
+
