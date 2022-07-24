@@ -1,0 +1,157 @@
+syntax = "proto3";
+
+package api.vc.services;
+
+option go_package = "github.com/bhatti/GSSI/api/vc/services";
+
+import "google/protobuf/any.proto";
+
+import "api/vc/types/common.proto";
+import "api/vc/types/credential.proto";
+import "api/vc/types/presentation.proto";
+import "api/did/presentproof/types/presentproof.proto";
+
+// PresentationRequest is model for verifiable presentation request.
+message PresentationRequest {
+  repeated types.VerifiableCredential verifiableCredential = 1;
+  api.did.presentproof.types.GenericPresentation presentation = 2;
+  string did = 3;
+  // SkipVerify can be used to skip verification of `VerifiableCredentials` provided.
+  bool skipVerify = 4;
+  //ProofOptions
+  types.ProofOptions options = 5;
+}
+
+// SignCredentialRequest is adding proof to given credential.
+message SignCredentialRequest {
+  types.VerifiableCredential credential = 1;
+  string did = 2;
+  //ProofOptions
+  types.ProofOptions options = 3;
+}
+
+// SignCredentialResponse is model for sign credential response.
+message SignCredentialResponse {
+  types.VerifiableCredential verifiableCredential = 1;
+}
+
+// PresentationRequestByID model
+//
+// This is used for querying/removing by ID from input json.
+//
+message PresentationRequestByID {
+  // ID
+  string id = 1;
+
+  // DID ID
+  string did = 2;
+
+  // SignatureType
+  string signatureType = 3;
+}
+
+// DeriveCredentialRequest // Derives a credential and returns it in the response body.
+message DeriveCredentialRequest {
+  // Verifies a verifiableCredential
+  types.VerifiableCredential verifiableCredential = 1; // credential
+  // frame - A JSON-LD frame used for selective disclosure (an object)
+  map<string, google.protobuf.Any> frame = 2;
+  // options
+  types.DeriveCredentialOptions options = 3;
+
+  // Nonce to prove uniqueness or freshness of the proof.
+  string nonce = 4;
+  // SkipVerify can be used to skip verification of `Credential` provided.
+  bool skipVerify = 5;
+}
+
+// GetAllPresentationRequest for presentations
+// GET /presentations - Gets list of presentations or verifiable presentations
+message GetAllPresentationRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  string query = 3;
+}
+
+// ProvePresentationRequest  for verifiable credentials
+// POST /presentations/prove - Proves a presentation and returns it in the response body.
+message ProvePresentationRequest {
+  // The presentation
+  types.VerifiablePresentation presentation = 1; // without proof
+  // Options for specifying how the LinkedDataProof is verified.
+  types.PresentationOptions options = 2;
+}
+
+
+// InitiateExchangeRequestDescription
+// POST /exchanges/{exchange-id} - Initiates an exchange of information.
+message InitiateExchangeRequestDescription {
+  // The type
+  google.protobuf.Any type = 1;
+  // The description
+  string description = 2;
+}
+
+// InitiateExchangeRequestQuery
+// POST /exchanges/{exchange-id} - Initiates an exchange of information.
+message InitiateExchangeRequestQuery {
+  // The type
+  string type = 1;
+  // The query
+  google.protobuf.Any credentialQuery = 2;
+}
+
+// InitiateExchangeRequest
+// POST /exchanges/{exchange-id} - Initiates an exchange of information.
+message InitiateExchangeRequest {
+  oneof request {
+    InitiateExchangeRequestDescription description = 1;
+    InitiateExchangeRequestQuery query = 2;
+  }
+}
+
+// ContinueExchangeRequest for verifiable credentials
+// PUT /exchanges/{exchange-id}/{transaction-id} - Receives information related to an existing exchange.
+message ContinueExchangeRequest {
+  // The type
+  google.protobuf.Any type = 1;
+  // "A JSON-LD Verifiable Presentation with a proof."
+  types.VerifiablePresentation description = 2;
+}
+
+// CredentialsPresentService --
+service CredentialsPresentService {
+  // GET /presentations - Gets list of presentations or verifiable presentations
+  // GET /credentials
+  // 200	Credentials retrieved
+  // 400	Bad Request
+  // 401	Not Authorized
+  // 410	Gone! There is no data here
+  // 500	Internal Error
+  // 501	Not Implemented
+  rpc getAll(GetAllPresentationRequest) returns (stream types.RefreshableVerifiablePresentation) {}
+  // POST /credentials/derive - Derives a credential and returns it in the response body.
+  // 201	Credential derived successfully.
+  // 400	Invalid Request
+  // 500	Internal Error
+  // 501	Not Implemented
+  rpc deriveCredential(DeriveCredentialRequest) returns (types.RefreshableVerifiablePresentation) {}
+  // POST /presentations/prove - Proves a presentation and returns it in the response body.
+  // 201	Presentation successfully proved!
+  // 400	invalid input!
+  // 500	error!
+  rpc provePresentation(ProvePresentationRequest) returns (types.RefreshableVerifiablePresentation) {}
+  // POST /exchanges/{exchange-id} - Initiates an exchange of information.
+  // 200	Proceed with exchange.
+  // 400	Request is malformed.
+  // 500	Internal server error.
+  // 501	Service not implemented.
+  rpc initiateExchange(InitiateExchangeRequest) returns (stream types.RefreshableVerifiableCredential) {}
+  // PUT /exchanges/{exchange-id}/{transaction-id} - Receives information related to an existing exchange.
+  // 200	Proceed with exchange.
+  // 400	Request is malformed.
+  // 500	Internal server error.
+  // 501	Service not implemented.
+  rpc continueExchange(ContinueExchangeRequest) returns (stream types.RefreshableVerifiableCredential) {}
+}
+

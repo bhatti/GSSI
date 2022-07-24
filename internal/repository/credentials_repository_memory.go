@@ -2,12 +2,12 @@ package repository
 
 import (
 	"context"
-	"github.com/bhatti/GSSI/api/v1/types"
+	"github.com/bhatti/GSSI/api/vc/types"
 	"github.com/bhatti/GSSI/internal/config"
 	"sync"
 )
 
-// credentialsRepositoryMemoryRepository - provides in-memory persistence for tuple space
+// credentialsRepositoryMemoryRepository - provides in-memory persistence for credentials
 type credentialsRepositoryMemoryRepository struct {
 	lock    sync.RWMutex
 	storage map[string]*types.VerifiableCredential
@@ -54,7 +54,7 @@ func (r *credentialsRepositoryMemoryRepository) Query(
 }
 
 func (r *credentialsRepositoryMemoryRepository) Remove(
-	ctx context.Context,
+	_ context.Context,
 	id string) (credential *types.VerifiableCredential, err error) {
 	r.lock.Lock()
 	defer r.lock.Unlock()

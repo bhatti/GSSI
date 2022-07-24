@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package api.ld.types;
+
+option go_package = "github.com/bhatti/GSSI/api/ld/types";
+
+
+// ProviderID is a request/response model for operations that involve remote provider ID.
+message ProviderID {
+  string id = 1;
+}
+
+// Document is a JSON-LD context document with associated metadata.
+message Document {
+  string url = 1;
+  string documentURL = 2;
+  bytes content = 3; // json.RawMessage Content of the context document.
+}
+
+// AddContextsRequest is a request model for adding JSON-LD contexts.
+message AddContextsRequest {
+  repeated Document documents = 1;
+}
+
+// AddRemoteProviderRequest is a request model for adding a new remote context provider.
+message AddRemoteProviderRequest {
+  string endpoint = 1;
+}
+
+// RemoteProviderRecord is a record in store with remote provider info.
+message RemoteProviderRecord {
+  string id = 1;
+  string endpoint = 2;
+}
+
+
+// GetAllRemoteProvidersResponse is a response model for listing all remote providers.
+message GetAllRemoteProvidersResponse {
+  repeated RemoteProviderRecord providers = 1;
+}

@@ -1,6 +1,11 @@
 # GSSI
 Self-sovereign identity (SSI) implementation using GRPC
 
+# Installation
+ - go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+ - go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+ - go get github.com/cloudflare/cfssl/cmd/cfssl
+ - go get github.com/cloudflare/cfssl/cmd/cfssljson
 ## Resources
 - https://www.w3.org/TR/did-core/
 - https://www.w3.org/community/credentials
@@ -9,7 +14,10 @@ Self-sovereign identity (SSI) implementation using GRPC
 - https://www.w3.org/TR/json-ld/
 - https://www.w3.org/TR/did-spec-registries/
 - https://www.w3.org/community/credentials
+- https://w3c-ccg.github.io/universal-wallet-interop-spec/#interface
 - https://w3c.github.io/did-core/
+- https://datatracker.ietf.org/doc/html/draft-looker-jwm-01
+- https://identity.foundation/didcomm-messaging/spec/#invitation
 - https://github.com/w3c-ccg/vc-api/
 - https://w3c-ccg.github.io/vc-api/
 - https://identity.foundation/hub-sdk-js/
@@ -22,6 +30,18 @@ Self-sovereign identity (SSI) implementation using GRPC
 - https://identity.foundation/did-siop/
 - https://identity.foundation/presentation-exchange/
 - https://decentralized-id.com/organizations/identity-foundation/keri/
+- https://w3c-ccg.github.io/universal-wallet-interop-spec/
+- https://w3c-ccg.github.io/vp-request-spec/
+- https://identity.foundation/presentation-exchange/
+- https://identity.foundation/waci-presentation-exchange/
+- https://www.w3.org/TR/vc-data-model/
+- https://w3c.github.io/json-ld-syntax/ JSON-based Serialization for Linked Data.
+- https://w3c-ccg.github.io/ld-proofs/
+- https://w3c.github.io/did-core/
+- https://w3c-ccg.github.io/webkms/ cryptographic key management systems for the wallet.
+- https://w3c-ccg.github.io/did-resolution/
+- https://identity.foundation/didcomm-messaging/spec/
+- https://identity.foundation/credential-manifest/
 - https://github.com/hyperledger/aries
 - https://github.com/hyperledger/aries-framework-go
 - https://github.com/decentralized-identity
@@ -38,4 +58,5 @@ Self-sovereign identity (SSI) implementation using GRPC
 - https://sovrin.org/
 - https://veres.one/
 - https://keri.one/
+- https://github.com/go-jose/go-jose  An implementation of JOSE standards (JWE, JWS, JWT) in Go 
 

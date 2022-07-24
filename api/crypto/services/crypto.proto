@@ -1,0 +1,322 @@
+syntax = "proto3";
+
+package api.crypto.services;
+
+option go_package = "github.com/bhatti/GSSI/api/crypto/services";
+
+import "api/crypto/types/crypto.proto";
+import "google/protobuf/any.proto";
+
+// EncryptRequest encrypt
+message EncryptRequest {
+  bytes message = 1;
+  bytes aad = 2;
+  google.protobuf.Any kh = 3;
+}
+
+// EncryptResponse encrypt
+message EncryptResponse {
+  bytes cipherText = 1;
+  bytes nonce = 2;
+}
+
+// DecryptRequest decrypt
+message DecryptRequest {
+  bytes cipher = 1;
+  bytes aad = 2;
+  bytes nonce = 3;
+  google.protobuf.Any kh = 4;
+}
+
+// EncryptResponse decrypt
+message DecryptResponse {
+  bytes plainText = 1;
+}
+
+// SignRequest sign
+message SignRequest {
+  bytes message = 1;
+  google.protobuf.Any kh = 2;
+}
+
+// SignResponse sign
+message SignResponse {
+  bytes signature = 1;
+}
+
+
+// VerifyRequest verify
+message VerifyRequest {
+  bytes message = 1;
+  bytes signature = 2;
+  google.protobuf.Any kh = 3;
+}
+
+// VerifyResponse verify
+message VerifyResponse {
+}
+
+
+// ComputeMacRequest mac
+message ComputeMacRequest {
+  bytes data = 1;
+  google.protobuf.Any kh = 2;
+}
+
+// ComputeMacResponse mac
+message ComputeMacResponse {
+  bytes mac = 1;
+}
+
+
+// VerifyMacRequest mac
+message VerifyMacRequest {
+  bytes mac = 1;
+  bytes data = 2;
+  google.protobuf.Any kh = 3;
+}
+
+// VerifyMacResponse mac
+message VerifyMacResponse {
+}
+
+// WrapKeyRequest wrap
+message WrapKeyRequest {
+  bytes cek = 1;
+  bytes apu = 2;
+  bytes apv = 3;
+  api.crypto.types.PublicKey recPubKey = 4;
+  map<string, string> wrapKeyOpts = 5;
+}
+
+// WrapKeyResponse unwrap
+message WrapKeyResponse {
+  api.crypto.types.RecipientWrappedKey recipientWrappedKey = 1;
+}
+
+// UnwrapKeyRequest unwrap
+message UnwrapKeyRequest {
+  api.crypto.types.RecipientWrappedKey recipientWrappedKey = 1;
+  google.protobuf.Any kh = 2;
+  map<string, string> unwrapKeyOpts = 3;
+}
+
+// UnwrapKeyResponse wrap
+message UnwrapKeyResponse {
+  bytes key = 1;
+}
+
+// SignMultiRequest sign
+message SignMultiRequest {
+  repeated bytes message = 1;
+  google.protobuf.Any kh = 2;
+}
+
+// SignMultiResponse sign
+message SignMultiResponse {
+  bytes signature = 1;
+}
+
+
+// VerifyMultiRequest verify
+message VerifyMultiRequest {
+  repeated bytes message = 1;
+  bytes signature = 2;
+  google.protobuf.Any kh = 3;
+}
+
+// VerifyMultiResponse verify
+message VerifyMultiResponse {
+}
+
+// VerifyProofRequest proof
+message VerifyProofRequest {
+  repeated bytes revealedMessages = 1;
+  bytes proof = 2;
+  bytes nonce = 3;
+  google.protobuf.Any kh = 4;
+}
+
+// VerifyProofResponse proof
+message VerifyProofResponse {
+}
+
+
+// DeriveProofRequest proof
+message DeriveProofRequest {
+  repeated bytes revealedMessages = 1;
+  bytes bbsSignature = 2;
+  bytes nonce = 3;
+  repeated int32 revealedIndexes = 4;
+  google.protobuf.Any kh = 5;
+}
+
+// DeriveProofResponse proof
+message DeriveProofResponse {
+  bytes signatureProof = 1;
+}
+
+// package crypto contains the Crypto interface to be used by the framework.
+// It will be created via Options creation in pkg/framework/context.Provider.
+// BBS+ signature scheme is not included in the main Crypto interface.
+// It is defined separately under the primitive sub-package including its implementation which should not be referenced
+// directly. It is accessible via the framework's KMS BBS+ keys and tinkcrypto's bbs package's Signer and Verifier
+// primitives or via webkms for remote KMS BBS+ signing.
+
+// Crypto interface provides all crypto operations needed in the Aries framework.
+service Crypto {
+  // Encrypt will encrypt msg and aad using a matching AEAD primitive in kh key handle of a public key
+  // returns:
+  //              cipherText in []byte
+  //              nonce in []byte
+  //              error in case of errors during encryption
+  // POST /crypto/encrypt
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc encrypt(EncryptRequest) returns (EncryptResponse) {}
+
+
+
+  // Decrypt will decrypt cipher with aad and given nonce using a matching AEAD primitive in kh key handle of a
+  // private key
+  // returns:
+  //              plainText in []byte
+  //              error in case of errors
+  // POST /crypto/decrypt
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc decrypt(DecryptRequest) returns (DecryptResponse) {}
+
+  // Sign will sign msg using a matching signature primitive in kh key handle of a private key
+  // returns:
+  //              signature in []byte
+  //              error in case of errors
+  // POST /crypto/sign
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc sign(SignRequest) returns (SignResponse) {}
+
+  // Verify will verify a signature for the given msg using a matching signature primitive in kh key handle of
+  // a public key
+  // returns:
+  //              error in case of errors or nil if signature verification was successful
+  // POST /crypto/verify
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc verify(VerifyRequest) returns (VerifyResponse) {}
+
+  // ComputeMAC computes message authentication code (MAC) for code data
+  // using a matching MAC primitive in kh key handle
+  // POST /crypto/computeMac
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc computeMac(ComputeMacRequest) returns (ComputeMacResponse) {}
+
+  // VerifyMAC determines if mac is a correct authentication code (MAC) for data
+  // using a matching MAC primitive in kh key handle and returns nil if so, otherwise it returns an error.
+  // POST /crypto/verifyMac
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc verifyMac(VerifyMacRequest) returns (VerifyMacResponse) {}
+
+  // WrapKey will execute key wrapping of cek using apu, apv and recipient public key 'recPubKey'.
+  // 'opts' allows setting the optional sender key handle using WithSender() option and the an authentication tag
+  // using WithTag() option. These allow ECDH-1PU key unwrapping (aka Authcrypt).
+  // The absence of these options uses ECDH-ES key wrapping (aka Anoncrypt). Another option that can
+  // be used is WithXC20PKW() to instruct the WrapKey to use XC20P key wrapping instead of the default A256GCM.
+  // returns:
+  //              RecipientWrappedKey containing the wrapped cek value
+  //              error in case of errors
+  // POST /crypto/wrapKey
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc wrapKey(WrapKeyRequest) returns (WrapKeyResponse) {}
+
+
+
+  // UnwrapKey unwraps a key in recWK using recipient private key kh.
+  // 'opts' allows setting the optional sender key handle using WithSender() option and the an authentication tag
+  // using WithTag() option. These allow ECDH-1PU key unwrapping (aka Authcrypt).
+  // The absence of these options uses ECDH-ES key unwrapping (aka Anoncrypt). There is no need to
+  // use WithXC20PKW() for UnwrapKey since the function will use the wrapping algorithm based on recWK.Alg.
+  // returns:
+  //              unwrapped key in raw bytes
+  //              error in case of errors
+  // POST /crypto/unwrapKey
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc unwrapKey(UnwrapKeyRequest) returns (UnwrapKeyResponse) {}
+
+  // SignMulti will create a signature of messages using a matching signing primitive found in kh key handle of a
+  // private key.
+  // returns:
+  //              signature in []byte
+  //              error in case of errors
+  // POST /crypto/signMulti
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc signMulti(SignMultiRequest) returns (SignMultiResponse) {}
+  // VerifyMulti will verify a signature of messages using a matching signing primitive found in kh key handle of a
+  // public key.
+  // returns:
+  //              error in case of errors or nil if signature verification was successful
+  // POST /crypto/verifyMulti
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc verifyMulti(VerifyMultiRequest) returns (VerifyMultiResponse) {}
+
+  // VerifyProof will verify a signature proof (generated e.g. by Verifier's DeriveProof() call) for revealedMessages
+  // using a matching signing primitive found in kh key handle of a public key.
+  // returns:
+  //              error in case of errors or nil if signature proof verification was successful
+  // POST /crypto/verifyProof
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc verifyProof(VerifyProofRequest) returns (VerifyProofResponse) {}
+
+  // DeriveProof will create a signature proof for a list of revealed messages using BBS signature (can be built using
+  // a Signer's SignMulti() call) and a matching signing primitive found in kh key handle of a public key.
+  // returns:
+  //              signature proof in []byte
+  //              error in case of errors
+  // POST /crypto/deriveProof
+  // 200	successfully !
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc deriveProof(DeriveProofRequest) returns (DeriveProofResponse) {}
+}

@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package api.did.mediator.services;
+
+option go_package = "github.com/bhatti/GSSI/api/did/mediator/services";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/any.proto";
+
+import "api/did/mediator/types/mediator.proto";
+import "api/did/doc/types/doc.proto";
+import "api/did/doc/types/outofband.proto";
+
+// RegisterRoute contains parameters for registering/reconnecting router.
+message RegisterRoute {
+  string connection_ID = 1;
+}
+
+// ConnectionsResponse is response for router`s connections.
+message ConnectionsResponse {
+  repeated string connections = 1;
+}
+
+// StatusRequest is request for getting details about pending messages.
+message StatusRequest {
+  string connection_ID = 1;
+}
+
+// StatusResponse is status response containing details about pending messages.
+message StatusResponse {
+  string id = 1; // @id
+  string type = 2; // @type
+  int32 message_count = 3;
+  int32 duration_waited = 4;
+  google.protobuf.Timestamp last_added_time = 5;
+  google.protobuf.Timestamp last_delivered_time = 6;
+  google.protobuf.Timestamp last_removed_time = 7;
+  int32 total_size = 8;
+  api.did.doc.types.Thread thread = 9; // ~thread
+}
+
+// BatchPickupRequest is request for dispatching pending messages.
+message BatchPickupRequest {
+  // ConnectionID of connection for which pending messages needs to be dispatched.
+  string connection_ID = 1;
+  // Size of batch of pending messages to be dispatched.
+  int64 batch_size = 2;
+}
+
+// BatchPickupResponse is response for dispatching pending messages.
+message BatchPickupResponse {
+  // Count of messages dispatched.
+  int64 message_count = 1;
+}
+// CreateInvitationRequest model
+//
+// This is used for creating an invitation using mediator.
+//
+message CreateInvitationRequest {
+  string label = 1;
+  string goal = 2;
+  string goal_code = 3;
+  repeated google.protobuf.Any service = 4;
+  repeated string protocols = 5;
+}
+
+// CreateInvitationResponse model
+//
+// Response for creating invitation through mediator.
+//
+message CreateInvitationResponse {
+  // Invitation is out-of-band invitation from mediator.
+  api.did.doc.types.Invitation invitation = 1;
+}
+

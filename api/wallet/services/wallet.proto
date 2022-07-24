@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package api.wallet.services;
+
+option go_package = "github.com/bhatti/GSSI/api/wallet/services";
+
+import "google/protobuf/wrappers.proto";
+import "api/wallet/types/wallet.proto";
+

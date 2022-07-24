@@ -1,0 +1,330 @@
+syntax = "proto3";
+
+package api.did.doc.types;
+
+option go_package = "github.com/bhatti/GSSI/api/did/doc/types";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+import "api/did/jwk/types/jwk.proto";
+
+// These are the encodings specified in the standard, not are all
+// These are the encodings specified in the standard, not are all
+// supported yet
+enum Encoding {
+  Identity = 0;
+  Base2 = 48; // '0'
+  Base8 = 55; // '7'
+  Base10 = 57; // '9'
+  Base16 = 102; //'f'
+  Base16Upper = 70; // 'F'
+  Base32 = 98; // 'b'
+  Base32Upper = 66; // 'B'
+  Base32pad = 99; /// 'c'
+  Base32padUpper = 67; // 'C'
+  Base32hex = 118; // 'v'
+  Base32hexUpper = 86; // 'V'
+  Base32hexPad = 116; // 't'
+  Base32hexPadUpper = 84; // 'T'
+  Base36 = 107; // 'k'
+  Base36Upper = 75; // 'K'
+  Base58BTC = 122; // 'z'
+  Base58Flickr = 90; // 'Z'
+  Base64 = 109; // 'm'
+  Base64url = 117; // 'u'
+  Base64pad = 77; // 'M'
+  Base64urlPad = 85; // 'U'
+  Base256Emoji = 128640; /// '🚀'
+}
+
+// Thread thread data.
+message Thread {
+  string thid = 1;
+  string pthid = 2;
+  int32 sender_order = 3;
+  map<string, int32> received_orders = 4;
+}
+
+// Timing keeps expiration time.
+message Timing {
+  google.protobuf.Timestamp expires_time = 1;
+}
+
+// VerificationRelationship defines a verification relationship between DID subject and a verification method.
+enum VerificationRelationship {
+  // VerificationRelationshipGeneral is a special case of verification relationship: when a verification method
+  // defined in Verification is not used by any Verification.
+  VerificationRelationshipGeneral = 0;
+
+  // Authentication defines verification relationship.
+  Authentication = 1;
+
+  // AssertionMethod defines verification relationship.
+  AssertionMethod = 2;
+
+  // CapabilityDelegation defines verification relationship.
+  CapabilityDelegation = 3;
+
+  // CapabilityInvocation defines verification relationship.
+  CapabilityInvocation = 4;
+
+  // KeyAgreement defines verification relationship.
+  KeyAgreement = 5;
+}
+
+
+// EndpointType endpoint type.
+enum EndpointType {
+  // DIDCommV1 type.
+  DIDCommV1 = 0;
+  // DIDCommV2 type.
+  DIDCommV2 = 1;
+  // Generic type.
+  Generic = 2;
+}
+
+// Endpoint contains endpoint specific content. Content of ServiceEndpoint api above will be used by priority:
+// 1- DIDcomm V2
+// 2- DIDComm V1
+// 3- DIDCore
+// To force lower priority endpoint content, avoid setting higher priority data during Unmarshal() execution.
+message Endpoint {
+  repeated DIDCommV2Endpoint rawDIDCommV2 = 1;
+  string rawDIDCommV1 = 2;
+  google.protobuf.Any rawObj = 3;
+}
+
+// DIDRotationRecord holds information about a DID Rotation.
+message DIDRotationRecord {
+  string oldDID = 1;
+  string newDID = 2;
+  string fromPrior = 3;
+}
+
+// Record contain info about did exchange connection.
+message Record {
+  string connection_id = 1;
+  string state = 2;
+  string thread_id = 3;
+  string parent_thread_id = 4;
+  string their_label = 5;
+  string their_did = 6;
+  string my_did = 7;
+  Endpoint service_endPoint = 8; // ServiceEndPoint is 'their' DIDComm service endpoint.
+  repeated string recipient_keys = 9; // RecipientKeys holds 'their' DIDComm recipient keys.
+  repeated string routing_keys = 10; // RoutingKeys holds 'their' DIDComm routing keys.
+  string invitation_id = 11;
+  string invitation_did = 12;
+  bool implicit = 13;
+  string namespace = 14;
+  repeated string media_type_profiles = 15;
+  string did_comm_version = 16;
+  string peer_did_initial_state = 17;
+  DIDRotationRecord my_did_rotation = 18;
+}
+
+// RecordResult holds the credential records.
+message RecordResult {
+  // Result
+  repeated Record result = 1;
+}
+
+
+// QueryConnectionsParams model
+//
+// Parameters for querying connections.
+//
+message QueryConnectionsParams {
+
+  // Alias of connection invitation
+  string alias = 1;
+
+  // Initiator is Connection invitation initiator
+  string initiator = 2;
+
+  // Invitation key
+  string invitation_key = 3;
+
+  // Invitation ID
+  string invitation_id = 4;
+
+  // Parent threadID
+  string parent_thread_id = 5;
+
+  // MyDID is DID of the agent
+  string my_did = 6;
+
+  // State of the connection invitation
+  string state = 7;
+
+  // TheirDID is other party's DID
+  string their_did = 8;
+
+  // TheirRole is other party's role
+  string their_role = 9;
+}
+
+// DIDInfo model for specifying public DID and associated label.
+message DIDInfo {
+  // the DID
+  string did = 1;
+
+  // the label associated with DID
+  string label = 2;
+}
+
+// DIDCommV2Endpoint contains ServiceEndpoint data specifically for DIDcommV2 and is wrapped in Endpoint as an array.
+message DIDCommV2Endpoint {
+  // URI contains the endpoint URI.
+  string uri = 1;
+  // Accept contains the MediaType profiles accepted by this endpoint.
+  repeated string accept = 2;
+  // RoutingKeys contains the list of keys trusted as routing keys for the mediators/routers of this endpoint.
+  repeated string routingKeys = 3;
+}
+
+// DID is parsed according to the generic syntax: https://w3c.github.io/did-core/#generic-did-syntax
+message DID {
+  string scheme = 1; // is always "did"
+  string method = 2; // Method is the specific DID methods
+  string methodSpecificId = 3;// MethodSpecificID is the unique ID computed or assigned by the DID method
+}
+
+// DIDURL holds a DID URL.
+message DIDURL {// nolint:golint // ignore name stutter
+  string scheme = 1; // is always "did"
+  string method = 2; // Method is the specific DID methods
+  string methodSpecificId = 3;// MethodSpecificID is the unique ID computed or assigned by the DID method
+  string path = 4;
+  map<string, bytes> queries = 5; // string -> []string
+  string fragment = 6;
+}
+
+// DocResolution did resolution.
+message DocResolution {
+  repeated string context = 1;
+  Doc didDocument = 2;
+  DocumentMetadata documentMetadata = 3;
+}
+
+
+// MethodMetadata method metadata.
+message MethodMetadata {
+  // UpdateCommitment is update commitment key.
+  string updateCommitment = 1;
+  // RecoveryCommitment is recovery commitment key.
+  string recoveryCommitment = 2;
+  // Published is published key.
+  bool published = 3;
+  // AnchorOrigin is anchor origin.
+  string anchorOrigin = 4;
+  // UnpublishedOperations unpublished operations
+  repeated ProtocolOperation unpublishedOperations = 5;
+  // PublishedOperations published operations
+  repeated ProtocolOperation publishedOperations = 6;
+}
+
+// ProtocolOperation info.
+message ProtocolOperation {
+  // Operation is operation request.
+  string operation = 1;
+  // ProtocolVersion is protocol version.
+  int32 protocolVersion = 2;
+  // TransactionNumber is transaction number.
+  int32 transactionNumber = 3;
+  // TransactionTime is transaction time.
+  int64 transactionTime = 4;
+  // Type is type of operation.
+  string type = 5;
+  // AnchorOrigin is anchor origin.
+  string anchorOrigin = 6;
+  // CanonicalReference is canonical reference
+  string canonicalReference = 7;
+  // EquivalentReferences is equivalent references
+  repeated string equivalentReferences = 8;
+}
+
+
+// DocumentMetadata document metadata.
+message DocumentMetadata {
+  // VersionID is version ID key.
+  string versionId = 1;
+  // Deactivated is deactivated flag key.
+  bool deactivated = 2;
+  // CanonicalID is canonical ID key.
+  string canonicalId = 3;
+  // EquivalentID is equivalent ID array.
+  repeated string equivalentId = 4;
+  // Method is used for method metadata within did document metadata.
+  MethodMetadata method = 5;
+}
+
+// ProcessingMeta include info how to process the doc.
+message ProcessingMeta {
+  string baseUri = 1;
+}
+
+// Doc DID Document definition.
+message Doc {
+  string id = 1;
+  repeated string context = 2;
+  repeated VerificationMethod  verificationMethod = 3;
+  repeated Service service = 4;
+  repeated Verification authentication = 5;
+  repeated Verification assertionMethod = 6;
+  repeated Verification capabilityDelegation = 7;
+  repeated Verification capabilityInvocation = 8;
+  repeated Verification keyAgreement = 9;
+  repeated Proof proof = 10;
+  ProcessingMeta processingMeta = 11;
+  google.protobuf.Timestamp created = 12;
+  google.protobuf.Timestamp updated = 13;
+}
+
+// VerificationMethod DID doc verification method.
+// The value of the verification method is defined either as raw public key bytes (Value field) or as JSON Web Key.
+// In the first case the Type field can hold additional information to understand the nature of the raw public key.
+message VerificationMethod {
+  string id = 1; // @id
+  string type = 2; // @type
+  string controller = 3;
+  bytes value = 4;
+  bool relativeURL = 5;
+  api.did.jwk.types.JSONWebKey jsonWebKey = 6;
+  Encoding multibaseEncoding = 7;
+}
+
+// Service DID doc service.
+message Service {
+  string id = 1; // @id
+  string type = 2; // @type
+  uint32 priority = 3;
+  repeated string recipientKeys = 4;
+  repeated string routingKeys = 5;
+  Endpoint serviceEndpoint = 6;
+  repeated string accept = 7;
+  map<string, google.protobuf.Any> properties = 8;
+  map<string, bool> recipientKeysRelativeUrl = 9;
+  map<string, bool> routingKeysRelativeUrl = 10;
+  bool relativeUrl = 11;
+}
+
+// Verification authentication verification.
+message Verification {
+  VerificationMethod verificationMethod = 1;
+  VerificationRelationship relationship = 2;
+  bool embedded = 3;
+}
+
+
+// Proof is cryptographic proof of the integrity of the DID Document.
+message Proof {
+  string type = 1;
+  string creator = 2;
+  bytes proofValue = 3;
+  string domain = 4;
+  bytes nonce = 5;
+  string proofPurpose = 6;
+  bool relativeUrl = 7;
+  google.protobuf.Timestamp created = 8;
+}

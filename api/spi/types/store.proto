@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package api.spi.types;
+
+// References
+// https://developers.google.com/protocol-buffers/docs/proto3
+// https://w3c-ccg.github.io/vc-api
+// https://w3c.github.io/vc-data-model/
+
+option go_package = "github.com/bhatti/GSSI/api/spi/types";
+
+// SortOrder specifies the sort order of query results.
+enum SortOrder {
+  ASCENDING = 0;
+  DESCENDING = 1;
+}
+
+// SortOptions sets the order that results from an Iterator will be returned in. Sorting is based on the tag values
+// associated with the TagName chosen below. The TagName you use below can be the same as the one you're querying on,
+// or it can be a different one. Depending on the storage implementation, you may need to ensure that the TagName set
+// below is in the Store's StoreConfiguration before trying to use it for sorting (or it may be optional,
+// but recommended). If tag value strings are decimal numbers, then the sorting must be based on their numerical value
+// instead of the string representations of those numbers (i.e. numerical sorting, not lexicographic).
+// TagName cannot be blank.
+message SortOptions {
+  SortOrder order = 1;
+  string tagName = 2;
+}
+
+// QueryOptions represents various options for Query calls in a store.
+message QueryOptions {
+  // PageSize sets the page size used by the Store.Query method.
+  int32 pageSize = 1;
+  // InitialPageNum sets the page for the iterator returned from Store.Query to start from.
+  int32 pageNum = 2;
+  // SortOptions defines the sort order.
+  SortOptions sortedOptions = 3;
+}
+
+// Tag represents a Name + Value pair that can be associated with a key + value pair for querying later.
+message Tag {
+  // Name can be used to tag a given key + value pair as belonging to some sort of common
+  // group. Example: Identifying a key+value pair as being a Verifiable Credential by storing it
+  // with a tag Name called "VC". When used with the optional Value (see below), tag Name + Value can be used to
+  // specify metadata for a given key + value pair. Example: Identifying a Verifiable Credential (stored as a
+  // key+value pair) as belonging to a user account by using a tag Name called "UserAccount" and a tag Value called
+  // "bob@example.com". Tag Names are intended to be static values that the store is configured with in order to build
+  // indexes for queries (see TagNames in StoreConfiguration).
+  // Tag Names cannot contain any ':' characters.
+  string name = 1;
+  // Value can optionally be used to indicate some metadata associated with a tag name for a given key + value pair.
+  // See Name above for an example of how this can be used.
+  // Tag Values are dynamic and are not specified in a StoreConfiguration.
+  // Tag Values cannot contain any ':' characters.
+  string value = 2;
+}
+
+message Void {
+}
+
+message Bool {
+  bool ok = 1;
+}
+
+// StoreConfiguration represents the configuration of a store.
+// Currently, it's only used for creating indexes in underlying storage databases.
+message StoreConfiguration {
+  repeated Tag tags = 1;
+}
+
+// OperationType
+enum OperationType {
+  CREATE = 0;
+  UPDATE = 1;
+  DELETE = 2;
+}
+
+// Operation represents an operation to be performed in the Batch method.
+message Operation {
+  string key = 1;
+  repeated Tag tags = 2;
+  OperationType operationType = 3;
+  bytes  value = 4;
+}
+

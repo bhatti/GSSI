@@ -1,0 +1,366 @@
+syntax = "proto3";
+
+package api.did.presentproof.services;
+
+option go_package = "github.com/bhatti/GSSI/api/did/presentproof/services";
+
+import "api/did/presentproof/types/presentproof.proto";
+import "api/did/doc/types/outofband.proto";
+
+// DeclinePresentationRequest model
+//
+// This is used when the presentation needs to be rejected.
+//
+message DeclinePresentationRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Reason why presentation is declined
+  string reason = 2;
+  // RedirectURL is optional web redirect URL that can be sent to prover.
+  // Useful in cases where verifier would want prover to redirect once presentation is declined.
+  string redirectURL = 3;
+}
+
+// DeclinePresentationResponse model
+//
+// Represents a DeclinePresentation response message.
+//
+message DeclinePresentationResponse{
+
+}
+
+// DeclineProposePresentationRequest model
+//
+// This is used when proposal needs to be rejected.
+//
+message DeclineProposePresentationRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Reason why proposal is declined
+  string reason = 2;
+  // RedirectURL is optional web redirect URL that can be sent to prover.
+  // Useful in cases where verifier would want prover to redirect after its proposal gets declined.
+  string redirectURL = 3;
+}
+
+
+// DeclineProposePresentationResponse model
+//
+// Represents a DeclineProposePresentation response message.
+//
+message DeclineProposePresentationResponse{
+
+}
+
+// DeclineRequestPresentationRequest model
+//
+// This is used when the request needs to be rejected.
+//
+message DeclineRequestPresentationRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Reason why request is declined
+  string reason = 2;
+}
+
+// DeclineRequestPresentationResponse model
+//
+// Represents a DeclineRequestPresentation response message.
+//
+message DeclineRequestPresentationResponse{}
+
+// ActionsResponse model
+//
+// Represents Actions response message.
+//
+message ActionsResponse {
+  repeated api.did.doc.types.Action actions = 1;
+}
+
+// AcceptPresentationRequest model
+//
+// This is used for accepting a presentation.
+//
+message AcceptPresentationRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Names represent the names of how presentations will be stored
+  repeated string names = 2;
+  // RedirectURL is optional web redirect URL that can be sent to prover.
+  // Useful in cases where verifier would want prover to redirect once protocol is over.
+  string redirectURL = 3;
+}
+
+
+
+// AcceptPresentationResponse model
+//
+// Represents a AcceptPresentation response message.
+//
+message AcceptPresentationResponse{
+
+}
+
+// AcceptRequestPresentationRequest model
+//
+// This is used for accepting a request presentation.
+//
+message AcceptRequestPresentationRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Presentation is a message that contains signed presentations.
+    api.did.presentproof.types.GenericPresentation presentation = 2;
+}
+
+// AcceptRequestPresentationV2Request model
+//
+// This is used for accepting a request presentation.
+//
+message AcceptRequestPresentationV2Request {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Presentation is a message that contains signed presentations.
+  api.did.presentproof.types.PresentationV2 presentation = 2;
+}
+
+// AcceptRequestPresentationV3Request model
+//
+// This is used for accepting a request presentation.
+//
+message AcceptRequestPresentationV3Request {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Presentation is a message that contains signed presentations.
+  api.did.presentproof.types.PresentationV3 presentation = 2;
+}
+
+// AcceptRequestPresentationResponse model
+//
+// Represents a AcceptRequestPresentation response message.
+//
+message AcceptRequestPresentationResponse{
+
+}
+
+
+// AcceptProposePresentationRequest model
+//
+// This is used for accepting a propose presentation.
+//
+message AcceptProposePresentationRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // RequestPresentation describes values that need to be revealed and predicates that need to be fulfilled.
+  api.did.presentproof.types.GenericRequestPresentation request_presentation = 2;
+}
+
+// AcceptProposePresentationV2Request model
+//
+// This is used for accepting a propose presentation.
+//
+message AcceptProposePresentationV2Request {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // RequestPresentation describes values that need to be revealed and predicates that need to be fulfilled.
+  api.did.presentproof.types.RequestPresentationV2 request_presentation = 2;
+}
+
+// AcceptProposePresentationV3Request model
+//
+// This is used for accepting a propose presentation.
+//
+message AcceptProposePresentationV3Request {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // RequestPresentation describes values that need to be revealed and predicates that need to be fulfilled.
+  api.did.presentproof.types.RequestPresentationV3 request_presentation = 2;
+}
+
+// AcceptProposePresentationResponse model
+//
+// Represents a AcceptProposePresentation response message.
+//
+message AcceptProposePresentationResponse{
+
+}
+
+// NegotiateRequestPresentationRequest model
+//
+// This is used by the Prover to counter a presentation request they received with a proposal.
+//
+message NegotiateRequestPresentationRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // ProposePresentation is a response message to a request-presentation message when the Prover wants to
+  // propose using a different presentation format.
+  api.did.presentproof.types.GenericProposePresentation propose_presentation = 2;
+}
+
+// NegotiateRequestPresentationV2Request model
+//
+// This is used by the Prover to counter a presentation request they received with a proposal.
+//
+message NegotiateRequestPresentationV2Request {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // ProposePresentation is a response message to a request-presentation message when the Prover wants to
+  // propose using a different presentation format.
+  api.did.presentproof.types.ProposePresentationV2 propose_presentation = 2;
+}
+
+// NegotiateRequestPresentationV3Request model
+//
+// This is used by the Prover to counter a presentation request they received with a proposal.
+//
+message NegotiateRequestPresentationV3Request {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // ProposePresentation is a response message to a request-presentation message when the Prover wants to
+  // propose using a different presentation format.
+  api.did.presentproof.types.ProposePresentationV3 propose_presentation = 2;
+}
+
+// NegotiateRequestPresentationResponse model
+//
+// Represents a NegotiateRequestPresentation response message.
+//
+message NegotiateRequestPresentationResponse{
+
+}
+
+// SendProposePresentationRequest model
+//
+// This is used for sending a propose presentation.
+//
+message SendProposePresentationRequest {
+  // MyDID sender's did
+  string my_did = 1;
+  // TheirDID receiver's did
+  string their_did = 2;
+  // ConnectionID ID of connection between sender and receiver.
+  // Optional: if present, is used instead of MyDID + TheirDID.
+  string connection_id = 3;
+  // ProposePresentation is a message sent by the Prover to the verifier to initiate a proof
+  // presentation process.
+  api.did.presentproof.types.GenericProposePresentation propose_presentation = 4;
+}
+
+// SendProposePresentationV2Request model
+//
+// This is used for sending a propose presentation.
+//
+message SendProposePresentationV2Request {
+  // MyDID sender's did
+  string my_did = 1;
+  // TheirDID receiver's did
+  string their_did = 2;
+  // ConnectionID ID of connection between sender and receiver.
+  // Optional: if present, is used instead of MyDID + TheirDID.
+  string connection_id = 3;
+  // ProposePresentation is a message sent by the Prover to the verifier to initiate a proof
+  // presentation process.
+  api.did.presentproof.types.ProposePresentationV2 propose_presentation = 4;
+}
+
+// SendProposePresentationV3Request model
+//
+// This is used for sending a propose presentation.
+//
+message SendProposePresentationV3Request {
+  // MyDID sender's did
+  string my_did = 1;
+  // TheirDID receiver's did
+  string their_did = 2;
+  // ConnectionID ID of connection between sender and receiver.
+  // Optional: if present, is used instead of MyDID + TheirDID.
+  string connection_id = 3;
+  // ProposePresentation is a message sent by the Prover to the verifier to initiate a proof
+  // presentation process.
+  api.did.presentproof.types.ProposePresentationV3 propose_presentation = 4;
+}
+
+
+// SendProposePresentationResponse model
+//
+// Represents a SendProposePresentation response message.
+//
+message SendProposePresentationResponse {
+  // PIID Protocol instance ID. It can be used as a correlation ID
+  string piid = 1;
+}
+
+// SendRequestPresentationRequest model
+//
+// This is used for sending a request presentation.
+//
+message SendRequestPresentationRequest {
+  // MyDID sender's did
+  string my_did = 1;
+  // TheirDID receiver's did
+  string their_did = 2;
+  // ConnectionID ID of connection between sender and receiver.
+  // Optional: if present, is used instead of MyDID + TheirDID.
+  string connection_id = 3;
+  // RequestPresentation describes values that need to be revealed and predicates that need to be fulfilled.
+  api.did.presentproof.types.GenericRequestPresentation request_presentation = 4;
+}
+
+// SendRequestPresentationV2Request model
+//
+// This is used for sending a request presentation.
+//
+message SendRequestPresentationV2Request {
+  // MyDID sender's did
+  string my_did = 1;
+  // TheirDID receiver's did
+  string their_did = 2;
+  // ConnectionID ID of connection between sender and receiver.
+  // Optional: if present, is used instead of MyDID + TheirDID.
+  string connection_id = 3;
+  // RequestPresentation describes values that need to be revealed and predicates that need to be fulfilled.
+  api.did.presentproof.types.RequestPresentationV2 request_presentation = 4;
+}
+
+
+// SendRequestPresentationV3Request model
+//
+// This is used for sending a request presentation.
+//
+message SendRequestPresentationV3Request {
+  // MyDID sender's did
+  string my_did = 1;
+  // TheirDID receiver's did
+  string their_did = 2;
+  // ConnectionID ID of connection between sender and receiver.
+  // Optional: if present, is used instead of MyDID + TheirDID.
+  string connection_id = 3;
+  // RequestPresentation describes values that need to be revealed and predicates that need to be fulfilled.
+  api.did.presentproof.types.RequestPresentationV3 request_presentation = 4;
+}
+
+// SendRequestPresentationResponse model
+//
+// Represents a SendRequestPresentation response message.
+//
+message SendRequestPresentationResponse {
+  // PIID Protocol instance ID. It can be used as a correlation ID
+  string piid = 1;
+}
+
+// AcceptProblemReportRequest model
+//
+// This is used for accepting a problem report.
+//
+message AcceptProblemReportRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+}
+
+// AcceptProblemReportResponse model
+//
+// Represents a AcceptProblemReport response message.
+//
+message AcceptProblemReportResponse{
+
+}
+

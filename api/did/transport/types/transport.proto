@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package api.did.transport.types;
+
+option go_package = "github.com/bhatti/GSSI/api/did/transport/types";
+
+// Envelope holds message data and metadata for inbound and outbound messaging.
+message Envelope {
+  string mediaTypeProfile = 1;
+  bytes message = 2;
+  bytes fromKey = 3;
+  // ToKeys stores keys for an outbound message packing
+  repeated string toKeys = 4;
+  // ToKey holds the key that was used to decrypt an inbound message
+  bytes toKey = 5;
+}

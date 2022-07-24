@@ -1,0 +1,183 @@
+syntax = "proto3";
+
+package api.vc.types;
+
+// References
+// https://developers.google.com/protocol-buffers/docs/proto3
+// https://w3c-ccg.github.io/vc-api
+// https://w3c.github.io/vc-data-model/
+
+option go_package = "github.com/bhatti/GSSI/api/vc/types";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+message Void {
+}
+
+message Bool {
+  bool ok = 1;
+}
+
+// LangValue
+message LangValue {
+  string value = 1;
+  string lang = 2;
+}
+
+// TypedID defines a flexible structure with id and name fields and arbitrary extra fields
+message TypedID {
+  string id = 1;
+  string type = 2;
+}
+
+// CommandError contains a basic command Error.
+message CommandError {
+  string message = 1;
+  int32 code = 2;
+  int32 type = 3;
+}
+
+// RequestEnvelope contains a payload representing parameters for each operation on a protocol.
+message RequestEnvelope {
+  bytes payload = 1;
+}
+
+// ResponseEnvelope contains a payload and an error from performing an operation on a protocol.
+message ResponseEnvelope {
+  bytes payload = 1;
+  CommandError error = 2;
+}
+
+
+// holder - A role an entity might perform by possessing one or more verifiable credentials and
+// generating verifiable presentations from them. Example holders include students, employees, and customers.
+
+// issuer - A role an entity performs by asserting claims about one or more subjects, creating a verifiable
+// credential from these claims, and transmitting the verifiable credential to a holder.
+// Example issuers include corporations, non-profit organizations, trade associations, governments, and individuals.
+
+// Issuer - A JSON-LD Verifiable Credential Issuer.
+// Issuer represents the issuer object defined in https://identity.foundation/credential-manifest/#general-composition.
+message Issuer {
+  string id = 1; // Must be a valid URI
+  string name = 2;
+  Styles styles = 3;
+}
+
+// ImageURIWithAltText represents a URI that points to an image along with the alt text for it.
+message ImageURIWithAltText {
+  string uri = 1;
+  string alt = 2;
+}
+
+// Color represents a single color in RGB hex code format.
+message Color {
+  string color = 1;
+}
+
+// Styles represents an Entity Styles object as defined in
+// https://identity.foundation/credential-manifest/wallet-rendering/#entity-styles.
+message Styles {
+  ImageURIWithAltText thumbnail = 1;
+  ImageURIWithAltText hero = 2;
+  Color background = 3;
+  Color text = 4;
+}
+
+// Schema represents Type and (optional) Format information for a DisplayMappingObject that uses the Paths field,
+// as defined in https://identity.foundation/credential-manifest/wallet-rendering/#using-path.
+message Schema {
+  string type = 1;
+  string format = 2;
+  string uri = 3; // from presexch
+  bool required = 4; // from presexch
+}
+
+// Holder describes Constraints`s  holder object.
+message Holder {
+  repeated string field_id = 1;
+  string directive = 2; // preference
+}
+
+// Constraints describes InputDescriptor`s Constraints field.
+message Constraints {
+  string limit_disclosure = 1; // preference
+  string subject_is_issuer = 2; // preference
+  repeated Holder is_holder = 3;
+  repeated Field fields = 4;
+}
+
+// Field describes Constraints`s Fields field.
+message Field {
+  string id = 1;
+  repeated string path = 2;
+  string purpose = 3;
+  Filter filter = 4;
+  string predicate = 5; // preference
+}
+
+// Filter describes filter.
+message Filter {
+  string type = 1;
+  string format = 2;
+  string pattern = 3;
+  int64 minimum = 4; // StrOrInt
+  int64 maximum = 5; // StrOrInt
+  int32 minLength = 6;
+  int32 maxLength = 7;
+  int64 exclusiveMinimum = 8;
+  string const = 9; // StrOrInt
+  string enum = 10; // StrOrInt
+  map<string, google.protobuf.Any> not = 11;
+}
+
+// subject - An entity about which claims are made. Example subjects include human beings, animals, and things.
+// In many cases the holder of a verifiable credential is the subject, but in certain cases it is not.
+// For example, a parent (the holder) might hold the verifiable credentials of a child (the subject),
+// or a pet owner (the holder) might hold the verifiable credentials of their pet (the subject).
+
+// verifier - A role an entity performs by receiving one or more verifiable credentials, optionally inside a
+// verifiable presentation, for processing. Example verifiers include employers, security personnel, and websites.
+
+// verifiable data registry - A role a system might perform by mediating the creation and verification of identifiers,
+// keys, and other relevant data, such as verifiable credential schemas, revocation registries, issuer public keys,
+// and so on, which might be required to use verifiable credentials. Some configurations might require
+// correlatable identifiers for subjects.
+
+// RefreshService for Verifiable Credential
+message RefreshService {
+  // The id for refresh
+  // e.g. https://example.edu/exchanges/refresh-degree or https://example.edu/refresh/3732
+  string id = 1;
+  // type of refresh, e.g. ManualRefreshService2018
+  string type = 2;
+  // validAfter
+  google.protobuf.Timestamp validAfter = 3;
+  // validUntil
+  google.protobuf.Timestamp validUntil = 4;
+}
+
+message Prohibition {
+  // The assigner, e.g. https://example.edu/issuers/14
+  string assigner = 1;
+  // The assignee, e.g. AllVerifiers
+  string assignee = 2;
+  // The target, e.g. http://example.edu/credentials/3732
+  string target = 3;
+  // The actions, e.g ["Archival"]
+  repeated string actions = 4;
+}
+
+message TermsOfUse {
+  // The id for terms
+  // e.g. http://example.com/policies/credential/4
+  string id = 1;
+  // type of terms , e.g. IssuerPolicy
+  string type = 2;
+  // profile, http://example.com/profiles/credential
+  string profile = 3;
+  // prohibition
+  repeated Prohibition prohibition = 4;
+}
+

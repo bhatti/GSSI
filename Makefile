@@ -49,7 +49,7 @@ test: init
 
 .PHONY: compile
 compile: model-compile
-	protoc api/v1/*/*.proto \
+	protoc `find api -name "*.proto"` \
 		--go_out=. \
 		--go-grpc_out=. \
 		--go_opt=paths=source_relative \
@@ -57,7 +57,7 @@ compile: model-compile
 		--proto_path=.
 	#protoc --js_out=import_style=commonjs,binary:. api/v1/*/*.proto --proto_path=.
 model-compile:
-	protoc api/v1/*/*.proto \
+	protoc `find api -name "*.proto"` \
                 --go_out=. \
                 --go_opt=paths=source_relative \
                 --proto_path=.

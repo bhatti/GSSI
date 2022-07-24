@@ -9,27 +9,27 @@ import (
 
 type Handle struct {
 	grpcServer *grpc.Server
-	listner    net.Listener
+	listener   net.Listener
 }
 
 func (h *Handle) Addr() net.Addr {
-	return h.listner.Addr()
+	return h.listener.Addr()
 }
 
 func (h *Handle) Close() (err error) {
 	if h.grpcServer != nil {
 		h.grpcServer.Stop()
 	}
-	if h.listner != nil {
-		err = h.listner.Close()
+	if h.listener != nil {
+		err = h.listener.Close()
 	}
 	h.grpcServer = nil
-	h.listner = nil
+	h.listener = nil
 	return
 }
 
 func (h *Handle) Serve() error {
-	return h.grpcServer.Serve(h.listner)
+	return h.grpcServer.Serve(h.listener)
 }
 
 type NullAuthorizer struct {

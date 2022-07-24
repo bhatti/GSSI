@@ -1,0 +1,394 @@
+syntax = "proto3";
+
+package api.did.doc.types;
+
+// References
+// https://identity.foundation/didcomm-messaging/spec/#invitation
+// https://datatracker.ietf.org/doc/html/draft-looker-jwm-01
+
+option go_package = "github.com/bhatti/GSSI/api/did/doc/types";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+import "api/did/doc/types/doc.proto";
+
+// TransportReturnRoute
+enum TransportReturnRoute {
+  NONE = 0;
+  ALL = 1;
+  THREAD = 2;
+}
+
+// DIDCommVersion
+enum DIDCommVersion {
+  ANY = 0;
+  V1 = 1;
+  V2 = 2;
+}
+
+// Envelope for the DIDComm transport messages.
+message Envelope {
+  string protected = 1;
+  string iv = 2;
+  string ciphertext = 3;
+  string tag = 4;
+}
+
+// Forward route forward message.
+// nolint:lll // url in the next line is long
+// https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0094-cross-domain-messaging/README.md#corerouting10forward
+message Forward {
+  string id = 1; // @id
+  string type = 2; // @type
+  string to = 3;
+  bytes msg = 4;
+}
+
+// ReturnRoute works with Transport decorator. Acceptable values - "none", "all" or "thread".
+message ReturnRoute {
+  string return_route = 1;
+}
+
+// Transport transport decorator
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0092-transport-return-route
+message Transport {
+  ReturnRoute transport = 1;
+}
+
+// Action contains helpful information about action.
+message Action {
+  // Protocol instance ID
+  string piid = 1;
+  map<string, google.protobuf.Any> msg = 2;
+  string protocol_name = 3;
+  string my_did = 4;
+  string their_did = 5;
+}
+
+// Attachment is intended to provide the possibility to include files, links or even JSON payload to the message.
+// To find out more please visit https://github.com/hyperledger/aries-rfcs/tree/master/concepts/0017-attachments
+message Attachment {
+  // ID is a JSON-LD construct that uniquely identifies attached content within the scope of a given message.
+  // Recommended on appended attachment descriptors. Possible but generally unused on embedded attachment descriptors.
+  // Never required if no references to the attachment exist; if omitted, then there is no way
+  // to refer to the attachment later in the thread, in error messages, and so forth.
+  // Because @id is used to compose URIs, it is recommended that this name be brief and avoid spaces
+  // and other characters that require URI escaping.
+  string id = 1; // @id
+  // Description is an optional human-readable description of the content.
+  string description = 2;
+  // FileName is a hint about the name that might be used if this attachment is persisted as a file.
+  // It is not required, and need not be unique. If this field is present and mime-type is not,
+  // the extension on the filename may be used to infer a MIME type.
+  string filename = 3;
+  // MimeType describes the MIME type of the attached content. Optional but recommended.
+  string mime_type = 4; // mime-type
+  // LastModTime is a hint about when the content in this attachment was last modified.
+  google.protobuf.Timestamp expires_time = 5;
+  google.protobuf.Timestamp lastmod_time = 6;
+  // ByteCount is an optional, and mostly relevant when content is included by reference instead of by value.
+  // Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
+  int64 byte_count = 7;
+  // Data is a JSON object that gives access to the actual content of the attachment.
+  AttachmentData data = 8;
+}
+
+
+// AttachmentV2 is intended to provide the possibility to include files, links or even JSON payload to the message.
+// To find out more please visit https://identity.foundation/didcomm-messaging/spec/#attachments
+message AttachmentV2 {
+  // ID is a JSON-LD construct that uniquely identifies attached content within the scope of a given message.
+  // Recommended on appended attachment descriptors. Possible but generally unused on embedded attachment descriptors.
+  // Never required if no references to the attachment exist; if omitted, then there is no way
+  // to refer to the attachment later in the thread, in error messages, and so forth.
+  // Because @id is used to compose URIs, it is recommended that this name be brief and avoid spaces
+  // and other characters that require URI escaping.
+  string id = 1;
+  // Description is an optional human-readable description of the content.
+  string description = 2;
+  // FileName is a hint about the name that might be used if this attachment is persisted as a file.
+  // It is not required, and need not be unique. If this field is present and mime-type is not,
+  // the extension on the filename may be used to infer a MIME type.
+  string filename = 3;
+  // MediaType describes the MIME type of the attached content. Optional but recommended.
+  string media_type = 4;
+  // LastModTime is a hint about when the content in this attachment was last modified.
+  google.protobuf.Timestamp lastmod_time = 5;
+  // ByteCount is an optional, and mostly relevant when content is included by reference instead of by value.
+  // Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
+  int64 byte_count = 6;
+  // Data is a JSON object that gives access to the actual content of the attachment.
+  AttachmentData data = 7;
+  // Format describes the format of the attachment if the media_type is not sufficient.
+  string format = 8;
+}
+
+
+// GenericAttachment is used to work with DIDComm attachments that can be either DIDComm v1 or DIDComm v2.
+message GenericAttachment {
+  // ID is the attachment ID..
+  string id = 1;
+  // Description is an optional human-readable description of the content.
+  string description = 2;
+  // FileName is a hint about the name that might be used if this attachment is persisted as a file.
+  // It is not required, and need not be unique. If this field is present and mime-type is not,
+  // the extension on the filename may be used to infer a MIME type.
+  string filename = 3;
+  // MediaType describes the MIME type of the attached content in a DIDComm v2 attachment. Optional but recommended.
+  string media_type = 4;
+  // LastModTime is a hint about when the content in this attachment was last modified.
+  google.protobuf.Timestamp lastmod_time = 5;
+  // ByteCount is an optional, and mostly relevant when content is included by reference instead of by value.
+  // Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
+  int64 byte_count = 6;
+  // Data is a JSON object that gives access to the actual content of the attachment.
+  AttachmentData data = 7;
+  // Format describes the format of the attachment if the media_type is not sufficient, in a DIDComm v2 attachment.
+  string format = 8;
+  string version = 9;
+}
+
+
+// GenericInvitation holds either a DIDComm V1 or V2 invitation.
+message GenericInvitation {
+  string id = 1; // @id
+  string type = 2; // @type
+  string from = 3;
+  string label = 4;
+  string goal = 5;
+  string goal_code = 6;
+  repeated google.protobuf.Any services = 7;
+  repeated string accept = 8;
+  repeated string handshake_protocols = 9;
+  repeated GenericAttachment attachments = 10;
+  string version = 11;
+}
+
+
+// OOBInvitation to connect with did-exchange.
+message OOBInvitation {
+  // ID of this invitation (for record-keeping purposes).
+  // TODO can we remove this?
+  string id = 1; // @id
+  // TODO remove this
+  string type = 2; // @type
+  // ID of the thread from which this invitation originated.
+  // This will become the parent thread ID of the didexchange protocol instance.
+  string threadID = 3;
+  // TheirLabel is the label on the other party's connection invitation.
+  string theirLabel = 4;
+  // MyLabel is the label we will use during the did-exchange.
+  string myLabel = 5;
+  // Target destination.
+  // This can be any on of:
+  // - a string with a valid DID
+  // - a valid `did.Service`
+  google.protobuf.Any target = 6;
+  // MediaTypeProfiles are the message format profiles supported by the sender of this invitation
+  // as defined in RFC 0044.
+  repeated string mediaTypeProfiles = 7;
+}
+
+// Invitation is this protocol's `invitation` message.
+// Invitation defines DID exchange invitation message
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#0-invitation-to-exchange
+//  to 'Invitation'.
+message Invitation {
+  // the ID of the connection invitation
+  string id = 1; // @id
+  // the Type of the connection invitation
+  string type = 2; // @type
+  // the Label of the connection invitation
+  string label = 3;
+  string goal = 4;
+  string goal_code = 5;
+  repeated google.protobuf.Any services = 6; // Services is an array of either DIDs or 'services' block entries
+  repeated string accept = 7;
+  repeated string handshake_protocols = 8;
+  repeated Attachment request_attach = 9;
+
+  // Invitation is this protocol's `invitation` message.
+  string from = 10;
+  InvitationBody body = 11;
+  repeated AttachmentV2 attach = 12;
+
+  // https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#0-invitation-to-exchange
+  // the Image URL of the connection invitation
+  string imageUrl = 13;
+
+  // the Service endpoint of the connection invitation
+  string serviceEndpoint = 14;
+
+  // the RecipientKeys for the connection invitation
+  repeated string recipientKeys = 15;
+
+  // the DID of the connection invitation
+  string did = 16;
+
+  // the RoutingKeys of the connection invitation
+  repeated string routingKeys = 17;
+
+  Thread thread = 18; // ~thread
+}
+
+// InvitationBody contains invitation's goal and accept headers.
+message InvitationBody {
+  string goal = 1;
+  string goal_code = 2;
+  repeated string accept = 3;
+}
+
+
+// HandshakeReuse is this protocol's 'handshake-reuse' message.
+message HandshakeReuse {
+  string id = 1; // @id
+  string type = 2; // @type
+}
+
+// HandshakeReuseAccepted is this protocol's 'handshake-reuse-accepted' message.
+message HandshakeReuseAccepted {
+  string id = 1; // @id
+  string type = 2; // @type
+}
+
+
+// AttachmentData contains attachment payload.
+message AttachmentData {
+  // Sha256 is a hash of the content. Optional. Used as an integrity check if content is inlined.
+  // if content is only referenced, then including this field makes the content tamper-evident.
+  // This may be redundant, if the content is stored in an inherently immutable container like
+  // content-addressable storage. This may also be undesirable, if dynamic content at a specified
+  // link is beneficial. Including a hash without including a way to fetch the content via link
+  // is a form of proof of existence.
+  string sha256 = 1;
+  // Links is a list of zero or more locations at which the content may be fetched.
+  repeated string links = 2;
+  // Base64 encoded data, when representing arbitrary content inline instead of via links. Optional.
+  string base64 = 3;
+  // JSON is a directly embedded JSON data, when representing content inline instead of via links,
+  // and when the content is natively conveyable as JSON. Optional.
+  google.protobuf.Any json = 4; // interface{}
+  // JWS is a JSON web signature over the encoded data, in detached format.
+  google.protobuf.Any jws = 5; // raw-json
+}
+
+
+// WebRedirect decorator for passing web redirect info to ask recipient of the message
+// to redirect after completion of flow.
+message WebRedirect {
+  // Status of the operation,
+  // Refer https://github.com/hyperledger/aries-rfcs/blob/main/features/0015-acks/README.md#ack-status.
+  string status = 1;
+  // URL to which recipient of this message is being requested to redirect.
+  string url = 2;
+}
+
+// Ack acknowledgement struct.
+message Ack {
+  string id = 1; // @id
+  string type = 2; // @type
+  string status = 3;
+  Thread thread = 4; // ~thread
+  WebRedirect web_redirect = 5;// ~web-redirect
+}
+
+// AckV2 acknowledgement struct.
+message AckV2 {
+  string id = 1; // @id
+  string type = 2; // @type
+  WebRedirect web_redirect = 3;// ~web-redirect
+  AckV2Body body = 4;
+}
+
+// AckV2Body represents body for AckV2.
+message AckV2Body {
+  string status = 1;
+}
+
+
+// Request defines a2a DID exchange request
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#1-exchange-request
+message Request {
+  string id = 1; // @id
+  string type = 2; // @type
+  string label = 3;
+  Thread thread = 4; // ~thread
+  // DID the did of the requester.
+  // Mandatory in did-exchange, but optional for backwards-compatibility with rfc 0160 connection protocol.
+  string did = 5;
+  // DocAttach an attachment containing the did doc of the requester.
+  // Optional, a requester may provide a publicly-resolvable DID, rather than including an attached did doc.
+  Attachment did_doc_attach = 6; // ~attach
+  // Connection is used for backwards-compatibility with rfc 0160 connection protocol.
+  Connection connection = 7;
+}
+
+// Response defines a2a DID exchange response
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#2-exchange-response
+message Response {
+  string id = 1; // @id
+  string type = 2; // @type
+  Thread thread = 3; // ~thread
+  ConnectionSignature connection_sig = 4; // ~sig
+  // DID the did of the responder.
+  // Mandatory in did-exchange, but optional for backwards-compatibility with rfc 0160 connection protocol.
+  string did = 5;
+  // DocAttach an attachment containing the did doc of the responder.
+  // Optional, a responder may provide a publicly-resolvable DID, rather than including an attached did doc.
+  Attachment did_doc_attach = 6; // ~attach
+}
+
+// ConnectionSignature connection signature.
+message ConnectionSignature {
+  string type = 1; // @type
+  string signature = 2;
+  string sig_data = 3;
+  string signers = 4;
+}
+
+// Connection connection.
+message Connection {
+  string did = 1;
+  Doc did_doc = 2;
+}
+
+
+// Complete defines a2a DID exchange complete message.
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#3-exchange-complete
+message Complete {
+  string id = 1; // @id
+  string type = 2; // @type
+  Thread thread = 3; // ~thread
+}
+
+
+
+// ProblemReport problem report definition
+// TODO: need to provide full ProblemReport structure https://github.com/hyperledger/aries-framework-go/issues/912
+message ProblemReport {
+  string id = 1; // @id
+  string type = 2; // @type
+  Code description = 3;
+  WebRedirect web_redirect = 4;// ~web-redirect
+}
+
+// Code represents a problem report code.
+message Code {
+  string code = 1;
+}
+
+// ProblemReportV2 problem report definition.
+message ProblemReportV2 {
+  string id = 1; // @id
+  string type = 2; // @type
+  ProblemReportV2Body body = 3;
+}
+
+// ProblemReportV2Body represents body for ProblemReportV2.
+message ProblemReportV2Body {
+  string code = 1;
+  string comment = 2;
+  repeated string args = 3;
+  string escalate_to = 4;
+  WebRedirect web_redirect = 5;// ~web-redirect
+}

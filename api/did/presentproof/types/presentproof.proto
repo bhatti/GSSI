@@ -1,0 +1,332 @@
+syntax = "proto3";
+
+package api.did.presentproof.types;
+
+option go_package = "github.com/bhatti/GSSI/api/did/presentproof/types";
+import "google/protobuf/any.proto";
+
+import "api/did/doc/types/outofband.proto";
+import "api/vc/types/common.proto";
+
+// Schema input descriptor schema.
+message Schema {
+  string uri = 3; // from presexch
+  bool required = 4; // from presexch
+}
+
+
+// GenericProposePresentation combination of V2 and V3
+message GenericProposePresentation {
+  string id = 1; // @id
+  string type = 2; // @type
+  // Comment is a field that provides some human readable information about the proposed presentation.
+  // TODO: Should follow DIDComm conventions for l10n. [Issue #1300]
+  string comment = 3;
+  // Formats contains an entry for each proposal~attach array entry, including an optional value of the
+  // attachment @id (if attachments are present) and the verifiable presentation format and version of the attachment.
+  repeated Format formats = 4;
+  // ProposalsAttach is an array of attachments that further define the presentation request being proposed.
+  // This might be used to clarify which formats or format versions are wanted.
+  repeated api.did.doc.types.Attachment proposal_attach = 5; //proposals~attach
+
+  // V3
+  ProposePresentationV3Body body = 6;
+  // Attachments is an array of attachments that further define the presentation request being proposed.
+  // This might be used to clarify which formats or format versions are wanted.
+  repeated api.did.doc.types.AttachmentV2 attachments = 7;
+}
+
+// ProposePresentationV2 is an optional message sent by the prover to the verifier to initiate a proof presentation
+// process, or in response to a request-presentation message when the prover wants to propose
+// using a different presentation format or request.
+message ProposePresentationV2 {
+  string id = 1; // @id
+  string type = 2; // @type
+  // Comment is a field that provides some human readable information about the proposed presentation.
+  // TODO: Should follow DIDComm conventions for l10n. [Issue #1300]
+  string comment = 3;
+  // Formats contains an entry for each proposal~attach array entry, including an optional value of the
+  // attachment @id (if attachments are present) and the verifiable presentation format and version of the attachment.
+  repeated Format formats = 4;
+  // ProposalsAttach is an array of attachments that further define the presentation request being proposed.
+  // This might be used to clarify which formats or format versions are wanted.
+  repeated api.did.doc.types.Attachment proposal_attach = 5; //proposals~attach
+}
+
+// ProposePresentationV3 is an optional message sent by the prover to the verifier to initiate a proof presentation
+// process, or in response to a request-presentation message when the prover wants to propose
+// using a different presentation format or request.
+message ProposePresentationV3 {
+  string id = 1; // @id
+  string type = 2; // @type
+  ProposePresentationV3Body body = 3;
+  // Attachments is an array of attachments that further define the presentation request being proposed.
+  // This might be used to clarify which formats or format versions are wanted.
+  repeated api.did.doc.types.AttachmentV2 attachments = 4;
+}
+
+// ProposePresentationV3Body represents body for ProposePresentationV3.
+message ProposePresentationV3Body {
+  string goal_code = 1;
+  // Comment is a field that provides some human readable information about the proposed presentation.
+  // TODO: Should follow DIDComm conventions for l10n. [Issue #1300]
+  string comment = 2;
+}
+
+
+// GenericRequestPresentation combination of V2 and V3
+message GenericRequestPresentation {
+  string id = 1; // @id
+  string type = 2; // @type
+  // Comment is a field that provides some human readable information about the proposed presentation.
+  // TODO: Should follow DIDComm conventions for l10n. [Issue #1300]
+  string comment = 3;
+  // WillConfirm is a field that defaults to "false" to indicate that the verifier will or will not
+  // send a post-presentation confirmation ack message.
+  bool will_confirm = 4;
+  // Formats contains an entry for each request_presentations~attach array entry, providing the the value of the
+  // attachment @id and the verifiable presentation request format and version of the attachment.
+  repeated Format formats = 5;
+  // RequestPresentationsAttach is an array of attachments containing the acceptable verifiable presentation requests.
+  repeated api.did.doc.types.Attachment request_presentations_attach = 6; // request_presentations~attach
+  // V3
+  RequestPresentationV3Body body = 7;
+  // Attachments is an array of attachments containing the acceptable verifiable presentation requests.
+  repeated api.did.doc.types.AttachmentV2 attachments = 8;
+}
+
+// RequestPresentationV2 describes values that need to be revealed and predicates that need to be fulfilled.
+message RequestPresentationV2 {
+  string id = 1; // @id
+  string type = 2; // @type
+  // Comment is a field that provides some human readable information about the proposed presentation.
+  // TODO: Should follow DIDComm conventions for l10n. [Issue #1300]
+  string comment = 3;
+  // WillConfirm is a field that defaults to "false" to indicate that the verifier will or will not
+  // send a post-presentation confirmation ack message.
+  bool will_confirm = 4;
+  // Formats contains an entry for each request_presentations~attach array entry, providing the the value of the
+  // attachment @id and the verifiable presentation request format and version of the attachment.
+  repeated Format formats = 5;
+  // RequestPresentationsAttach is an array of attachments containing the acceptable verifiable presentation requests.
+  repeated api.did.doc.types.Attachment request_presentations_attach = 6; // request_presentations~attach
+}
+
+// RequestPresentationV3 describes values that need to be revealed and predicates that need to be fulfilled.
+message RequestPresentationV3 {
+  string id = 1; // @id
+  string type = 2; // @type
+  RequestPresentationV3Body body = 3;
+  // Attachments is an array of attachments containing the acceptable verifiable presentation requests.
+  repeated api.did.doc.types.AttachmentV2 attachments = 4;
+}
+
+// RequestPresentationV3Body represents body for RequestPresentationV3.
+message RequestPresentationV3Body {
+  string goal_code = 1;
+  // Comment is a field that provides some human readable information about the proposed presentation.
+  // TODO: Should follow DIDComm conventions for l10n. [Issue #1300]
+  string comment = 2;
+  // WillConfirm is a field that defaults to "false" to indicate that the verifier will or will not
+  // send a post-presentation confirmation ack message.
+  bool will_confirm = 3;
+}
+
+
+// Format contains the value of the attachment @id and the verifiable credential format of the attachment.
+message Format {
+  string attach_id = 1;
+  string format = 2;
+}
+
+// SubmissionRequirement describes input that must be submitted via a Presentation Submission
+// to satisfy Verifier demands.
+message SubmissionRequirement {
+  string name = 1;
+  string purpose = 2;
+  string rule = 3;
+  int64 count = 4;
+  int64 min = 5;
+  int64 max = 6;
+  string from = 7;
+  repeated SubmissionRequirement from_nested = 8;
+}
+
+// InputDescriptor input descriptors.
+message InputDescriptor {
+  string id = 1;
+  repeated string group = 2;
+  string name = 3;
+  string purpose = 4;
+  map<string, google.protobuf.Any> metadata = 5;
+  repeated Schema schema = 6; // uri and required
+  api.vc.types.Constraints constraints = 7;
+}
+
+// InputDescriptorMapping maps an InputDescriptor to a verifiable credential pointed to by the JSONPath in `Path`.
+message InputDescriptorMapping {
+  string id = 1;
+  string format = 2;
+  string path = 3;
+  InputDescriptorMapping path_nested = 4;
+}
+
+// ResolvedProperty contains resolved result for each resolved property.
+message ResolvedProperty {
+  Schema schema = 1;
+  string label = 2;
+  google.protobuf.Any value = 3;
+}
+
+// DisplayMappingObject represents a Display Mapping Object as defined in
+// https://identity.foundation/credential-manifest/wallet-rendering/#display-mapping-object
+// There are two possibilities here:
+// If the text field is used, then schema is not needed.
+// If the path field is used, then schema is required.
+// TODO (#3045) Support for JSONPath bracket notation.
+message DisplayMappingObject {
+  string text = 1;
+  repeated string path = 2;
+  Schema schema = 3;
+  string fallback = 4;
+}
+
+// LabeledDisplayMappingObject is a DisplayMappingObject with an additional Label field.
+// They are used for the dynamic Properties array in a DataDisplayDescriptor.
+message LabeledDisplayMappingObject {
+  string text = 1;
+  repeated string path = 2;
+  Schema schema = 3;
+  string fallback = 4;
+  string label = 5;
+}
+
+// ResolvedDescriptor typically represents results of resolving manifests by credential fulfillment.
+// typically represents a DataDisplayDescriptor that's had its various "template" fields resolved
+// into concrete values based on a Verifiable Credential.
+message ResolvedDescriptor {
+  string descriptor_id = 1; // descriptionId
+  string title = 2;
+  string subtitle = 3;
+  string description = 4;
+  api.vc.types.Styles styles = 5;
+  repeated ResolvedProperty properties = 6;
+}
+
+// DataDisplayDescriptor represents a Data Display Descriptor as defined in
+// https://identity.foundation/credential-manifest/wallet-rendering/#data-display.
+message DataDisplayDescriptor {
+  DisplayMappingObject title = 1;
+  DisplayMappingObject subtitle = 2;
+  DisplayMappingObject description = 3;
+  repeated LabeledDisplayMappingObject properties = 4;
+}
+
+// OutputDescriptor represents an Output Descriptor object as defined in
+// https://identity.foundation/credential-manifest/#output-descriptor.
+message OutputDescriptor {
+  string id = 1;
+  string schema = 2;
+  string name = 3;
+  string description = 4;
+  DataDisplayDescriptor display = 5;
+  api.vc.types.Styles styles = 6;
+}
+
+
+// OutputDescriptorMap represents an Output Descriptor Mapping Object as defined in
+// https://identity.foundation/credential-manifest/#credential-fulfillment.
+// It has the same format as the InputDescriptorMapping object from the presexch package, but has a different meaning
+// here.
+// type OutputDescriptorMap presexch.InputDescriptorMapping
+
+// CredentialFulfillment represents a Credential Fulfillment object as defined in
+// https://identity.foundation/credential-manifest/#credential-fulfillment.
+message CredentialFulfillment {
+  string id = 1; // @id
+  string manifest_id = 2;
+  repeated InputDescriptor descriptor_map = 3;
+}
+
+// CredentialManifest represents a Credential Manifest object as defined in
+// https://identity.foundation/credential-manifest/#credential-manifest-2.
+message CredentialManifest {
+  string id = 1; // @id
+  string version = 2;
+  api.vc.types.Issuer issuer = 3;
+  repeated OutputDescriptor output_descriptors = 4;
+  Format format = 5;
+  PresentationDefinition presentation_definition = 6;
+}
+
+
+
+// PresentationDefinition presentation definitions (https://identity.foundation/presentation-exchange/).
+message PresentationDefinition {
+  // ID unique resource identifier.
+  string id = 1;
+  // Name human-friendly name that describes what the Presentation Definition pertains to.
+  string name = 2;
+  // Purpose describes the purpose for which the Presentation Definition’s inputs are being requested.
+  string purpose = 3;
+  string locale = 4;
+  // Format is an object with one or more properties matching the registered Claim Format Designations
+  // (jwt, jwt_vc, jwt_vp, etc.) to inform the Holder of the claim format configurations the Verifier can process.
+  Format format = 5;
+  // SubmissionRequirements must conform to the Submission Requirement Format.
+  // If not present, all inputs listed in the InputDescriptors array are required for submission.
+  repeated SubmissionRequirement submission_requirements = 6;
+  repeated InputDescriptor input_descriptors = 7;
+}
+// Combination of V2 and V3
+message GenericPresentation {
+  string id = 1; // @id
+  string type = 2; // @type
+  // Comment is a field that provides some human readable information about the proposed presentation.
+  // TODO: Should follow DIDComm conventions for l10n. [Issue #1300].
+  string comment = 3;
+  // Formats contains an entry for each presentations~attach array entry, providing the the value of the attachment
+  // @id and the verifiable presentation format and version of the attachment.
+  repeated Format formats = 4;
+  // PresentationsAttach an array of attachments containing the presentation in the requested format(s).
+  repeated api.did.doc.types.Attachment presentations_attach = 5; //presentations~attach
+  // Attachments is an array of attachments that further define the presentation request being proposed.
+  // This might be used to clarify which formats or format versions are wanted.
+  repeated api.did.doc.types.AttachmentV2 attachments = 6;
+  //
+  PresentationV3Body body = 7;
+}
+
+// PresentationV2 is a response to a RequestPresentationV2 message and contains signed presentations.
+// TODO: Add ~please_ack decorator support for the protocol [Issue #2047].
+message PresentationV2 {
+  string id = 1; // @id
+  string type = 2; // @type
+  // Comment is a field that provides some human readable information about the proposed presentation.
+  // TODO: Should follow DIDComm conventions for l10n. [Issue #1300].
+  string comment = 3;
+  // Formats contains an entry for each presentations~attach array entry, providing the the value of the attachment
+  // @id and the verifiable presentation format and version of the attachment.
+  repeated Format formats = 4;
+  // PresentationsAttach an array of attachments containing the presentation in the requested format(s).
+  repeated api.did.doc.types.Attachment presentations_attach = 5; //presentations~attach
+}
+
+// PresentationV3 is a response to a RequestPresentationV3 message and contains signed presentations.
+message PresentationV3 {
+  string type = 1; // @type
+  PresentationV3Body body = 2;
+  // Attachments is an array of attachments that further define the presentation request being proposed.
+  // This might be used to clarify which formats or format versions are wanted.
+  repeated api.did.doc.types.AttachmentV2 attachments = 3;
+}
+
+// PresentationV3Body represents body for PresentationV3.
+message PresentationV3Body {
+  string goal_code = 1;
+  // Comment is a field that provides some human readable information about the proposed presentation.
+  // TODO: Should follow DIDComm conventions for l10n. [Issue #1300]
+  string comment = 2;
+}
+
+

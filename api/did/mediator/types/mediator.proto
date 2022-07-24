@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package api.did.mediator.messages;
+
+option go_package = "github.com/bhatti/GSSI/api/did/mediator/messages";
+import "api/did/doc/types/doc.proto";
+
+// Request route request message.
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0211-route-coordination#route-request
+message Request {
+  string id = 1; // @id
+  string type = 2; // @type
+  api.did.doc.types.Timing timing = 3; // ~timing
+}
+
+// Grant route grant message.
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0211-route-coordination#route-grant
+message Grant {
+  string id = 1; // @id
+  string type = 2; // @type
+  string endpoint = 3;
+  repeated string routing_keys = 4;
+}
+
+// KeylistUpdate route keylist update message.
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0211-route-coordination#keylist-update
+message KeylistUpdate {
+  string id = 1; // @id
+  string type = 2; // @type
+  repeated Update updates = 3;
+}
+
+// Update route key update message.
+message Update {
+  string recipient_key = 1;
+  string action = 2;
+}
+
+// KeylistUpdateResponse route keylist update response message.
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0211-route-coordination#keylist-update-response
+message KeylistUpdateResponse {
+  string id = 1; // @id
+  string type = 2; // @type
+  repeated UpdateResponse updated = 3;
+}
+
+// UpdateResponse route key update response message.
+message UpdateResponse {
+  string recipient_key = 1;
+  string action = 2;
+  string result = 3;
+}

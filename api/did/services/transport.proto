@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package api.did.services;
+
+option go_package = "github.com/bhatti/GSSI/api/did/services";
+
+

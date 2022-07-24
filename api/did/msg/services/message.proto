@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package api.did.msg.services;
+
+option go_package = "github.com/bhatti/GSSI/api/did/msg/services";
+
+import "google/protobuf/duration.proto";
+
+import "api/did/msg/types/message.proto";
+import "api/did/doc/types/outofband.proto";
+
+
+// RegisterMsgSvcRequest contains parameters for registering a message service to message handler.
+message RegisterMsgSvcRequest {
+  // Name of the message service
+  string name = 1;
+
+  // Acceptance criteria for message service based on message purpose
+  // in case of multiple purposes, message will be dispatched if any one of the purpose matches
+  // with the purpose of incoming message.
+  // Can be provided in conjunction with other acceptance criteria.
+  repeated string purpose = 2;
+
+  // Acceptance criteria for message service based on message message.
+  // Can be provided in conjunction with other acceptance criteria.
+  string message = 3;
+}
+
+// UnregisterMsgSvcRequest contains parameters for unregistering a message service from message handler.
+message UnregisterMsgSvcRequest {
+  // Name of the message service to be unregistered
+  // required: true
+  string name = 1;
+}
+
+// RegisteredServicesResponse is for returning list of registered service names.
+message RegisteredServicesResponse {
+  // Registered service names
+  repeated string names = 1;
+}
+
+
+// SendNewMessageRequest contains parameters for sending new message
+// with one of three destination options below,
+//      1. ConnectionID - ID of the connection between sender and receiver of this message.
+//      2. TheirDID - TheirDID of the DID exchange connection record between sender and receiver of this message.
+//      3. ServiceEndpoint (With recipient Keys, endpoint and optional routing keys) - To Send message outside connection.
+// Note: Precedence logic when multiple destination options are provided are according to above order.
+message SendNewMessageRequest {
+
+  // Connection ID of the message destination
+  // This parameter takes precedence over all the other destination parameters.
+  string connection_ID = 1;
+
+  // DID of the destination.
+  // This parameter takes precedence over `ServiceEndpoint` destination parameter.
+  string their_did = 2;
+
+  // ServiceEndpointDestination service endpoint destination.
+  // This param can be used to send messages outside connection.
+    ServiceEndpointDestinationParams service_endpoint = 3;
+
+  // Message body of the message
+  bytes message_bod = 4; // json.RawMessage
+
+  // Await reply from receiver of this message
+  // If provided, then send message feature will wait response of this message for same thread
+  AwaitReply await_reply = 5;
+}
+
+// ServiceEndpointDestinationParams contains service endpoint params.
+message ServiceEndpointDestinationParams {
+  // Recipient keys of service endpoint
+  repeated string recipient_keys = 1;
+
+  // Service endpoint
+  string service_endpoint = 2;
+
+  // Routing Keys of service endpoint
+  repeated string routing_keys = 3;
+}
+
+// AwaitReply contains await for reply parameters.
+message AwaitReply {
+  // ReplyMessageType message message of incoming reply
+  string message_type = 1;
+  // Timeout (in milliseconds) waiting for reply
+  google.protobuf.Duration timeout = 2;
+}
+
+
+// SendReplyMessageRequest contains parameters for sending message reply.
+message SendReplyMessageRequest {
+  // ID of the message replying to
+  string message_ID = 1;
+
+  // Message body of the reply message
+  bytes message_body = 2; // json.RawMessage
+
+  // StartNewThread if provided, replies to message by starting a new thread.
+  bool start_new_thread = 3;
+
+  // Await reply from receiver of this message
+  // If provided, then reply message feature will wait response of this message for same thread
+  AwaitReply await_reply = 4;
+}
+
+// SendMessageResponse is response for send/reply message feature.
+message SendMessageResponse {
+  // Response will contain raw message reply content if AwaitReply is used in send message request.
+  bytes response = 1; // json.RawMessage
+}
+
+// RegisterHTTPMsgSvcRequest contains parameters for registering an HTTP over DIDComm message service to message handler.
+message RegisterHTTPMsgSvcRequest {
+  // Name of the HTTP over DIDComm message service
+  string name = 1;
+
+  // Acceptance criteria for http over did comm message service based on message purpose.
+  // In case of multiple purposes, operation will follow `A tagging system` purpose field validation from RFC-0351
+  // If not provided then all incoming messages of HTTP over DIDComm message will be handled by operation.
+  repeated string purpose = 2;
+}

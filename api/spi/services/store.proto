@@ -1,0 +1,183 @@
+syntax = "proto3";
+
+package api.spi.services;
+
+option go_package = "github.com/bhatti/GSSI/api/spi/services";
+
+import "api/spi/types/store.proto";
+
+// StorePutRequest represents an operation to be performed in the Batch method.
+message StorePutRequest {
+  string key = 1;
+  repeated types.Tag tags = 2;
+  types.OperationType operationType = 3;
+  bytes value = 4;
+}
+
+// StoreBulkPutRequest represents an operation to be performed in the Batch method.
+message StoreBulkPutRequest {
+  repeated types.Operation operations = 1;
+}
+
+// StoreKeyRequest Operation
+message StoreKeyRequest {
+  string key = 1;
+}
+
+message StoreGetResponse {
+  repeated types.Tag tags = 1;
+  bytes value = 2;
+}
+
+// StoreBulkKeyRequest Operation
+message StoreBulkKeyRequest {
+  repeated string key = 1;
+}
+
+message StoreBulkGetResponse {
+  map<string, StoreGetResponse> result = 1;
+}
+
+message StoreTagsResponse {
+  repeated types.Tag tags = 1;
+}
+
+// StoreQueryRequest Operation
+message StoreQueryRequest {
+  repeated string expression = 1;
+  types.QueryOptions options = 2;
+}
+
+// Store represents a storage database.
+service Store {
+  // Put stores the key + value pair along with the (optional) tags. If the key already exists in the database,
+  // then the value and tags will be overwritten silently.
+  // If value is a JSON-formatted object, then an underlying storage implementation may store it in a way that
+  // does not preserve the order of the fields. Therefore, you should avoid doing direct byte-for-byte comparisons
+  // with data put in and data retrieved, as the marshalled representation may be different - always unmarshal data
+  // first before comparing.
+  // If key is empty or value is nil, then an error will be returned.
+  // A single key-value pair cannot have multiple tags that share the same tag name.
+
+  // Verifies a verifiableCredential and returns a verificationResult in the response body.
+  // POST /store
+  // 200	successfully stored!
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc put(StorePutRequest) returns (types.Void) {}
+
+  // Get fetches the value associated with the given key.
+  // If key cannot be found, then an error wrapping ErrDataNotFound will be returned.
+  // If key is empty, then an error will be returned.
+  // GET /store/{id}
+  // 200	Credential retrieved
+  // 400	Bad Request
+  // 401	Not Authorized
+  // 410	Gone! There is no data here
+  // 418	I'm a teapot - MUST not be returned outside of pre-arranged scenarios between both parties
+  // 500	Internal Error
+  // 501	Not Implemented
+  rpc get(StoreKeyRequest) returns (StoreGetResponse) {}
+
+  // GetTags fetches all tags associated with the given key.
+  // If key cannot be found, then an error wrapping ErrDataNotFound will be returned.
+  // If key is empty, then an error will be returned.
+  // As of writing, aries-framework-go code does not use this, but it may be useful for custom solutions.
+  // GET /store/{id}
+  // 200	Credential retrieved
+  // 400	Bad Request
+  // 401	Not Authorized
+  // 410	Gone! There is no data here
+  // 418	I'm a teapot - MUST not be returned outside of pre-arranged scenarios between both parties
+  // 500	Internal Error
+  // 501	Not Implemented
+  rpc getTags(StoreKeyRequest) returns (StoreTagsResponse) {}
+
+  // GetBulk fetches the values associated with the given keys.
+  // If no data exists under a given key, then a nil []byte is returned for that value. It is not considered an error.
+  // Depending on the implementation, this method may be faster than calling Get for each key individually.
+  // If any of the given keys are empty, then an error will be returned.
+  // As of writing, aries-framework-go code does not use this, but it may be useful for custom solutions.
+  // GET /store/bulk
+  // 200	Credential retrieved
+  // 400	Bad Request
+  // 401	Not Authorized
+  // 410	Gone! There is no data here
+  // 418	I'm a teapot - MUST not be returned outside of pre-arranged scenarios between both parties
+  // 500	Internal Error
+  // 501	Not Implemented
+  rpc getBulk(StoreBulkKeyRequest) returns (StoreBulkGetResponse) {}
+
+  // Query returns all data that satisfies the expression. Basic expression format: TagName:TagValue.
+  // If TagValue is not provided, then all data associated with the TagName will be returned, regardless of their
+  // tag values.
+  // At a minimum, a store implementation must be able to support querying with a single basic expression, but a
+  // store implementation may also support a more advanced expression format.
+  // Advanced expression format: [Criterion1][Operator][Criterion2][Operator]...[CriterionN]. Square brackets are
+  // used here for visual clarity. Omit them from the actual expression string.
+  // Each Criterion follows the rules for the basic expression format described above.
+  // Each operator must be either "&&" or "||" (without quotes). "&&" indicates an AND operator while "||"
+  // indicates an OR operator. The order of operations are ANDs followed by ORs.
+  // This method also supports a number of QueryOptions. If none are provided, then defaults will be used.
+  // If your store contains a large amount of data, then it's recommended calling Provider.SetStoreConfig at some
+  // point before calling this method in order to create indexes which will speed up queries.
+  // GET /store
+  // 200	Credential retrieved
+  // 400	Bad Request
+  // 401	Not Authorized
+  // 410	Gone! There is no data here
+  // 418	I'm a teapot - MUST not be returned outside of pre-arranged scenarios between both parties
+  // 500	Internal Error
+  // 501	Not Implemented
+  rpc query(StoreQueryRequest) returns (stream StoreGetResponse) {}
+
+  // Batch performs multiple Put and/or Delete operations in order. The Puts and Deletes here follow the same rules
+  // as described in the Put and Delete method documentation. The only exception is if the operation makes use of
+  // the PutOptions.IsNewKey optimization, in which case an error wrapping an ErrDuplicateKey may be returned if it's
+  // enabled and a key is used that already exists in the database.
+  // Depending on the implementation, this method may be faster than repeated Put and/or Delete calls.
+  // If any of the given keys are empty, or the operations slice is empty or nil, then an error will be returned.
+  // As of writing, aries-framework-go code does not use this, but it may be useful for custom solutions.
+  // POST /store/bulk
+  // 200	successfully stored!
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc putBulk(StoreBulkPutRequest) returns (types.Void) {}
+
+  // Delete deletes the key + value pair (and all tags) associated with key.
+  // If key is empty, then an error will be returned.
+  // DELETE /store/{id}
+  // 200	successfully stored!
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc delete(StoreKeyRequest) returns (types.Void) {}
+
+  // Flush forces any queued up Put and/or Delete operations to execute.
+  // If the Store implementation doesn't queue up operations, then this method is a no-op.
+  // As of writing, aries-framework-go code does not use this, but it may be useful for custom solutions.
+  // POST /store/flush
+  // 200	successfully stored!
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc flush(types.Void) returns (types.Void) {}
+
+  // Close closes this store object, freeing resources. For persistent store implementations, this does not delete
+  // any data in the underlying databases.
+  // Close can be called repeatedly on the same store multiple times without causing an error.
+  // POST /store/close
+  // 200	successfully stored!
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	error!
+  rpc close(types.Void) returns (types.Void) {}
+}
+

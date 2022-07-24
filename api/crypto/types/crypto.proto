@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package api.crypto.types;
+
+option go_package = "github.com/bhatti/GSSI/api/crypto/types";
+
+// DefKeySize is the default key size for crypto primitives.
+enum DefKey {
+  iota = 0;
+  size = 32;
+}
+
+// RecipientWrappedKey contains recipient key material required to unwrap CEK.
+message RecipientWrappedKey {
+  string kid = 1;
+  bytes encryptedcek = 2;
+  PublicKey epk = 3;
+  string alg = 4;
+  bytes apu = 5;
+  bytes apv = 6;
+}
+
+// PublicKey mainly to exchange EPK in RecipientWrappedKey.
+message PublicKey {
+  string kid = 1;
+  bytes x = 2;
+  bytes y = 3;
+  string curve = 4;
+  string type = 5;
+}
+
+// PrivateKey mainly used to exchange ephemeral private key in JWE encrypter.
+message PrivateKey {
+  PublicKey pubKey = 1;
+  bytes d = 2;
+}

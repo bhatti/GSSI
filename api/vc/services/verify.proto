@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package api.vc.services;
+
+option go_package = "github.com/bhatti/GSSI/api/vc/services";
+
+import "api/vc/types/credential.proto";
+import "api/vc/types/presentation.proto";
+
+// VerifyCredentialRequest for verifiable credentials
+// POST /credentials/verify - Verifies a verifiableCredential and returns a verificationResult in the response body.
+message VerifyCredentialRequest {
+  // Verifies a verifiableCredential
+  types.VerifiableCredential verifiableCredential = 1;
+  // options
+  types.VerifiableCredentialOptions options = 2;
+}
+
+// VerifyPresentationRequest for verifiable credentials
+// POST /presentations/verify - Verifies a Presentation with or without proofs attached and returns a verificationResult in the response body.
+message VerifyPresentationRequest {
+  // The verifiablePresentation
+  types.VerifiablePresentation verifiablePresentation = 1;
+  // Options for specifying how the LinkedDataProof is verified.
+  types.VerifiableCredentialOptions options = 2;
+  // presentation
+  types.VerifiablePresentation presentation = 3; // presentation without proof
+}
+
+
+// CredentialsVerifyService --
+service CredentialsVerifyService {
+  // Verifies a verifiableCredential and returns a verificationResult in the response body.
+  // POST /credentials/verify
+  // 200	Verifiable Credential successfully verified!
+  // 400	invalid input!
+  // 500	error!
+  rpc verifyCredential(VerifyCredentialRequest) returns (stream types.RefreshableVerifiableCredential) {}
+  // Verifies a Presentation with or without proofs attached and returns a verificationResult in the response body.
+  // POST /presentations/verify -
+  // 200	Verifiable Presentation successfully verified!
+  // 400	Invalid or malformed input
+  // 413	Payload too large
+  // 429	Request rate limit exceeded.
+  // 500	Internal Server Error
+  rpc verifyPresentation(VerifyPresentationRequest) returns (stream types.RefreshableVerifiableCredential) {}
+}
+

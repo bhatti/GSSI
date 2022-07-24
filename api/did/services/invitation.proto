@@ -1,0 +1,612 @@
+syntax = "proto3";
+
+package api.did.services;
+
+option go_package = "github.com/bhatti/GSSI/api/did/services";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+import "api/did/doc/types/doc.proto";
+import "api/did/doc/types/outofband.proto";
+import "api/did/introduce/types/introduce.proto";
+
+// CreateInvitationRequest model
+//
+// This is used for creating an invitation.
+//
+message CreateInvitationRequest {
+  string label = 1;
+  string goal = 2;
+  string goal_code = 3;
+
+  // The Alias to be used in invitation to be created
+  string alias = 4;
+  // Optional public DID to be used in invitation
+  string public = 5;
+  repeated google.protobuf.Any service = 6;
+  repeated string protocols = 7;
+  repeated string accept = 8;
+  string router_connection_id = 9;
+  // Attachments is intended to provide the possibility to include files, links or even JSON payload to the message.
+  repeated api.did.doc.types.GenericAttachment attachments = 10;
+}
+
+// CreateInvitationResponse model
+//
+// Represents a CreateInvitation response message.
+//
+message CreateInvitationResponse {
+  api.did.doc.types.Invitation invitation = 1;
+  string alias = 2;
+  string invitation_url = 3;
+}
+
+// AcceptInvitationRequest model
+//
+// This is used for accepting an invitation.
+// This is used for operation to accept connection invitation.
+//
+message AcceptInvitationRequest {
+  // Connection ID
+  string id = 1; // controller
+  // Optional Public DID to be used for this request
+  string public = 2; // controller
+  api.did.doc.types.Invitation invitation = 3;
+  string my_label = 4;
+  string router_connections = 5;
+  string reuse_connection = 6;
+  bool reuse_any_connection = 7;
+}
+
+// AcceptInvitationResponse model
+// This is used for returning a accept invitation response for single invitation.
+//
+// Represents a AcceptInvitation response message.
+//
+message AcceptInvitationResponse {
+  // the connection ID of the connection invitation
+  string connection_id = 1;
+
+  // State of the connection invitation
+  string state = 2;
+
+  // Other party's DID
+  string their_did = 3;
+
+  // Connection invitation accept mode
+  string accept = 4;
+
+  // My DID
+  string my_did = 5;
+
+  // Invitation ID of invitation response
+  string request_id = 6;
+
+  // Other party's label
+  string their_label = 7;
+
+  // Alias
+  string alias = 8;
+
+  // Other party's role
+  string their_role = 9;
+
+  // Connection invitation initiator
+  string initiator = 10;
+
+  // Invitation key
+  string invitation_key = 11;
+
+  // Routing state of connection invitation
+  string routing_state = 12;
+
+  // Inbound Connection ID  of the connection invitation
+  string inbound_connection_id = 13;
+
+  // Error message
+  string error_msg = 14;
+
+  // Invitation mode
+  string invitation_mode = 15;
+  // Created time
+  google.protobuf.Timestamp created_at = 16;
+
+  // Updated time
+  google.protobuf.Timestamp updated_at = 17;
+
+}
+
+
+
+
+// ActionStopRequest model
+//
+// This is used when action needs to be rejected.
+//
+message ActionStopRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Reason why action is declined
+  string reason = 2;
+}
+
+// ActionStopResponse model
+//
+// Represents a ActionStop response message.
+//
+message ActionStopResponse {
+
+}
+
+// ActionsResponse model
+//
+// Represents Actions response message.
+//
+message ActionsResponse {
+  repeated api.did.doc.types.Action actions = 1;
+}
+
+// ActionContinueRequest model
+//
+// This is used when we need to proceed with the protocol.
+//
+message ActionContinueRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  string label = 2;
+  string router_connections = 3;
+}
+
+// ActionContinueResponse model
+//
+// Represents a ActionContinue response message.
+//
+message ActionContinueResponse {
+}
+
+// ReceiveInvitationResponse model
+//
+// This is used for returning a receive invitation response with a single receive invitation response as body.
+//
+message ReceiveInvitationResponse {
+  // State of the connection invitation
+  string state = 1;
+  // the connection ID of the connection invitation
+  string connection_id = 2;
+
+  // Routing state of connection invitation
+  string routing_state = 3;
+
+  // Connection invitation initiator
+  string initiator = 4;
+
+  // Connection invitation accept mode
+  string accept = 5;
+
+  // Invitation mode
+  string invitation_mode = 6;
+
+  // Invitation ID of invitation response
+  string request_id = 7;
+
+  // My DID
+  string my_did = 8;
+
+  // Invitation key
+  string invitation_key = 9;
+
+  // Other party's label
+  string their_label = 10;
+
+  // Created time
+  google.protobuf.Timestamp created_at = 11;
+  // Updated time
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+
+// ImplicitInvitationRequest model
+//
+// This is used by invitee to create implicit invitation.
+//
+message ImplicitInvitationRequest {
+  // InviterDID
+  string their_did = 1;
+
+  // Optional inviter label
+  string their_label = 2;
+
+  // Optional invitee did
+  string my_did = 3;
+
+  // Optional invitee label
+  string my_label = 4;
+
+  // Optional specifies router connections (comma-separated values)
+  string router_connections = 5;
+}
+
+// ImplicitInvitationResponse model
+//
+// This is used for returning create implicit invitation response.
+//
+message ImplicitInvitationResponse {
+  // the connection ID of the connection for implicit invitation
+  string connection_id = 1;
+}
+
+// GetConnectionRequest model
+//
+// This is used for getting specific connection record.
+//
+message GetConnectionRequest {
+  // The ID of the connection to get
+  string id = 1;
+}
+
+// QueryConnectionsRequest model
+//
+// This is used for querying connections.
+//
+message QueryConnectionsRequest {
+  // Params for querying connections
+  // QueryConnectionsParams
+
+  // Alias of connection invitation
+  string alias = 1;
+
+  // Initiator is Connection invitation initiator
+  string initiator = 2;
+
+  // Invitation key
+  string invitation_key = 3;
+
+  // Invitation ID
+  string invitation_id = 4;
+
+  // Parent threadID
+  string parent_thread_id = 5;
+
+  // MyDID is DID of the agent
+  string my_did = 6;
+
+  // State of the connection invitation
+  string state = 7;
+
+  // TheirDID is other party's DID
+  string their_did = 8;
+
+  // TheirRole is other party's role
+  string their_role = 9;
+}
+
+
+
+
+// QueryConnectionResponse model
+//
+// This is used for returning query connection result for single record search.
+//
+message QueryConnectionResponse {
+  api.did.doc.types.Record result = 1; // Connection
+}
+
+// QueryConnectionsResponse model
+//
+// This is used for returning query connections results.
+//
+message QueryConnectionsResponse {
+  repeated api.did.doc.types.Record results = 1; // Connection
+}
+
+// AcceptExchangeRequestRequest model
+//
+// This is used for accepting connection request.
+//
+message AcceptExchangeRequestRequest {
+  // Connection ID
+  string id = 1;
+
+  // Optional Public DID to be used for this invitation
+  // request
+  string public = 2;
+
+  // Optional specifies router connections (comma-separated values)
+  string router_connections = 3;
+}
+
+// ExchangeResponse model
+//
+// response of accept exchange request.
+//
+message ExchangeResponse {
+
+  // Routing state of connection invitation
+  string routing_state = 1;
+
+  // the connection ID of the connection invitation
+  string inbound_connection_id = 2;
+
+  // Invitation key
+  string invitation_key = 3;
+
+  // TheirDID is other party's DID
+  string their_did = 4;
+
+  // Invitation ID of the connection request
+  string request_id = 5;
+
+  // Invitation mode
+  string invitation_mode = 6;
+
+  // TheirRole is other party's role
+  string their_role = 7;
+
+  // TheirRole is other party's role
+  string their_label = 8;
+
+  // the connection ID of the connection invitation
+  string connection_id = 9;
+
+  // Initiator is Connection invitation initiator
+  string initiator = 10;
+
+  // MyDID is DID of the agent
+  string my_did = 11;
+
+  // Alias of connection invitation
+  string alias = 12;
+
+  // State of the connection invitation
+  string state = 13;
+  // Connection invitation accept mode
+  string accept = 14;
+
+  // Error message
+  string error_msg = 15;
+
+  // Created time
+  google.protobuf.Timestamp created_at = 16;
+  // Updated time
+  google.protobuf.Timestamp updated_at = 17;
+}
+
+// RemoveConnectionRequest model
+//
+// This is used for removing connection request.
+//
+message RemoveConnectionRequest {
+  // The ID of the connection record to remove
+  string id = 1;
+}
+
+// ConnectionID model
+//
+// This is used for querying/removing connection by ID.
+//
+message ConnectionID {
+  // Connection ID
+  string id = 1;
+}
+
+// CreateConnectionRequest model
+//
+// CreateConnectionRequest request to create a didcomm v2 connection.
+// This is used for creating connection request.
+//
+message CreateConnectionRequest {
+  string my_id = 1; //myDID
+  DIDDocument their_did = 2; //theirDID
+  string their_label = 3;
+  string invitation_id = 4;
+  string invitation_did = 5;
+  string parent_thread_id = 6;
+  string thread_id = 7;
+  bool implicit = 8;
+}
+
+// DIDDocument model.
+message DIDDocument {
+  string id = 1;
+  bytes contents = 2; // json.RawMessage
+}
+
+
+
+// SendProposalRequest model
+//
+// This is used for sending a proposal.
+//
+message SendProposalRequest {
+  // Recipients specifies to whom proposal will be sent
+  repeated api.did.introduce.types.Recipient recipients = 1;
+}
+
+// SendProposalResponse model
+//
+// Represents a SendProposal response message.
+//
+message SendProposalResponse {
+  // PIID Protocol instance ID. It can be used as a correlation ID
+  string piid = 1;
+}
+
+// SendProposalWithOOBInvitationRequest model
+//
+// This is used for sending a proposal with OOBRequest.
+//
+message SendProposalWithOOBInvitationRequest {
+  // Invitation is the out-of-band protocol's 'invitation' message.
+  api.did.doc.types.Invitation invitation = 1;
+  // Recipient specifies to whom proposal will be sent
+  api.did.introduce.types.Recipient recipient = 2;
+}
+
+
+// SendProposalWithOOBRequestResponse model
+//
+// Represents a SendProposalWithOOBInvitation response message.
+//
+message SendProposalWithOOBRequestResponse {
+  // PIID Protocol instance ID. It can be used as a correlation ID
+  string piid = 1;
+}
+
+// SendRequestRequest model
+//
+// This is used for sending a request.
+//
+message SendRequestRequest {
+  // PleaseIntroduceTo keeps information about the introduction
+  api.did.introduce.types.PleaseIntroduceTo please_introduce_to = 1;
+  // MyDID sender's did
+  string my_did = 2;
+  // TheirDID receiver's did
+  string their_did = 3;
+}
+
+// SendRequestResponse model
+//
+// Represents a SendRequest response message.
+//
+message SendRequestResponse {
+  // PIID Protocol instance ID. It can be used as a correlation ID
+  string piid = 1;
+}
+
+// AcceptProposalWithOOBInvitationRequest model
+//
+// This is used for accepting a proposal with public OOBRequest.
+//
+message AcceptProposalWithOOBInvitationRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Invitation is the out-of-band protocol's 'request' message.
+  api.did.doc.types.Invitation invitation = 2;
+}
+
+
+// AcceptProposalWithOOBInvitationResponse model
+//
+// Represents a AcceptProposalWithOOBInvitation response message.
+//
+message AcceptProposalWithOOBInvitationResponse {
+
+}
+
+// AcceptRequestWithPublicOOBInvitationRequest model
+//
+// This is used for accepting a request with public OOBRequest.
+//
+message AcceptRequestWithPublicOOBInvitationRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Invitation is the out-of-band protocol's 'request' message.
+  api.did.doc.types.Invitation invitation = 2;
+  // To keeps information about the introduction
+  api.did.introduce.types.To to = 3;
+}
+
+// AcceptRequestWithPublicOOBInvitationResponse model
+//
+// Represents a AcceptRequestWithPublicOOBInvitation response message.
+//
+message AcceptRequestWithPublicOOBInvitationResponse {
+
+}
+
+// AcceptRequestWithRecipientsRequest model
+//
+// This is used for accepting a request with recipients.
+//
+message AcceptRequestWithRecipientsRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Recipient specifies to whom proposal will be sent
+  api.did.introduce.types.Recipient recipient = 2;
+  // To keeps information about the introduction
+  api.did.introduce.types.To to = 3;
+}
+
+// AcceptRequestWithRecipientsResponse model
+//
+// Represents a AcceptRequestWithRecipients response message.
+//
+message AcceptRequestWithRecipientsResponse {
+
+}
+
+// DeclineProposalRequest model
+//
+// This is used when proposal needs to be rejected.
+
+
+message DeclineProposalRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Reason why proposal is declined
+  string reason = 2;
+}
+
+// DeclineProposalResponse model
+//
+// Represents a DeclineProposal response message.
+//
+message DeclineProposalResponse {
+
+}
+
+// DeclineRequestRequest model
+//
+// This is used when request needs to be rejected.
+//
+message DeclineRequestRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+  // Reason why request is declined
+  string reason = 2;
+}
+
+// DeclineRequestResponse model
+//
+// Represents a DeclineRequest response message.
+//
+message DeclineRequestResponse {
+
+}
+
+// AcceptProposalRequest model
+//
+// This is used for accepting a proposal.
+//
+message AcceptProposalRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+}
+
+// AcceptProposalResponse model
+//
+// Represents a AcceptProposal response message.
+//
+message AcceptProposalResponse {
+
+}
+
+
+// AcceptProblemReportRequest model
+//
+// This is used for accepting a problem report.
+//
+message AcceptProblemReportRequest {
+  // PIID Protocol instance ID
+  string piid = 1;
+}
+
+// AcceptProblemReportResponse model
+//
+// Represents a AcceptProblemReport response message.
+//
+message AcceptProblemReportResponse {
+
+}

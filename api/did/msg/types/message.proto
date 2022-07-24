@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package api.did.msg.types;
+
+option go_package = "github.com/bhatti/GSSI/api/did/msg/types";
+import "google/protobuf/timestamp.proto";
+import "api/did/doc/types/doc.proto";
+
+// Message is message model for basic message protocol
+// Reference:
+//  https://github.com/hyperledger/aries-rfcs/tree/master/features/0095-basic-message#reference
+message I10n {
+  string locale = 1;
+}
+
+message Message {
+  string id = 1; // @id
+  string type = 2; // @type
+  I10n l10n = 3; // ~l10n
+  string content = 4;
+  google.protobuf.Timestamp sent_time = 5;
+
+  // Message messagepickup wrapper.
+  bytes msg = 6;
+  google.protobuf.Timestamp added_time = 7;
+}
+
+
+// StatusRequest sent by the recipient to the message_holder to request a status message./0212-pickup#statusrequest
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#statusrequest
+message StatusRequest {
+  string id = 1; // @id
+  string type = 2; // @type
+  api.did.doc.types.Thread thread = 3; // ~thread
+}
+
+// Status details about pending messages
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#status
+message Status {
+  string id = 1; // @id
+  string type = 2; // @type
+  int32 message_count = 3;
+  int32 duration_waited = 4;
+  google.protobuf.Timestamp last_added_time = 5;
+  google.protobuf.Timestamp last_delivered_time = 6;
+  google.protobuf.Timestamp last_removed_time = 7;
+  int32 total_size = 8;
+  api.did.doc.types.Thread thread = 9; // ~thread
+}
+
+// BatchPickup a request to have multiple waiting messages sent inside a batch message.
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#batch-pickup
+message BatchPickup {
+  string id = 1; // @id
+  string type = 2; // @type
+  int32 batch_size = 3;
+  api.did.doc.types.Thread thread = 4; // ~thread
+}
+
+
+// Batch a message that contains multiple waiting messages.
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#batch
+message Batch {
+  string id = 1; // @id
+  string type = 2; // @type
+  int32 batch_size = 3;
+  api.did.doc.types.Thread thread = 4; // ~thread
+  repeated Message messages = 5; // messages~attach
+}
+
+// Noop message
+// https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#noop
+message Noop {
+  string id = 1; // @id
+  string type = 2; // @type
+}
+
+message Inbox {
+  string did = 1;
+  int32 message_count = 2;
+  google.protobuf.Timestamp last_added_time = 3;
+  google.protobuf.Timestamp last_delivered_time = 4;
+  google.protobuf.Timestamp last_removed_time = 5;
+  int32 total_size = 6;
+  repeated Message messages = 7;
+}
+
+
+
+// httpOverDIDCommMsg is incoming DIDComm message for http-over-didcomm message types
+// Reference:
+//  https://github.com/hyperledger/aries-rfcs/blob/master/features/0335-http-over-didcomm/README.md#message-format
+message HttpHeader {
+  string name = 1;
+  string value = 2;
+}
+message HttpOverDIDCommMsg {
+  string id = 1; // @id
+  string method = 2;
+  string resource_uri = 3; //resource-uri
+  string version = 4;
+  repeated HttpHeader headers = 5;
+  string body = 6;
+}

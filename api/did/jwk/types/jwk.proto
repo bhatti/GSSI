@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package api.did.jwk.types;
+
+option go_package = "github.com/bhatti/GSSI/api/did/jwk/types";
+import "google/protobuf/any.proto";
+
+// Format describes PresentationDefinition`s Format field.
+message Format {
+  JwtType jwt = 1;
+  JwtType jwt_vc = 2;
+  JwtType jwt_vp = 3;
+  LdpType ldp = 4;
+  LdpType ldp_vc = 5;
+  LdpType ldp_vp = 6;
+}
+
+// JwtType contains alg.
+message JwtType {
+  repeated string alg = 1;
+}
+
+// LdpType contains proof_type.
+message LdpType {
+  repeated string proof_type = 1;
+}
+
+message JSONWebKey {
+  // Cryptographic key, can be a symmetric or asymmetric key.
+  google.protobuf.Any key = 1;
+  // Key identifier, parsed from `kid` header.
+  string kid = 2; //keyID
+  // Key algorithm, parsed from `alg` header.
+  string alg = 3;
+  // Key use, parsed from `use` header.
+  string use = 4;
+
+  string kty = 5;
+  string crv = 6;
+  string x = 7;
+  string y = 8;
+  string d = 9;
+
+  // X.509 certificate chain, parsed from `x5c` header.
+  repeated google.protobuf.Any certificate = 10;
+  // X.509 certificate URL, parsed from `x5u` header.
+  string CertificatesUrl = 11;
+  // X.509 certificate thumbprint (SHA-1), parsed from `x5t` header.
+  bytes certificateThumbprintSHA1 = 12;
+  // X.509 certificate thumbprint (SHA-256), parsed from `x5t#S256` header.
+  bytes certificateThumbprintSHA256 = 13;
+}
