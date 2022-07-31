@@ -5,10 +5,21 @@ package api.did.services;
 option go_package = "github.com/bhatti/GSSI/api/did/services";
 
 // RotateDIDRequest request to rotate MyDID in the connection with the given ID.
+//
+// This is used for connection did rotation request
+//
+// swagger:parameters rotateDID
 message RotateDIDRequest {
+  // The ID of the connection record to rotate the DID of
+  //
+  // in: path
+  // required: true
   string id = 1;
+  // KID Key ID of the signing key in the connection's current DID, used to sign the DID rotation.
   string kid = 2;
+  // NewDID DID that the given connection will rotate to.
   string new_did = 3;
+  // CreatePeerDID flag that, when true, makes the DID rotation create a new peer DID, ignoring the NewDID parameter.
   bool create_peer_did = 4;
 }
 
@@ -17,10 +28,68 @@ message RotateDIDResponse {
   string new_did = 1;
 }
 
+// RotateDIDResponse response from a DID rotation call, with the new DID that the connection was rotated to.
+//
+// response of rotate DID action
+//
+// swagger:response rotateDIDResponse
+message docRotateDIDResponse {
+  // in: body
+  RotateDIDResponse body = 1;
+}
+
 // IDMessage is either a request or response message, holding connection ID.
 // Used for:
 // - response from creating a didcomm v2 connection.
 // - request to set a connection to didcomm v2.
 message IDMessage {
   string id = 1;
+}
+
+// CreateConnectionRequestV2 model
+//
+// Request to create a didcomm v2 connection
+//
+// swagger:parameters createConnectionV2
+message CreateConnectionRequestV2 {// nolint: unused,deadcode
+  string my_did = 1;
+  string their_did = 2;
+}
+
+// CreateConnectionV2Response model
+//
+// response of create didcomm v2 connection action
+//
+// swagger:response createConnectionV2Response
+message CreateConnectionV2Response {// nolint: unused,deadcode
+  // in: body
+  IDMessage body = 1;
+}
+
+service ConnectionController {
+  // rotateDID swagger:route POST /connections/{id}/rotate-did connections rotateDID
+  //
+  // Rotates the agent's DID in the given connection.
+  //
+  // Responses:
+  //        200: rotateDIDResponse
+  rpc rotateDID(RotateDIDRequest) returns (RotateDIDResponse) {}
+
+  // createConnectionV2 swagger:route POST /connections/create-v2 connections createConnectionV2
+  //
+  // Creates a DIDComm v2 connection record with the given DIDs.
+  //
+  // Responses:
+  //        200: createConnectionV2Response
+  rpc createConnectionV2(CreateConnectionRequestV2) returns (CreateConnectionV2Response) {}
+
+  // setConnectionToV2 swagger:route POST /connections/{id}/use-v2 connections setConnectionToV2
+  // SetConnectionToDIDCommV2 sets the didcomm version of the given connection to V2.
+  // 200	Succeeded
+  // 400	Bad Request
+  // 401	Not Authorized
+  // 410	Gone! There is no data here
+  // 500	Internal Error
+  // 501	Not Implemented
+  rpc setConnectionToDIDCommV2(IDMessage) returns (IDMessage) {}
 }

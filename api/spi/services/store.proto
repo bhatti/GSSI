@@ -4,6 +4,7 @@ package api.spi.services;
 
 option go_package = "github.com/bhatti/GSSI/api/spi/services";
 
+import "api/common/types/common.proto";
 import "api/spi/types/store.proto";
 
 // StorePutRequest represents an operation to be performed in the Batch method.
@@ -66,7 +67,7 @@ service Store {
   // 413	Payload too large
   // 429	Request rate limit exceeded.
   // 500	error!
-  rpc put(StorePutRequest) returns (types.Void) {}
+  rpc put(StorePutRequest) returns (api.common.types.Empty) {}
 
   // Get fetches the value associated with the given key.
   // If key cannot be found, then an error wrapping ErrDataNotFound will be returned.
@@ -146,7 +147,7 @@ service Store {
   // 413	Payload too large
   // 429	Request rate limit exceeded.
   // 500	error!
-  rpc putBulk(StoreBulkPutRequest) returns (types.Void) {}
+  rpc putBulk(StoreBulkPutRequest) returns (api.common.types.Empty) {}
 
   // Delete deletes the key + value pair (and all tags) associated with key.
   // If key is empty, then an error will be returned.
@@ -156,7 +157,7 @@ service Store {
   // 413	Payload too large
   // 429	Request rate limit exceeded.
   // 500	error!
-  rpc delete(StoreKeyRequest) returns (types.Void) {}
+  rpc delete(StoreKeyRequest) returns (api.common.types.Empty) {}
 
   // Flush forces any queued up Put and/or Delete operations to execute.
   // If the Store implementation doesn't queue up operations, then this method is a no-op.
@@ -167,7 +168,7 @@ service Store {
   // 413	Payload too large
   // 429	Request rate limit exceeded.
   // 500	error!
-  rpc flush(types.Void) returns (types.Void) {}
+  rpc flush(api.common.types.Empty) returns (api.common.types.Empty) {}
 
   // Close closes this store object, freeing resources. For persistent store implementations, this does not delete
   // any data in the underlying databases.
@@ -178,6 +179,6 @@ service Store {
   // 413	Payload too large
   // 429	Request rate limit exceeded.
   // 500	error!
-  rpc close(types.Void) returns (types.Void) {}
+  rpc close(api.common.types.Empty) returns (api.common.types.Empty) {}
 }
 

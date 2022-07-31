@@ -24,6 +24,7 @@ const (
 )
 
 // GenericProposeCredential combination of V2 and V3
+// swagger:model
 type GenericProposeCredential struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -153,6 +154,7 @@ func (x *GenericProposeCredential) GetPthid() string {
 // ProposeCredentialV2 is an optional message sent by the potential Holder to the Issuer
 // to initiate the protocol or in response to a offer-credential message when the Holder
 // wants some adjustments made to the credential data offered by Issuer.
+// swagger:model
 type ProposeCredentialV2 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -253,6 +255,7 @@ func (x *ProposeCredentialV2) GetInvitationID() string {
 // ProposeCredentialV3 is an optional message sent by the potential Holder to the Issuer
 // to initiate the protocol or in response to a offer-credential message when the Holder
 // wants some adjustments made to the credential data offered by Issuer.
+// swagger:model
 type ProposeCredentialV3 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -458,6 +461,7 @@ func (x *Format) GetFormat() string {
 }
 
 // GenericOfferCredential combination of V2 and V3
+// swagger:model
 type GenericOfferCredential struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -568,6 +572,7 @@ func (x *GenericOfferCredential) GetAttachments() []*types.AttachmentV2 {
 // OfferCredentialV2 is a message sent by the Issuer to the potential Holder,
 // describing the credential they intend to offer and possibly the price they expect to be paid.
 // TODO: Need to add ~payment_request and ~timing.expires_time decorators [Issue #1297].
+// swagger:model
 type OfferCredentialV2 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -657,6 +662,7 @@ func (x *OfferCredentialV2) GetOffersAttach() []*types.Attachment {
 
 // OfferCredentialV3 is a message sent by the Issuer to the potential Holder,
 // describing the credential they intend to offer and possibly the price they expect to be paid.
+// swagger:model
 type OfferCredentialV3 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -805,6 +811,7 @@ func (x *OfferCredentialV3Body) GetCredentialPreview() *anypb.Any {
 }
 
 // GenericRequestCredential combination of V2 and V3
+// swagger:model
 type GenericRequestCredential struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -908,6 +915,7 @@ func (x *GenericRequestCredential) GetAttachments() []*types.AttachmentV2 {
 // that the Issuer needs to explain in advance, and there is no need for cryptographic negotiation),
 // this message initiates the protocol.
 // TODO: Need to add ~payment-receipt decorator [Issue #1298].
+// swagger:model
 type RequestCredentialV2 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -990,6 +998,7 @@ func (x *RequestCredentialV2) GetRequestsAttach() []*types.Attachment {
 // a preceding Offer Credential message (e.g., there is no cost to issuance
 // that the Issuer needs to explain in advance, and there is no need for cryptographic negotiation),
 // this message initiates the protocol.
+// swagger:model
 type RequestCredentialV3 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1121,6 +1130,7 @@ func (x *RequestCredentialV3Body) GetComment() string {
 }
 
 // GenericIssueCredential combination of V2 and V3
+// swagger:model
 type GenericIssueCredential struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1230,6 +1240,7 @@ func (x *GenericIssueCredential) GetAttachments() []*types.AttachmentV2 {
 // IssueCredentialV2 contains as attached payload the credentials being issued and is
 // sent in response to a valid Invitation Credential message.
 // TODO: Need to add ~please-ack decorator [Issue #1299].
+// swagger:model
 type IssueCredentialV2 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1318,6 +1329,7 @@ func (x *IssueCredentialV2) GetWebRedirect() *types.WebRedirect {
 
 // IssueCredentialV3 contains as attached payload the credentials being issued and is
 // sent in response to a valid Invitation Credential message.
+// swagger:model
 type IssueCredentialV3 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1466,6 +1478,7 @@ func (x *IssueCredentialV3Body) GetComment() string {
 }
 
 // PreviewCredential is used to construct a preview of the data for the credential that is to be issued.
+// swagger:model
 type PreviewCredential struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1522,6 +1535,7 @@ func (x *PreviewCredential) GetAttributes() []*Attribute {
 }
 
 // PreviewCredentialV3 is used to construct a preview of the data for the credential that is to be issued.
+// swagger:model
 type PreviewCredentialV3 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

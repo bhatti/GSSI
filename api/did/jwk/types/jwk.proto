@@ -15,6 +15,28 @@ message Format {
   LdpType ldp_vp = 6;
 }
 
+
+
+// CredentialApplication represents a credential_application object as defined in
+// https://identity.foundation/credential-manifest/#credential-application.
+// Note that the term "Credential Application" is overloaded in the spec - a "Credential Application" may be referring
+// to one of two different, but related, concepts. A "Credential Application" can be the object defined below, which is
+// intended to be embedded in an envelope like a Verifiable Presentation. Additionally, when that envelope contains
+// the object defined below under a field named "credential_application", then that envelope itself can be called
+// a "Credential Application". The larger "envelope version" of a Credential Application may also have a sibling
+// presentation_submission object within the envelope, as demonstrated by the PresentCredentialApplication method.
+// See https://github.com/decentralized-identity/credential-manifest/issues/73 for more information about this name
+// overloading.
+// swagger:model
+message CredentialApplication {
+  string id = 1;
+  // The value of this property MUST be the ID of a valid Credential Manifest.
+  string manifest_id = 2;
+  // Must be a subset of the format property of the CredentialManifest that this CredentialApplication is related to
+  Format format = 3;
+}
+
+
 // JwtType contains alg.
 message JwtType {
   repeated string alg = 1;
@@ -25,6 +47,7 @@ message LdpType {
   repeated string proof_type = 1;
 }
 
+// swagger:model
 message JSONWebKey {
   // Cryptographic key, can be a symmetric or asymmetric key.
   google.protobuf.Any key = 1;
@@ -49,4 +72,49 @@ message JSONWebKey {
   bytes certificateThumbprintSHA1 = 12;
   // X.509 certificate thumbprint (SHA-256), parsed from `x5t#S256` header.
   bytes certificateThumbprintSHA256 = 13;
+}
+
+
+// Recipient is a recipient of a JWE including the shared encryption key.
+// swagger:model
+message Recipient {
+  RecipientHeaders header = 1;
+  string encrypted_key = 2;
+}
+
+// RecipientHeaders are the recipient headers.
+message RecipientHeaders {
+  string alg = 1;
+  string apu = 2;
+  string apv = 3;
+  string iv = 4;
+  string tag = 5;
+  string kid = 6;
+  bytes epk = 7; // json.RawMessage
+}
+
+// JSONWebEncryption represents a RAW JWE that is used for serialization/deserialization.
+// swagger:model
+message JSONWebEncryption {
+  string protected = 1;
+  bytes unprotected = 2;
+  bytes recipients = 3;
+  string encrypted_key = 4;
+  bytes header = 5;
+  string aad = 6;
+  string iv = 7;
+  string ciphertext = 8;
+  string tag = 9;
+}
+
+// Claims represents public claim values (as specified in RFC 7519).
+// swagger:model
+message Claims {
+  string iss = 1; // issuer
+  string sub = 2; // subject
+  repeated string aud = 3; // audience
+  int64 exp = 4; // expiry
+  int64 nbf = 5; // NotBefore
+  int64 iat = 6; // IssuedAt
+  string jti = 7; // id
 }

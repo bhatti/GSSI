@@ -7,9 +7,6 @@
 package types
 
 import (
-	types1 "github.com/bhatti/GSSI/api/did/doc/types"
-	types2 "github.com/bhatti/GSSI/api/did/presentproof/types"
-	types "github.com/bhatti/GSSI/api/vc/types"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
@@ -25,7 +22,100 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Profile of VC wallet contains wallet specific settings of wallet user to be remembered.
+// swagger:model
+type Profile struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// ID unique identifier assigned to this wallet profile.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Unique identifier to identify wallet profile user.
+	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
+	// Encrypted MasterLock is for localkms.
+	// passphrase for local kms for key operations.
+	// Optional, if this option is provided then wallet for this profile will use local KMS for key operations.
+	LocalKMSPassphrase string `protobuf:"bytes,3,opt,name=localKMSPassphrase,proto3" json:"localKMSPassphrase,omitempty"` //masterLockCipher
+	// KeyServerURL for remotekms.
+	// passphrase for web/remote kms for key operations.
+	// Optional, if this option is provided then wallet for this profile will use web/remote KMS for key operations.
+	KeyServerURL string `protobuf:"bytes,4,opt,name=keyServerURL,proto3" json:"keyServerURL,omitempty"`
+	// EDV configuration
+	// edv configuration for storing wallet contents for this profile
+	// Optional, if not provided then agent storage provider will be used as store provider.
+	EdvConfiguration *EDVConfiguration `protobuf:"bytes,5,opt,name=edvConfiguration,proto3" json:"edvConfiguration,omitempty"`
+}
+
+func (x *Profile) Reset() {
+	*x = Profile{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_wallet_types_wallet_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Profile) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Profile) ProtoMessage() {}
+
+func (x *Profile) ProtoReflect() protoreflect.Message {
+	mi := &file_api_wallet_types_wallet_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Profile.ProtoReflect.Descriptor instead.
+func (*Profile) Descriptor() ([]byte, []int) {
+	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Profile) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Profile) GetUserID() string {
+	if x != nil {
+		return x.UserID
+	}
+	return ""
+}
+
+func (x *Profile) GetLocalKMSPassphrase() string {
+	if x != nil {
+		return x.LocalKMSPassphrase
+	}
+	return ""
+}
+
+func (x *Profile) GetKeyServerURL() string {
+	if x != nil {
+		return x.KeyServerURL
+	}
+	return ""
+}
+
+func (x *Profile) GetEdvConfiguration() *EDVConfiguration {
+	if x != nil {
+		return x.EdvConfiguration
+	}
+	return nil
+}
+
 // EDVConfiguration contains configuration for EDV settings for profile creation.
+// Encrypted Data Vault https://identity.foundation/confidential-storage/#encrypted-data-vault
 type EDVConfiguration struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -33,7 +123,8 @@ type EDVConfiguration struct {
 
 	// EDV server URL for storing wallet contents.
 	ServerURL string `protobuf:"bytes,1,opt,name=serverURL,proto3" json:"serverURL,omitempty"`
-	VaultID   string `protobuf:"bytes,2,opt,name=vaultID,proto3" json:"vaultID,omitempty"`
+	// EDV vault ID for storing the wallet contents.
+	VaultID string `protobuf:"bytes,2,opt,name=vaultID,proto3" json:"vaultID,omitempty"`
 	// Encryption key ID of already existing key in wallet profile kms.
 	// If profile is using localkms then wallet will create this key set for wallet user.
 	EncryptionKID string `protobuf:"bytes,3,opt,name=encryptionKID,proto3" json:"encryptionKID,omitempty"`
@@ -45,7 +136,7 @@ type EDVConfiguration struct {
 func (x *EDVConfiguration) Reset() {
 	*x = EDVConfiguration{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[0]
+		mi := &file_api_wallet_types_wallet_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -58,7 +149,7 @@ func (x *EDVConfiguration) String() string {
 func (*EDVConfiguration) ProtoMessage() {}
 
 func (x *EDVConfiguration) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[0]
+	mi := &file_api_wallet_types_wallet_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -71,7 +162,7 @@ func (x *EDVConfiguration) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EDVConfiguration.ProtoReflect.Descriptor instead.
 func (*EDVConfiguration) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{0}
+	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *EDVConfiguration) GetServerURL() string {
@@ -103,6 +194,7 @@ func (x *EDVConfiguration) GetMacKID() string {
 }
 
 // UnlockAuth contains different options for authorizing access to wallet's EDV content store & webkms.
+// swagger:model
 type UnlockAuth struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -128,7 +220,7 @@ type UnlockAuth struct {
 func (x *UnlockAuth) Reset() {
 	*x = UnlockAuth{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[1]
+		mi := &file_api_wallet_types_wallet_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -141,7 +233,7 @@ func (x *UnlockAuth) String() string {
 func (*UnlockAuth) ProtoMessage() {}
 
 func (x *UnlockAuth) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[1]
+	mi := &file_api_wallet_types_wallet_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -154,7 +246,7 @@ func (x *UnlockAuth) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnlockAuth.ProtoReflect.Descriptor instead.
 func (*UnlockAuth) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{1}
+	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *UnlockAuth) GetAuthToken() string {
@@ -192,324 +284,8 @@ func (x *UnlockAuth) GetSecretShare() string {
 	return ""
 }
 
-// CreateOrUpdateProfileRequest is request model for
-// creating a new wallet profile or updating an existing wallet profile.
-type CreateOrUpdateProfileRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// Unique identifier to identify wallet user
-	UserID string `protobuf:"bytes,1,opt,name=userID,proto3" json:"userID,omitempty"`
-	// passphrase for local kms for key operations.
-	// Optional, if this option is provided then wallet for this profile will use local KMS for key operations.
-	LocalKMSPassphrase string `protobuf:"bytes,2,opt,name=localKMSPassphrase,proto3" json:"localKMSPassphrase,omitempty"`
-	// passphrase for web/remote kms for key operations.
-	// Optional, if this option is provided then wallet for this profile will use web/remote KMS for key operations.
-	KeyStoreURL string `protobuf:"bytes,3,opt,name=keyStoreURL,proto3" json:"keyStoreURL,omitempty"`
-	// edv configuration for storing wallet contents for this profile
-	// Optional, if not provided then agent storage provider will be used as store provider.
-	EdvConfiguration *EDVConfiguration `protobuf:"bytes,4,opt,name=edvConfiguration,proto3" json:"edvConfiguration,omitempty"`
-}
-
-func (x *CreateOrUpdateProfileRequest) Reset() {
-	*x = CreateOrUpdateProfileRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CreateOrUpdateProfileRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateOrUpdateProfileRequest) ProtoMessage() {}
-
-func (x *CreateOrUpdateProfileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CreateOrUpdateProfileRequest.ProtoReflect.Descriptor instead.
-func (*CreateOrUpdateProfileRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *CreateOrUpdateProfileRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *CreateOrUpdateProfileRequest) GetLocalKMSPassphrase() string {
-	if x != nil {
-		return x.LocalKMSPassphrase
-	}
-	return ""
-}
-
-func (x *CreateOrUpdateProfileRequest) GetKeyStoreURL() string {
-	if x != nil {
-		return x.KeyStoreURL
-	}
-	return ""
-}
-
-func (x *CreateOrUpdateProfileRequest) GetEdvConfiguration() *EDVConfiguration {
-	if x != nil {
-		return x.EdvConfiguration
-	}
-	return nil
-}
-
-// UnlockWalletRequest contains different options for unlocking wallet.
-type UnlockWalletRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// user ID of the wallet to be unlocked.
-	UserID string `protobuf:"bytes,1,opt,name=userID,proto3" json:"userID,omitempty"`
-	// passphrase for local kms for key operations.
-	// Optional, to be used if profile for this wallet user is setup with local KMS.
-	LocalKMSPassphrase string `protobuf:"bytes,2,opt,name=localKMSPassphrase,proto3" json:"localKMSPassphrase,omitempty"`
-	// WebKMSAuth for authorizing acccess to web/remote kms.
-	// Optional, to be used if profile for this wallet user is setup with web/remote KMS.
-	WebKMSAuth *UnlockAuth `protobuf:"bytes,3,opt,name=webKMSAuth,proto3" json:"webKMSAuth,omitempty"`
-	// Options for authorizing access to wallet's EDV content store.
-	// Optional, to be used only if profile for this wallet user is setup to use EDV as content store.
-	EdvUnlocks *UnlockAuth `protobuf:"bytes,4,opt,name=edvUnlocks,proto3" json:"edvUnlocks,omitempty"`
-	// Time duration in milliseconds after which wallet will expire its unlock status.
-	Expiry *durationpb.Duration `protobuf:"bytes,5,opt,name=expiry,proto3" json:"expiry,omitempty"`
-}
-
-func (x *UnlockWalletRequest) Reset() {
-	*x = UnlockWalletRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UnlockWalletRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UnlockWalletRequest) ProtoMessage() {}
-
-func (x *UnlockWalletRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UnlockWalletRequest.ProtoReflect.Descriptor instead.
-func (*UnlockWalletRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *UnlockWalletRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *UnlockWalletRequest) GetLocalKMSPassphrase() string {
-	if x != nil {
-		return x.LocalKMSPassphrase
-	}
-	return ""
-}
-
-func (x *UnlockWalletRequest) GetWebKMSAuth() *UnlockAuth {
-	if x != nil {
-		return x.WebKMSAuth
-	}
-	return nil
-}
-
-func (x *UnlockWalletRequest) GetEdvUnlocks() *UnlockAuth {
-	if x != nil {
-		return x.EdvUnlocks
-	}
-	return nil
-}
-
-func (x *UnlockWalletRequest) GetExpiry() *durationpb.Duration {
-	if x != nil {
-		return x.Expiry
-	}
-	return nil
-}
-
-// UnlockWalletResponse contains response for wallet unlock operation.
-type UnlockWalletResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// Token for granting access to wallet for subsequent wallet operations.
-	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-}
-
-func (x *UnlockWalletResponse) Reset() {
-	*x = UnlockWalletResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UnlockWalletResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UnlockWalletResponse) ProtoMessage() {}
-
-func (x *UnlockWalletResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UnlockWalletResponse.ProtoReflect.Descriptor instead.
-func (*UnlockWalletResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *UnlockWalletResponse) GetToken() string {
-	if x != nil {
-		return x.Token
-	}
-	return ""
-}
-
-// LockWalletRequest contains options for locking wallet.
-type LockWalletRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// user ID of the wallet to be locked.
-	UserID string `protobuf:"bytes,1,opt,name=userID,proto3" json:"userID,omitempty"`
-}
-
-func (x *LockWalletRequest) Reset() {
-	*x = LockWalletRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *LockWalletRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*LockWalletRequest) ProtoMessage() {}
-
-func (x *LockWalletRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use LockWalletRequest.ProtoReflect.Descriptor instead.
-func (*LockWalletRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *LockWalletRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-// LockWalletResponse contains response for wallet lock operation.
-type LockWalletResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// Closed status of the wallet lock operation.
-	// if true, wallet is closed successfully
-	// if false, wallet is already closed or never unlocked.
-	Closed bool `protobuf:"varint,1,opt,name=closed,proto3" json:"closed,omitempty"`
-}
-
-func (x *LockWalletResponse) Reset() {
-	*x = LockWalletResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *LockWalletResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*LockWalletResponse) ProtoMessage() {}
-
-func (x *LockWalletResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use LockWalletResponse.ProtoReflect.Descriptor instead.
-func (*LockWalletResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *LockWalletResponse) GetClosed() bool {
-	if x != nil {
-		return x.Closed
-	}
-	return false
-}
-
 // WalletAuth contains wallet auth parameters for performing wallet operations.
+// swagger:model
 type WalletAuth struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -524,7 +300,7 @@ type WalletAuth struct {
 func (x *WalletAuth) Reset() {
 	*x = WalletAuth{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[7]
+		mi := &file_api_wallet_types_wallet_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -537,7 +313,7 @@ func (x *WalletAuth) String() string {
 func (*WalletAuth) ProtoMessage() {}
 
 func (x *WalletAuth) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[7]
+	mi := &file_api_wallet_types_wallet_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -550,7 +326,7 @@ func (x *WalletAuth) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WalletAuth.ProtoReflect.Descriptor instead.
 func (*WalletAuth) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{7}
+	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *WalletAuth) GetAuth() string {
@@ -565,484 +341,6 @@ func (x *WalletAuth) GetUserID() string {
 		return x.UserID
 	}
 	return ""
-}
-
-// WalletUser contains wallet user info for performing profile operations.
-type WalletUser struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,1,opt,name=userID,proto3" json:"userID,omitempty"`
-}
-
-func (x *WalletUser) Reset() {
-	*x = WalletUser{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *WalletUser) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*WalletUser) ProtoMessage() {}
-
-func (x *WalletUser) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use WalletUser.ProtoReflect.Descriptor instead.
-func (*WalletUser) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *WalletUser) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-// AddContentRequest is request for adding a content to wallet.
-type AddContentRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// type of the content to be added to the wallet.
-	// supported types: collection, credential, didResolutionResponse, metadata, connection, key
-	ContentType string `protobuf:"bytes,3,opt,name=contentType,proto3" json:"contentType,omitempty"`
-	// content to be added to wallet content store.
-	Content []byte `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"` // json
-	// ID of the wallet collection to which this content should belong.
-	CollectionID string `protobuf:"bytes,5,opt,name=collectionID,proto3" json:"collectionID,omitempty"`
-}
-
-func (x *AddContentRequest) Reset() {
-	*x = AddContentRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[9]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *AddContentRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AddContentRequest) ProtoMessage() {}
-
-func (x *AddContentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[9]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use AddContentRequest.ProtoReflect.Descriptor instead.
-func (*AddContentRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *AddContentRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *AddContentRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *AddContentRequest) GetContentType() string {
-	if x != nil {
-		return x.ContentType
-	}
-	return ""
-}
-
-func (x *AddContentRequest) GetContent() []byte {
-	if x != nil {
-		return x.Content
-	}
-	return nil
-}
-
-func (x *AddContentRequest) GetCollectionID() string {
-	if x != nil {
-		return x.CollectionID
-	}
-	return ""
-}
-
-// RemoveContentRequest is request for removing a content from wallet.
-type RemoveContentRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	///WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// type of the content to be removed from the wallet.
-	// supported types: collection, credential, didResolutionResponse, metadata, connection
-	ContentType string `protobuf:"bytes,3,opt,name=contentType,proto3" json:"contentType,omitempty"`
-	// ID of the content to be removed from wallet
-	ContentID string `protobuf:"bytes,4,opt,name=contentID,proto3" json:"contentID,omitempty"`
-}
-
-func (x *RemoveContentRequest) Reset() {
-	*x = RemoveContentRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[10]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *RemoveContentRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RemoveContentRequest) ProtoMessage() {}
-
-func (x *RemoveContentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[10]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RemoveContentRequest.ProtoReflect.Descriptor instead.
-func (*RemoveContentRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{10}
-}
-
-func (x *RemoveContentRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *RemoveContentRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *RemoveContentRequest) GetContentType() string {
-	if x != nil {
-		return x.ContentType
-	}
-	return ""
-}
-
-func (x *RemoveContentRequest) GetContentID() string {
-	if x != nil {
-		return x.ContentID
-	}
-	return ""
-}
-
-// GetContentRequest is request for getting a content from wallet.
-type GetContentRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// type of the content to be returned from wallet.
-	// supported types: collection, credential, didResolutionResponse, metadata, connection
-	ContentType string `protobuf:"bytes,3,opt,name=contentType,proto3" json:"contentType,omitempty"`
-	// ID of the content to be returned from wallet
-	ContentID string `protobuf:"bytes,4,opt,name=contentID,proto3" json:"contentID,omitempty"`
-}
-
-func (x *GetContentRequest) Reset() {
-	*x = GetContentRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[11]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetContentRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetContentRequest) ProtoMessage() {}
-
-func (x *GetContentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[11]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetContentRequest.ProtoReflect.Descriptor instead.
-func (*GetContentRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{11}
-}
-
-func (x *GetContentRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *GetContentRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *GetContentRequest) GetContentType() string {
-	if x != nil {
-		return x.ContentType
-	}
-	return ""
-}
-
-func (x *GetContentRequest) GetContentID() string {
-	if x != nil {
-		return x.ContentID
-	}
-	return ""
-}
-
-// GetContentResponse response for get content from wallet operation.
-type GetContentResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// type of the content to be added to the wallet.
-	ContentType string `protobuf:"bytes,1,opt,name=contentType,proto3" json:"contentType,omitempty"`
-	// content retrieved from wallet content store.
-	Content []byte `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-}
-
-func (x *GetContentResponse) Reset() {
-	*x = GetContentResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[12]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetContentResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetContentResponse) ProtoMessage() {}
-
-func (x *GetContentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[12]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetContentResponse.ProtoReflect.Descriptor instead.
-func (*GetContentResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{12}
-}
-
-func (x *GetContentResponse) GetContentType() string {
-	if x != nil {
-		return x.ContentType
-	}
-	return ""
-}
-
-func (x *GetContentResponse) GetContent() []byte {
-	if x != nil {
-		return x.Content
-	}
-	return nil
-}
-
-// GetAllContentRequest is request for getting all contents from wallet for given content type.
-type GetAllContentRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// type of the contents to be returned from wallet.
-	// supported types: collection, credential, didResolutionResponse, metadata, connection
-	ContentType string `protobuf:"bytes,3,opt,name=contentType,proto3" json:"contentType,omitempty"`
-	// ID of the collection on which the response contents to be filtered.
-	CollectionID string `protobuf:"bytes,4,opt,name=collectionID,proto3" json:"collectionID,omitempty"`
-}
-
-func (x *GetAllContentRequest) Reset() {
-	*x = GetAllContentRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[13]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetAllContentRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetAllContentRequest) ProtoMessage() {}
-
-func (x *GetAllContentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[13]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetAllContentRequest.ProtoReflect.Descriptor instead.
-func (*GetAllContentRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{13}
-}
-
-func (x *GetAllContentRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *GetAllContentRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *GetAllContentRequest) GetContentType() string {
-	if x != nil {
-		return x.ContentType
-	}
-	return ""
-}
-
-func (x *GetAllContentRequest) GetCollectionID() string {
-	if x != nil {
-		return x.CollectionID
-	}
-	return ""
-}
-
-// GetAllContentResponse response for get all content by content type wallet operation.
-type GetAllContentResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// contents retrieved from wallet content store.
-	// map of content ID to content.
-	Contents map[string][]byte `protobuf:"bytes,1,rep,name=contents,proto3" json:"contents,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // json
-}
-
-func (x *GetAllContentResponse) Reset() {
-	*x = GetAllContentResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[14]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetAllContentResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetAllContentResponse) ProtoMessage() {}
-
-func (x *GetAllContentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[14]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetAllContentResponse.ProtoReflect.Descriptor instead.
-func (*GetAllContentResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{14}
-}
-
-func (x *GetAllContentResponse) GetContents() map[string][]byte {
-	if x != nil {
-		return x.Contents
-	}
-	return nil
 }
 
 // QueryParams contains credential queries for querying credential from wallet.
@@ -1062,7 +360,7 @@ type QueryParams struct {
 func (x *QueryParams) Reset() {
 	*x = QueryParams{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[15]
+		mi := &file_api_wallet_types_wallet_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1075,7 +373,7 @@ func (x *QueryParams) String() string {
 func (*QueryParams) ProtoMessage() {}
 
 func (x *QueryParams) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[15]
+	mi := &file_api_wallet_types_wallet_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1088,7 +386,7 @@ func (x *QueryParams) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryParams.ProtoReflect.Descriptor instead.
 func (*QueryParams) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{15}
+	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *QueryParams) GetType() string {
@@ -1103,542 +401,6 @@ func (x *QueryParams) GetCredentialQuery() [][]byte {
 		return x.CredentialQuery
 	}
 	return nil
-}
-
-// ContentQueryRequest is request model for querying wallet contents.
-type ContentQueryRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// credential query(s) for querying wallet contents.
-	Query []*QueryParams `protobuf:"bytes,3,rep,name=query,proto3" json:"query,omitempty"`
-}
-
-func (x *ContentQueryRequest) Reset() {
-	*x = ContentQueryRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[16]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ContentQueryRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ContentQueryRequest) ProtoMessage() {}
-
-func (x *ContentQueryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[16]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ContentQueryRequest.ProtoReflect.Descriptor instead.
-func (*ContentQueryRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{16}
-}
-
-func (x *ContentQueryRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *ContentQueryRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *ContentQueryRequest) GetQuery() []*QueryParams {
-	if x != nil {
-		return x.Query
-	}
-	return nil
-}
-
-// ContentQueryResponse response for wallet content query.
-type ContentQueryResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// response presentation(s) containing query results.
-	Results []*types.VerifiablePresentation `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
-}
-
-func (x *ContentQueryResponse) Reset() {
-	*x = ContentQueryResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[17]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ContentQueryResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ContentQueryResponse) ProtoMessage() {}
-
-func (x *ContentQueryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[17]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ContentQueryResponse.ProtoReflect.Descriptor instead.
-func (*ContentQueryResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{17}
-}
-
-func (x *ContentQueryResponse) GetResults() []*types.VerifiablePresentation {
-	if x != nil {
-		return x.Results
-	}
-	return nil
-}
-
-// IssueRequest is request model for issuing credential from wallet.
-type IssueRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// raw credential to be issued from wallet.
-	Credential *types.VerifiableCredential `protobuf:"bytes,3,opt,name=credential,proto3" json:"credential,omitempty"`
-	// proof options for issuing credential
-	ProofOptions *types.ProofOptions `protobuf:"bytes,4,opt,name=proofOptions,proto3" json:"proofOptions,omitempty"`
-}
-
-func (x *IssueRequest) Reset() {
-	*x = IssueRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[18]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *IssueRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IssueRequest) ProtoMessage() {}
-
-func (x *IssueRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[18]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IssueRequest.ProtoReflect.Descriptor instead.
-func (*IssueRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{18}
-}
-
-func (x *IssueRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *IssueRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *IssueRequest) GetCredential() *types.VerifiableCredential {
-	if x != nil {
-		return x.Credential
-	}
-	return nil
-}
-
-func (x *IssueRequest) GetProofOptions() *types.ProofOptions {
-	if x != nil {
-		return x.ProofOptions
-	}
-	return nil
-}
-
-// IssueResponse is response for issue credential interface from wallet.
-type IssueResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// credential issued.
-	Credential *types.VerifiableCredential `protobuf:"bytes,1,opt,name=credential,proto3" json:"credential,omitempty"`
-}
-
-func (x *IssueResponse) Reset() {
-	*x = IssueResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[19]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *IssueResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IssueResponse) ProtoMessage() {}
-
-func (x *IssueResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[19]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use IssueResponse.ProtoReflect.Descriptor instead.
-func (*IssueResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{19}
-}
-
-func (x *IssueResponse) GetCredential() *types.VerifiableCredential {
-	if x != nil {
-		return x.Credential
-	}
-	return nil
-}
-
-// ProveRequest for producing verifiable presentation from wallet.
-// Contains options for proofs and credential. Any combination of credential option can be mixed.
-type ProveRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// IDs of credentials already saved in wallet content store.
-	StoredCredentials []string `protobuf:"bytes,3,rep,name=storedCredentials,proto3" json:"storedCredentials,omitempty"`
-	// List of raw credentials to be presented.
-	RawCredentials []*types.VerifiableCredential `protobuf:"bytes,4,rep,name=rawCredentials,proto3" json:"rawCredentials,omitempty"` // credentials
-	// Presentation to be proved.
-	Presentation *types.VerifiablePresentation `protobuf:"bytes,5,opt,name=presentation,proto3" json:"presentation,omitempty"`
-	// proof options for issuing credential.
-	ProofOptions *types.ProofOptions `protobuf:"bytes,6,opt,name=proofOptions,proto3" json:"proofOptions,omitempty"`
-}
-
-func (x *ProveRequest) Reset() {
-	*x = ProveRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[20]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ProveRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ProveRequest) ProtoMessage() {}
-
-func (x *ProveRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[20]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ProveRequest.ProtoReflect.Descriptor instead.
-func (*ProveRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{20}
-}
-
-func (x *ProveRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *ProveRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *ProveRequest) GetStoredCredentials() []string {
-	if x != nil {
-		return x.StoredCredentials
-	}
-	return nil
-}
-
-func (x *ProveRequest) GetRawCredentials() []*types.VerifiableCredential {
-	if x != nil {
-		return x.RawCredentials
-	}
-	return nil
-}
-
-func (x *ProveRequest) GetPresentation() *types.VerifiablePresentation {
-	if x != nil {
-		return x.Presentation
-	}
-	return nil
-}
-
-func (x *ProveRequest) GetProofOptions() *types.ProofOptions {
-	if x != nil {
-		return x.ProofOptions
-	}
-	return nil
-}
-
-// ProveResponse contains response presentation from prove operation.
-type ProveResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// presentation response from prove operation.
-	Presentation *types.VerifiablePresentation `protobuf:"bytes,1,opt,name=presentation,proto3" json:"presentation,omitempty"`
-}
-
-func (x *ProveResponse) Reset() {
-	*x = ProveResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[21]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ProveResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ProveResponse) ProtoMessage() {}
-
-func (x *ProveResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[21]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ProveResponse.ProtoReflect.Descriptor instead.
-func (*ProveResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{21}
-}
-
-func (x *ProveResponse) GetPresentation() *types.VerifiablePresentation {
-	if x != nil {
-		return x.Presentation
-	}
-	return nil
-}
-
-// VerifyRequest request for verifying a credential or presentation from wallet.
-// Any one of the credential option should be used.
-type VerifyRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// ID of the credential already saved in wallet content store.
-	// optional, if provided then this option takes precedence over other options.
-	StoredCredentialID string `protobuf:"bytes,3,opt,name=storedCredentialID,proto3" json:"storedCredentialID,omitempty"`
-	// List of raw credential to be presented.
-	// optional, if provided then this option takes precedence over presentation options.
-	RawCredentials []*types.VerifiableCredential `protobuf:"bytes,4,rep,name=rawCredentials,proto3" json:"rawCredentials,omitempty"` // credentials
-	// Presentation to be proved.
-	// optional, will be used only if other options are not provided.
-	Presentation *types.VerifiablePresentation `protobuf:"bytes,5,opt,name=presentation,proto3" json:"presentation,omitempty"`
-}
-
-func (x *VerifyRequest) Reset() {
-	*x = VerifyRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[22]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *VerifyRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*VerifyRequest) ProtoMessage() {}
-
-func (x *VerifyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[22]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use VerifyRequest.ProtoReflect.Descriptor instead.
-func (*VerifyRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{22}
-}
-
-func (x *VerifyRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *VerifyRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *VerifyRequest) GetStoredCredentialID() string {
-	if x != nil {
-		return x.StoredCredentialID
-	}
-	return ""
-}
-
-func (x *VerifyRequest) GetRawCredentials() []*types.VerifiableCredential {
-	if x != nil {
-		return x.RawCredentials
-	}
-	return nil
-}
-
-func (x *VerifyRequest) GetPresentation() *types.VerifiablePresentation {
-	if x != nil {
-		return x.Presentation
-	}
-	return nil
-}
-
-// VerifyResponse is response model for wallet verify operation.
-type VerifyResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// if true then verification is successful.
-	Verified bool `protobuf:"varint,1,opt,name=verified,proto3" json:"verified,omitempty"`
-	// error details if verified is false.
-	Error string `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
-}
-
-func (x *VerifyResponse) Reset() {
-	*x = VerifyResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[23]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *VerifyResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*VerifyResponse) ProtoMessage() {}
-
-func (x *VerifyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[23]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use VerifyResponse.ProtoReflect.Descriptor instead.
-func (*VerifyResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{23}
-}
-
-func (x *VerifyResponse) GetVerified() bool {
-	if x != nil {
-		return x.Verified
-	}
-	return false
-}
-
-func (x *VerifyResponse) GetError() string {
-	if x != nil {
-		return x.Error
-	}
-	return ""
 }
 
 // DeriveOptions model containing options for deriving a credential.
@@ -1657,7 +419,7 @@ type DeriveOptions struct {
 func (x *DeriveOptions) Reset() {
 	*x = DeriveOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[24]
+		mi := &file_api_wallet_types_wallet_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1670,7 +432,7 @@ func (x *DeriveOptions) String() string {
 func (*DeriveOptions) ProtoMessage() {}
 
 func (x *DeriveOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[24]
+	mi := &file_api_wallet_types_wallet_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1683,7 +445,7 @@ func (x *DeriveOptions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeriveOptions.ProtoReflect.Descriptor instead.
 func (*DeriveOptions) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{24}
+	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *DeriveOptions) GetFrame() *anypb.Any {
@@ -1696,211 +458,6 @@ func (x *DeriveOptions) GetFrame() *anypb.Any {
 func (x *DeriveOptions) GetNonce() string {
 	if x != nil {
 		return x.Nonce
-	}
-	return ""
-}
-
-// DeriveRequest is request model for deriving a credential from wallet.
-type DeriveRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// ID of the credential already saved in wallet content store.
-	// optional, if provided then this option takes precedence.
-	StoredCredentialID string `protobuf:"bytes,3,opt,name=storedCredentialID,proto3" json:"storedCredentialID,omitempty"`
-	// List of raw credential to be presented.
-	// optional, will be used only if other options is not provided.
-	RawCredentials *types.VerifiableCredential `protobuf:"bytes,4,opt,name=rawCredentials,proto3" json:"rawCredentials,omitempty"` // credentials
-	// DeriveOptions options for deriving credential
-	DeriveOption *DeriveOptions `protobuf:"bytes,5,opt,name=deriveOption,proto3" json:"deriveOption,omitempty"`
-}
-
-func (x *DeriveRequest) Reset() {
-	*x = DeriveRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[25]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *DeriveRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeriveRequest) ProtoMessage() {}
-
-func (x *DeriveRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[25]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DeriveRequest.ProtoReflect.Descriptor instead.
-func (*DeriveRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{25}
-}
-
-func (x *DeriveRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *DeriveRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *DeriveRequest) GetStoredCredentialID() string {
-	if x != nil {
-		return x.StoredCredentialID
-	}
-	return ""
-}
-
-func (x *DeriveRequest) GetRawCredentials() *types.VerifiableCredential {
-	if x != nil {
-		return x.RawCredentials
-	}
-	return nil
-}
-
-func (x *DeriveRequest) GetDeriveOption() *DeriveOptions {
-	if x != nil {
-		return x.DeriveOption
-	}
-	return nil
-}
-
-// DeriveResponse is response for derived credential operation.
-type DeriveResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// credential derived.
-	Credential *types.VerifiableCredential `protobuf:"bytes,1,opt,name=credential,proto3" json:"credential,omitempty"` // credentials
-}
-
-func (x *DeriveResponse) Reset() {
-	*x = DeriveResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[26]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *DeriveResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeriveResponse) ProtoMessage() {}
-
-func (x *DeriveResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[26]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DeriveResponse.ProtoReflect.Descriptor instead.
-func (*DeriveResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{26}
-}
-
-func (x *DeriveResponse) GetCredential() *types.VerifiableCredential {
-	if x != nil {
-		return x.Credential
-	}
-	return nil
-}
-
-// CreateKeyPairRequest is request model for creating key pair from wallet.
-type CreateKeyPairRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// type of the key to be created.
-	KeyType string `protobuf:"bytes,3,opt,name=keyType,proto3" json:"keyType,omitempty"`
-}
-
-func (x *CreateKeyPairRequest) Reset() {
-	*x = CreateKeyPairRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[27]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CreateKeyPairRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateKeyPairRequest) ProtoMessage() {}
-
-func (x *CreateKeyPairRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[27]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CreateKeyPairRequest.ProtoReflect.Descriptor instead.
-func (*CreateKeyPairRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{27}
-}
-
-func (x *CreateKeyPairRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *CreateKeyPairRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *CreateKeyPairRequest) GetKeyType() string {
-	if x != nil {
-		return x.KeyType
 	}
 	return ""
 }
@@ -1920,7 +477,7 @@ type KeyPair struct {
 func (x *KeyPair) Reset() {
 	*x = KeyPair{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[28]
+		mi := &file_api_wallet_types_wallet_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1933,7 +490,7 @@ func (x *KeyPair) String() string {
 func (*KeyPair) ProtoMessage() {}
 
 func (x *KeyPair) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[28]
+	mi := &file_api_wallet_types_wallet_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1946,7 +503,7 @@ func (x *KeyPair) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KeyPair.ProtoReflect.Descriptor instead.
 func (*KeyPair) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{28}
+	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *KeyPair) GetKeyID() string {
@@ -1961,179 +518,6 @@ func (x *KeyPair) GetPublicKey() string {
 		return x.PublicKey
 	}
 	return ""
-}
-
-// CreateKeyPairResponse is response model for creating key pair from wallet.
-type CreateKeyPairResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// wallet.KeyPair
-	// base64 encoded key ID of the key created.
-	KeyID string `protobuf:"bytes,1,opt,name=keyID,proto3" json:"keyID,omitempty"`
-	// base64 encoded public key of the key pair created.
-	PublicKey string `protobuf:"bytes,2,opt,name=publicKey,proto3" json:"publicKey,omitempty"`
-}
-
-func (x *CreateKeyPairResponse) Reset() {
-	*x = CreateKeyPairResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[29]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CreateKeyPairResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateKeyPairResponse) ProtoMessage() {}
-
-func (x *CreateKeyPairResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[29]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CreateKeyPairResponse.ProtoReflect.Descriptor instead.
-func (*CreateKeyPairResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{29}
-}
-
-func (x *CreateKeyPairResponse) GetKeyID() string {
-	if x != nil {
-		return x.KeyID
-	}
-	return ""
-}
-
-func (x *CreateKeyPairResponse) GetPublicKey() string {
-	if x != nil {
-		return x.PublicKey
-	}
-	return ""
-}
-
-// ConnectRequest is request model for wallet DID connect operation.
-type ConnectRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// out-of-band invitation to establish connection.
-	Invitation *types1.Invitation `protobuf:"bytes,3,opt,name=invitation,proto3" json:"invitation,omitempty"`
-	// ConnectOpts
-	// Label to be shared with the other agent during the subsequent DID exchange.
-	MyLabel string `protobuf:"bytes,4,opt,name=myLabel,proto3" json:"myLabel,omitempty"`
-	// router connections to be used to establish connection.
-	RouterConnections []string `protobuf:"bytes,5,rep,name=routerConnections,proto3" json:"routerConnections,omitempty"`
-	// DID to be used when reusing a connection.
-	ReuseConnection string `protobuf:"bytes,6,opt,name=reuseConnection,proto3" json:"reuseConnection,omitempty"`
-	// To use any recognized DID in the services array for a reusable connection.
-	ReuseAnyConnection bool `protobuf:"varint,7,opt,name=reuseAnyConnection,proto3" json:"reuseAnyConnection,omitempty"`
-	// Timeout (in milliseconds) waiting for connection status to be completed.
-	Timeout *durationpb.Duration `protobuf:"bytes,8,opt,name=timeout,proto3" json:"timeout,omitempty"`
-}
-
-func (x *ConnectRequest) Reset() {
-	*x = ConnectRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[30]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ConnectRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ConnectRequest) ProtoMessage() {}
-
-func (x *ConnectRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[30]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ConnectRequest.ProtoReflect.Descriptor instead.
-func (*ConnectRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{30}
-}
-
-func (x *ConnectRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *ConnectRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *ConnectRequest) GetInvitation() *types1.Invitation {
-	if x != nil {
-		return x.Invitation
-	}
-	return nil
-}
-
-func (x *ConnectRequest) GetMyLabel() string {
-	if x != nil {
-		return x.MyLabel
-	}
-	return ""
-}
-
-func (x *ConnectRequest) GetRouterConnections() []string {
-	if x != nil {
-		return x.RouterConnections
-	}
-	return nil
-}
-
-func (x *ConnectRequest) GetReuseConnection() string {
-	if x != nil {
-		return x.ReuseConnection
-	}
-	return ""
-}
-
-func (x *ConnectRequest) GetReuseAnyConnection() bool {
-	if x != nil {
-		return x.ReuseAnyConnection
-	}
-	return false
-}
-
-func (x *ConnectRequest) GetTimeout() *durationpb.Duration {
-	if x != nil {
-		return x.Timeout
-	}
-	return nil
 }
 
 // ConnectOpts is option for accepting out-of-band invitation and to perform DID exchange.
@@ -2157,7 +541,7 @@ type ConnectOpts struct {
 func (x *ConnectOpts) Reset() {
 	*x = ConnectOpts{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[31]
+		mi := &file_api_wallet_types_wallet_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2170,7 +554,7 @@ func (x *ConnectOpts) String() string {
 func (*ConnectOpts) ProtoMessage() {}
 
 func (x *ConnectOpts) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[31]
+	mi := &file_api_wallet_types_wallet_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2183,7 +567,7 @@ func (x *ConnectOpts) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConnectOpts.ProtoReflect.Descriptor instead.
 func (*ConnectOpts) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{31}
+	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ConnectOpts) GetMyLabel() string {
@@ -2221,298 +605,6 @@ func (x *ConnectOpts) GetTimeout() *durationpb.Duration {
 	return nil
 }
 
-// ConnectResponse is response model from wallet DID connection operation.
-type ConnectResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// connection ID of the connection established.
-	ConnectionID string `protobuf:"bytes,1,opt,name=connectionID,proto3" json:"connectionID,omitempty"`
-}
-
-func (x *ConnectResponse) Reset() {
-	*x = ConnectResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[32]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ConnectResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ConnectResponse) ProtoMessage() {}
-
-func (x *ConnectResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[32]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ConnectResponse.ProtoReflect.Descriptor instead.
-func (*ConnectResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{32}
-}
-
-func (x *ConnectResponse) GetConnectionID() string {
-	if x != nil {
-		return x.ConnectionID
-	}
-	return ""
-}
-
-// ProposePresentationRequest is request model for performing propose presentation operation from wallet.
-type ProposePresentationRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID     string                    `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	Invitation *types1.GenericInvitation `protobuf:"bytes,3,opt,name=invitation,proto3" json:"invitation,omitempty"`
-	// Optional From DID option to customize sender DID.
-	From string `protobuf:"bytes,4,opt,name=from,proto3" json:"from,omitempty"`
-	// Timeout (in milliseconds) waiting for operation to be completed.
-	Timeout *durationpb.Duration `protobuf:"bytes,5,opt,name=timeout,proto3" json:"timeout,omitempty"`
-	// Options for accepting out-of-band invitation and to perform DID exchange (for DIDComm V1).
-	ConnectOptions *ConnectOpts `protobuf:"bytes,6,opt,name=connectOptions,proto3" json:"connectOptions,omitempty"`
-}
-
-func (x *ProposePresentationRequest) Reset() {
-	*x = ProposePresentationRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[33]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ProposePresentationRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ProposePresentationRequest) ProtoMessage() {}
-
-func (x *ProposePresentationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[33]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ProposePresentationRequest.ProtoReflect.Descriptor instead.
-func (*ProposePresentationRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{33}
-}
-
-func (x *ProposePresentationRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *ProposePresentationRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *ProposePresentationRequest) GetInvitation() *types1.GenericInvitation {
-	if x != nil {
-		return x.Invitation
-	}
-	return nil
-}
-
-func (x *ProposePresentationRequest) GetFrom() string {
-	if x != nil {
-		return x.From
-	}
-	return ""
-}
-
-func (x *ProposePresentationRequest) GetTimeout() *durationpb.Duration {
-	if x != nil {
-		return x.Timeout
-	}
-	return nil
-}
-
-func (x *ProposePresentationRequest) GetConnectOptions() *ConnectOpts {
-	if x != nil {
-		return x.ConnectOptions
-	}
-	return nil
-}
-
-// ProposePresentationResponse is response model from wallet propose presentation operation.
-type ProposePresentationResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// response request presentation message from  relying party.
-	PresentationRequest map[string]*anypb.Any `protobuf:"bytes,1,rep,name=presentationRequest,proto3" json:"presentationRequest,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-}
-
-func (x *ProposePresentationResponse) Reset() {
-	*x = ProposePresentationResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[34]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ProposePresentationResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ProposePresentationResponse) ProtoMessage() {}
-
-func (x *ProposePresentationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[34]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ProposePresentationResponse.ProtoReflect.Descriptor instead.
-func (*ProposePresentationResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{34}
-}
-
-func (x *ProposePresentationResponse) GetPresentationRequest() map[string]*anypb.Any {
-	if x != nil {
-		return x.PresentationRequest
-	}
-	return nil
-}
-
-// PresentProofRequest is request model from wallet present proof operation.
-// Supported attachment MIME type "application/ld+json".
-type PresentProofRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// Thread ID from request presentation response
-	ThreadId string `protobuf:"bytes,3,opt,name=threadId,proto3" json:"threadId,omitempty"`
-	// presentation to be sent as part of present proof message.
-	Presentation *types2.GenericPresentation `protobuf:"bytes,4,opt,name=presentation,proto3" json:"presentation,omitempty"` // raw json
-	// If true then wallet will wait for present proof protocol status to be
-	// done or abandoned till given Timeout.
-	// Also, will return web redirect info if found in acknowledgment message or problem-report.
-	WaitForDone bool `protobuf:"varint,5,opt,name=waitForDone,proto3" json:"waitForDone,omitempty"`
-	// Optional timeout (in milliseconds) waiting for present proof operation to be done.
-	// will be taken into account only when WaitForDone is enabled.
-	// If not provided then wallet will use its default timeout.
-	WaitForDoneTimeout *durationpb.Duration `protobuf:"bytes,6,opt,name=waitForDoneTimeout,proto3" json:"waitForDoneTimeout,omitempty"`
-}
-
-func (x *PresentProofRequest) Reset() {
-	*x = PresentProofRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[35]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *PresentProofRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PresentProofRequest) ProtoMessage() {}
-
-func (x *PresentProofRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[35]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PresentProofRequest.ProtoReflect.Descriptor instead.
-func (*PresentProofRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{35}
-}
-
-func (x *PresentProofRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *PresentProofRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *PresentProofRequest) GetThreadId() string {
-	if x != nil {
-		return x.ThreadId
-	}
-	return ""
-}
-
-func (x *PresentProofRequest) GetPresentation() *types2.GenericPresentation {
-	if x != nil {
-		return x.Presentation
-	}
-	return nil
-}
-
-func (x *PresentProofRequest) GetWaitForDone() bool {
-	if x != nil {
-		return x.WaitForDone
-	}
-	return false
-}
-
-func (x *PresentProofRequest) GetWaitForDoneTimeout() *durationpb.Duration {
-	if x != nil {
-		return x.WaitForDoneTimeout
-	}
-	return nil
-}
-
 // CredentialInteractionStatus holds the status of credential share/issuance interaction from wallet.
 // Typically holds web redirect info of credential interaction conclusion or problem-report.
 type CredentialInteractionStatus struct {
@@ -2530,7 +622,7 @@ type CredentialInteractionStatus struct {
 func (x *CredentialInteractionStatus) Reset() {
 	*x = CredentialInteractionStatus{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[36]
+		mi := &file_api_wallet_types_wallet_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2543,7 +635,7 @@ func (x *CredentialInteractionStatus) String() string {
 func (*CredentialInteractionStatus) ProtoMessage() {}
 
 func (x *CredentialInteractionStatus) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[36]
+	mi := &file_api_wallet_types_wallet_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2556,7 +648,7 @@ func (x *CredentialInteractionStatus) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CredentialInteractionStatus.ProtoReflect.Descriptor instead.
 func (*CredentialInteractionStatus) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{36}
+	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *CredentialInteractionStatus) GetStatus() string {
@@ -2573,519 +665,6 @@ func (x *CredentialInteractionStatus) GetUrl() string {
 	return ""
 }
 
-// PresentProofResponse is response model from wallet present proof operation.
-type PresentProofResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
-	// Optional web redirect URL info sent by verifier.
-	Url string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"` // redirectUrl
-}
-
-func (x *PresentProofResponse) Reset() {
-	*x = PresentProofResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[37]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *PresentProofResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PresentProofResponse) ProtoMessage() {}
-
-func (x *PresentProofResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[37]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PresentProofResponse.ProtoReflect.Descriptor instead.
-func (*PresentProofResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{37}
-}
-
-func (x *PresentProofResponse) GetStatus() string {
-	if x != nil {
-		return x.Status
-	}
-	return ""
-}
-
-func (x *PresentProofResponse) GetUrl() string {
-	if x != nil {
-		return x.Url
-	}
-	return ""
-}
-
-// ProposeCredentialRequest is request model for performing propose credential operation from wallet.
-type ProposeCredentialRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// out-of-band invitation to establish connection and send propose credential message.
-	Invitation *types1.GenericInvitation `protobuf:"bytes,3,opt,name=invitation,proto3" json:"invitation,omitempty"`
-	// Optional From DID option to customize sender DID.
-	From string `protobuf:"bytes,4,opt,name=from,proto3" json:"from,omitempty"`
-	// Timeout (in milliseconds) waiting for operation to be completed.
-	WaitForDoneTimeout *durationpb.Duration `protobuf:"bytes,5,opt,name=waitForDoneTimeout,proto3" json:"waitForDoneTimeout,omitempty"`
-	// Options for accepting out-of-band invitation and to perform DID exchange (for DIDComm V1).
-	ConnectOptions *ConnectOpts `protobuf:"bytes,6,opt,name=connectOptions,proto3" json:"connectOptions,omitempty"`
-}
-
-func (x *ProposeCredentialRequest) Reset() {
-	*x = ProposeCredentialRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[38]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ProposeCredentialRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ProposeCredentialRequest) ProtoMessage() {}
-
-func (x *ProposeCredentialRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[38]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ProposeCredentialRequest.ProtoReflect.Descriptor instead.
-func (*ProposeCredentialRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{38}
-}
-
-func (x *ProposeCredentialRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *ProposeCredentialRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *ProposeCredentialRequest) GetInvitation() *types1.GenericInvitation {
-	if x != nil {
-		return x.Invitation
-	}
-	return nil
-}
-
-func (x *ProposeCredentialRequest) GetFrom() string {
-	if x != nil {
-		return x.From
-	}
-	return ""
-}
-
-func (x *ProposeCredentialRequest) GetWaitForDoneTimeout() *durationpb.Duration {
-	if x != nil {
-		return x.WaitForDoneTimeout
-	}
-	return nil
-}
-
-func (x *ProposeCredentialRequest) GetConnectOptions() *ConnectOpts {
-	if x != nil {
-		return x.ConnectOptions
-	}
-	return nil
-}
-
-// ProposeCredentialResponse is response model from wallet propose credential operation.
-type ProposeCredentialResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// response offer credential message from issuer.
-	OfferCredential map[string]*anypb.Any `protobuf:"bytes,1,rep,name=offerCredential,proto3" json:"offerCredential,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-}
-
-func (x *ProposeCredentialResponse) Reset() {
-	*x = ProposeCredentialResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[39]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ProposeCredentialResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ProposeCredentialResponse) ProtoMessage() {}
-
-func (x *ProposeCredentialResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[39]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ProposeCredentialResponse.ProtoReflect.Descriptor instead.
-func (*ProposeCredentialResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{39}
-}
-
-func (x *ProposeCredentialResponse) GetOfferCredential() map[string]*anypb.Any {
-	if x != nil {
-		return x.OfferCredential
-	}
-	return nil
-}
-
-// RequestCredentialRequest is request model from wallet request credential operation.
-// Supported attachment MIME type "application/ld+json".
-type RequestCredentialRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// Thread ID from offer credential response previously received during propose credential interaction.
-	ThreadID string `protobuf:"bytes,3,opt,name=threadID,proto3" json:"threadID,omitempty"`
-	// presentation to be sent as part of request credential message.
-	Presentation *types2.GenericPresentation `protobuf:"bytes,4,opt,name=presentation,proto3" json:"presentation,omitempty"` // raw json
-	// If true then wallet will wait till it receives credential fulfillment response from issuer for given Timeout.
-	// Also, will return web redirect info if found in fulfillment message or problem-report.
-	WaitForDone bool `protobuf:"varint,5,opt,name=waitForDone,proto3" json:"waitForDone,omitempty"`
-	// Optional timeout (in milliseconds) waiting for credential fulfillment to arrive.
-	// will be taken into account only when WaitForDone is enabled.
-	// If not provided then wallet will use its default timeout.
-	WaitForDoneTimeout *durationpb.Duration `protobuf:"bytes,6,opt,name=waitForDoneTimeout,proto3" json:"waitForDoneTimeout,omitempty"`
-}
-
-func (x *RequestCredentialRequest) Reset() {
-	*x = RequestCredentialRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[40]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *RequestCredentialRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RequestCredentialRequest) ProtoMessage() {}
-
-func (x *RequestCredentialRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[40]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RequestCredentialRequest.ProtoReflect.Descriptor instead.
-func (*RequestCredentialRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{40}
-}
-
-func (x *RequestCredentialRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *RequestCredentialRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *RequestCredentialRequest) GetThreadID() string {
-	if x != nil {
-		return x.ThreadID
-	}
-	return ""
-}
-
-func (x *RequestCredentialRequest) GetPresentation() *types2.GenericPresentation {
-	if x != nil {
-		return x.Presentation
-	}
-	return nil
-}
-
-func (x *RequestCredentialRequest) GetWaitForDone() bool {
-	if x != nil {
-		return x.WaitForDone
-	}
-	return false
-}
-
-func (x *RequestCredentialRequest) GetWaitForDoneTimeout() *durationpb.Duration {
-	if x != nil {
-		return x.WaitForDoneTimeout
-	}
-	return nil
-}
-
-// RequestCredentialResponse is response model from wallet request credential operation.
-type RequestCredentialResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// One of the status present proof or issue credential interaction
-	// Refer https://github.com/hyperledger/aries-rfcs/blob/main/features/0015-acks/README.md#ack-status.
-	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
-	// Optional web redirect URL info sent by verifier.
-	Url string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"` // redirectUrl
-}
-
-func (x *RequestCredentialResponse) Reset() {
-	*x = RequestCredentialResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[41]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *RequestCredentialResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RequestCredentialResponse) ProtoMessage() {}
-
-func (x *RequestCredentialResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[41]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RequestCredentialResponse.ProtoReflect.Descriptor instead.
-func (*RequestCredentialResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{41}
-}
-
-func (x *RequestCredentialResponse) GetStatus() string {
-	if x != nil {
-		return x.Status
-	}
-	return ""
-}
-
-func (x *RequestCredentialResponse) GetUrl() string {
-	if x != nil {
-		return x.Url
-	}
-	return ""
-}
-
-// ResolveCredentialManifestRequest is request model for resolving credential manifest from wallet.
-type ResolveCredentialManifestRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	//WalletAuth
-	// Authorization token for performing wallet operations.
-	Auth string `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
-	// ID of wallet user.
-	UserID string `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
-	// Credential Manifest on which given credential fulfillment or credential needs to be resolved.
-	Manifest *types2.CredentialManifest `protobuf:"bytes,3,opt,name=manifest,proto3" json:"manifest,omitempty"`
-	// Fulfillment to be be resolved.
-	// If provided, then this option takes precedence over credential resolve option.
-	Fulfillment *types2.CredentialFulfillment `protobuf:"bytes,4,opt,name=fulfillment,proto3" json:"fulfillment,omitempty"`
-	// Credential to be be resolved, to be provided along with 'DescriptorID' to be used for resolving.
-	Credential *types.VerifiableCredential `protobuf:"bytes,5,opt,name=credential,proto3" json:"credential,omitempty"`
-	// ID of the Credential from wallet content to be be resolved, to be provided along with 'DescriptorID'.
-	CredentialID string `protobuf:"bytes,6,opt,name=credentialID,proto3" json:"credentialID,omitempty"`
-	// ID of the output descriptor to be used for resolving given credential.
-	DescriptorID string `protobuf:"bytes,7,opt,name=descriptorID,proto3" json:"descriptorID,omitempty"`
-}
-
-func (x *ResolveCredentialManifestRequest) Reset() {
-	*x = ResolveCredentialManifestRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[42]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ResolveCredentialManifestRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ResolveCredentialManifestRequest) ProtoMessage() {}
-
-func (x *ResolveCredentialManifestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[42]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ResolveCredentialManifestRequest.ProtoReflect.Descriptor instead.
-func (*ResolveCredentialManifestRequest) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{42}
-}
-
-func (x *ResolveCredentialManifestRequest) GetAuth() string {
-	if x != nil {
-		return x.Auth
-	}
-	return ""
-}
-
-func (x *ResolveCredentialManifestRequest) GetUserID() string {
-	if x != nil {
-		return x.UserID
-	}
-	return ""
-}
-
-func (x *ResolveCredentialManifestRequest) GetManifest() *types2.CredentialManifest {
-	if x != nil {
-		return x.Manifest
-	}
-	return nil
-}
-
-func (x *ResolveCredentialManifestRequest) GetFulfillment() *types2.CredentialFulfillment {
-	if x != nil {
-		return x.Fulfillment
-	}
-	return nil
-}
-
-func (x *ResolveCredentialManifestRequest) GetCredential() *types.VerifiableCredential {
-	if x != nil {
-		return x.Credential
-	}
-	return nil
-}
-
-func (x *ResolveCredentialManifestRequest) GetCredentialID() string {
-	if x != nil {
-		return x.CredentialID
-	}
-	return ""
-}
-
-func (x *ResolveCredentialManifestRequest) GetDescriptorID() string {
-	if x != nil {
-		return x.DescriptorID
-	}
-	return ""
-}
-
-// ResolveCredentialManifestResponse is response model from wallet credential manifest resolve operation.
-type ResolveCredentialManifestResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// List of Resolved Descriptor results.
-	Resolved []*types2.ResolvedDescriptor `protobuf:"bytes,1,rep,name=resolved,proto3" json:"resolved,omitempty"`
-}
-
-func (x *ResolveCredentialManifestResponse) Reset() {
-	*x = ResolveCredentialManifestResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_wallet_types_wallet_proto_msgTypes[43]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ResolveCredentialManifestResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ResolveCredentialManifestResponse) ProtoMessage() {}
-
-func (x *ResolveCredentialManifestResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_wallet_types_wallet_proto_msgTypes[43]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ResolveCredentialManifestResponse.ProtoReflect.Descriptor instead.
-func (*ResolveCredentialManifestResponse) Descriptor() ([]byte, []int) {
-	return file_api_wallet_types_wallet_proto_rawDescGZIP(), []int{43}
-}
-
-func (x *ResolveCredentialManifestResponse) GetResolved() []*types2.ResolvedDescriptor {
-	if x != nil {
-		return x.Resolved
-	}
-	return nil
-}
-
 var File_api_wallet_types_wallet_proto protoreflect.FileDescriptor
 
 var file_api_wallet_types_wallet_proto_rawDesc = []byte{
@@ -3095,445 +674,81 @@ var file_api_wallet_types_wallet_proto_rawDesc = []byte{
 	0x73, 0x1a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
 	0x75, 0x66, 0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1e, 0x67, 0x6f,
 	0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x64, 0x75,
-	0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1d, 0x61, 0x70,
-	0x69, 0x2f, 0x76, 0x63, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2f, 0x63, 0x72, 0x65, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x61, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1f, 0x61, 0x70, 0x69,
-	0x2f, 0x76, 0x63, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2f, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e,
-	0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x21, 0x61, 0x70,
-	0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x64, 0x6f, 0x63, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2f,
-	0x6f, 0x75, 0x74, 0x6f, 0x66, 0x62, 0x61, 0x6e, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
-	0x2d, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74,
-	0x70, 0x72, 0x6f, 0x6f, 0x66, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2f, 0x70, 0x72, 0x65, 0x73,
-	0x65, 0x6e, 0x74, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x88,
-	0x01, 0x0a, 0x10, 0x45, 0x44, 0x56, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x55, 0x52, 0x4c,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x55, 0x52,
-	0x4c, 0x12, 0x18, 0x0a, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49, 0x44, 0x12, 0x24, 0x0a, 0x0d, 0x65,
-	0x6e, 0x63, 0x72, 0x79, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x4b, 0x49, 0x44, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0d, 0x65, 0x6e, 0x63, 0x72, 0x79, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x4b, 0x49,
-	0x44, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x61, 0x63, 0x4b, 0x49, 0x44, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x06, 0x6d, 0x61, 0x63, 0x4b, 0x49, 0x44, 0x22, 0xb6, 0x01, 0x0a, 0x0a, 0x55, 0x6e,
-	0x6c, 0x6f, 0x63, 0x6b, 0x41, 0x75, 0x74, 0x68, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68,
-	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x75, 0x74,
-	0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x67, 0x6e, 0x61, 0x70, 0x54, 0x6f,
-	0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x67, 0x6e, 0x61, 0x70, 0x54,
-	0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69,
-	0x74, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x61, 0x70, 0x61, 0x62, 0x69,
-	0x6c, 0x69, 0x74, 0x79, 0x12, 0x2a, 0x0a, 0x10, 0x61, 0x75, 0x74, 0x68, 0x7a, 0x4b, 0x65, 0x79,
-	0x53, 0x74, 0x6f, 0x72, 0x65, 0x55, 0x52, 0x4c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10,
-	0x61, 0x75, 0x74, 0x68, 0x7a, 0x4b, 0x65, 0x79, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x55, 0x52, 0x4c,
-	0x12, 0x20, 0x0a, 0x0b, 0x73, 0x65, 0x63, 0x72, 0x65, 0x74, 0x53, 0x68, 0x61, 0x72, 0x65, 0x18,
-	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x65, 0x63, 0x72, 0x65, 0x74, 0x53, 0x68, 0x61,
-	0x72, 0x65, 0x22, 0xd8, 0x01, 0x0a, 0x1c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4f, 0x72, 0x55,
-	0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x2e, 0x0a, 0x12, 0x6c,
-	0x6f, 0x63, 0x61, 0x6c, 0x4b, 0x4d, 0x53, 0x50, 0x61, 0x73, 0x73, 0x70, 0x68, 0x72, 0x61, 0x73,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x4b, 0x4d,
-	0x53, 0x50, 0x61, 0x73, 0x73, 0x70, 0x68, 0x72, 0x61, 0x73, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x6b,
-	0x65, 0x79, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x55, 0x52, 0x4c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0b, 0x6b, 0x65, 0x79, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x55, 0x52, 0x4c, 0x12, 0x4e, 0x0a,
-	0x10, 0x65, 0x64, 0x76, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x77, 0x61,
-	0x6c, 0x6c, 0x65, 0x74, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x45, 0x44, 0x56, 0x43, 0x6f,
-	0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x10, 0x65, 0x64, 0x76,
-	0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x8c, 0x02,
-	0x0a, 0x13, 0x55, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x57, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x2e, 0x0a,
-	0x12, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x4b, 0x4d, 0x53, 0x50, 0x61, 0x73, 0x73, 0x70, 0x68, 0x72,
-	0x61, 0x73, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x6c, 0x6f, 0x63, 0x61, 0x6c,
-	0x4b, 0x4d, 0x53, 0x50, 0x61, 0x73, 0x73, 0x70, 0x68, 0x72, 0x61, 0x73, 0x65, 0x12, 0x3c, 0x0a,
-	0x0a, 0x77, 0x65, 0x62, 0x4b, 0x4d, 0x53, 0x41, 0x75, 0x74, 0x68, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x1c, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x2e, 0x74,
-	0x79, 0x70, 0x65, 0x73, 0x2e, 0x55, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x41, 0x75, 0x74, 0x68, 0x52,
-	0x0a, 0x77, 0x65, 0x62, 0x4b, 0x4d, 0x53, 0x41, 0x75, 0x74, 0x68, 0x12, 0x3c, 0x0a, 0x0a, 0x65,
-	0x64, 0x76, 0x55, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x1c, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x2e, 0x74, 0x79, 0x70,
-	0x65, 0x73, 0x2e, 0x55, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x41, 0x75, 0x74, 0x68, 0x52, 0x0a, 0x65,
-	0x64, 0x76, 0x55, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x12, 0x31, 0x0a, 0x06, 0x65, 0x78, 0x70,
-	0x69, 0x72, 0x79, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
-	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x06, 0x65, 0x78, 0x70, 0x69, 0x72, 0x79, 0x22, 0x2c, 0x0a, 0x14,
-	0x55, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x57, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x2b, 0x0a, 0x11, 0x4c, 0x6f,
-	0x63, 0x6b, 0x57, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x22, 0x2c, 0x0a, 0x12, 0x4c, 0x6f, 0x63, 0x6b, 0x57,
-	0x61, 0x6c, 0x6c, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a,
-	0x06, 0x63, 0x6c, 0x6f, 0x73, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x63,
-	0x6c, 0x6f, 0x73, 0x65, 0x64, 0x22, 0x38, 0x0a, 0x0a, 0x57, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x41,
-	0x75, 0x74, 0x68, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49,
-	0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x22,
-	0x24, 0x0a, 0x0a, 0x57, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x12, 0x16, 0x0a,
-	0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75,
-	0x73, 0x65, 0x72, 0x49, 0x44, 0x22, 0x9f, 0x01, 0x0a, 0x11, 0x41, 0x64, 0x64, 0x43, 0x6f, 0x6e,
-	0x74, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x61,
-	0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x75, 0x74, 0x68, 0x12,
-	0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x65,
-	0x6e, 0x74, 0x54, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x63, 0x6f,
-	0x6e, 0x74, 0x65, 0x6e, 0x74, 0x54, 0x79, 0x70, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6e,
-	0x74, 0x65, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74,
-	0x65, 0x6e, 0x74, 0x12, 0x22, 0x0a, 0x0c, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x49, 0x44, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x63, 0x6f, 0x6c, 0x6c, 0x65,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x44, 0x22, 0x82, 0x01, 0x0a, 0x14, 0x52, 0x65, 0x6d, 0x6f,
-	0x76, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
-	0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x20, 0x0a, 0x0b,
-	0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x54, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x54, 0x79, 0x70, 0x65, 0x12, 0x1c,
-	0x0a, 0x09, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x09, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x49, 0x44, 0x22, 0x7f, 0x0a, 0x11,
-	0x47, 0x65, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x20, 0x0a,
-	0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x54, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x54, 0x79, 0x70, 0x65, 0x12,
-	0x1c, 0x0a, 0x09, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x09, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x49, 0x44, 0x22, 0x50, 0x0a,
-	0x12, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x54, 0x79,
-	0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e,
-	0x74, 0x54, 0x79, 0x70, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x22,
-	0x88, 0x01, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e,
-	0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06,
-	0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73,
-	0x65, 0x72, 0x49, 0x44, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x54,
-	0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x63, 0x6f, 0x6e, 0x74, 0x65,
-	0x6e, 0x74, 0x54, 0x79, 0x70, 0x65, 0x12, 0x22, 0x0a, 0x0c, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63,
-	0x74, 0x69, 0x6f, 0x6e, 0x49, 0x44, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x63, 0x6f,
-	0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x44, 0x22, 0xa7, 0x01, 0x0a, 0x15, 0x47,
-	0x65, 0x74, 0x41, 0x6c, 0x6c, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x51, 0x0a, 0x08, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x73,
-	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x35, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x77, 0x61, 0x6c,
-	0x6c, 0x65, 0x74, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c,
-	0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e,
-	0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x63,
-	0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x73, 0x1a, 0x3b, 0x0a, 0x0d, 0x43, 0x6f, 0x6e, 0x74, 0x65,
-	0x6e, 0x74, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61,
-	0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
-	0x3a, 0x02, 0x38, 0x01, 0x22, 0x4b, 0x0a, 0x0b, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x28, 0x0a, 0x0f, 0x63, 0x72, 0x65, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x61, 0x6c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0c,
-	0x52, 0x0f, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x22, 0x76, 0x0a, 0x13, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06,
-	0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73,
-	0x65, 0x72, 0x49, 0x44, 0x12, 0x33, 0x0a, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x18, 0x03, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74,
-	0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x52, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x22, 0x56, 0x0a, 0x14, 0x43, 0x6f, 0x6e,
-	0x74, 0x65, 0x6e, 0x74, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x3e, 0x0a, 0x07, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03,
-	0x28, 0x0b, 0x32, 0x24, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x76, 0x63, 0x2e, 0x74, 0x79, 0x70, 0x65,
-	0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x50, 0x72, 0x65, 0x73,
-	0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x07, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74,
-	0x73, 0x22, 0xbe, 0x01, 0x0a, 0x0c, 0x49, 0x73, 0x73, 0x75, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x42,
-	0x0a, 0x0a, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x22, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x76, 0x63, 0x2e, 0x74, 0x79, 0x70, 0x65,
-	0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x72, 0x65, 0x64,
-	0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x0a, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69,
-	0x61, 0x6c, 0x12, 0x3e, 0x0a, 0x0c, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x4f, 0x70, 0x74, 0x69, 0x6f,
-	0x6e, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x76,
-	0x63, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x50, 0x72, 0x6f, 0x6f, 0x66, 0x4f, 0x70, 0x74,
-	0x69, 0x6f, 0x6e, 0x73, 0x52, 0x0c, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x4f, 0x70, 0x74, 0x69, 0x6f,
-	0x6e, 0x73, 0x22, 0x53, 0x0a, 0x0d, 0x49, 0x73, 0x73, 0x75, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x42, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61,
-	0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x76, 0x63,
-	0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x61, 0x62, 0x6c,
-	0x65, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x0a, 0x63, 0x72, 0x65,
-	0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x22, 0xbe, 0x02, 0x0a, 0x0c, 0x50, 0x72, 0x6f, 0x76,
-	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06,
-	0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73,
-	0x65, 0x72, 0x49, 0x44, 0x12, 0x2c, 0x0a, 0x11, 0x73, 0x74, 0x6f, 0x72, 0x65, 0x64, 0x43, 0x72,
-	0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52,
-	0x11, 0x73, 0x74, 0x6f, 0x72, 0x65, 0x64, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61,
-	0x6c, 0x73, 0x12, 0x4a, 0x0a, 0x0e, 0x72, 0x61, 0x77, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74,
-	0x69, 0x61, 0x6c, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x61, 0x70, 0x69,
-	0x2e, 0x76, 0x63, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69,
-	0x61, 0x62, 0x6c, 0x65, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x0e,
-	0x72, 0x61, 0x77, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x12, 0x48,
-	0x0a, 0x0c, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x76, 0x63, 0x2e, 0x74, 0x79,
-	0x70, 0x65, 0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x50, 0x72,
-	0x65, 0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0c, 0x70, 0x72, 0x65, 0x73,
-	0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x3e, 0x0a, 0x0c, 0x70, 0x72, 0x6f, 0x6f,
-	0x66, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a,
-	0x2e, 0x61, 0x70, 0x69, 0x2e, 0x76, 0x63, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x50, 0x72,
-	0x6f, 0x6f, 0x66, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x0c, 0x70, 0x72, 0x6f, 0x6f,
-	0x66, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x59, 0x0a, 0x0d, 0x50, 0x72, 0x6f, 0x76,
-	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x48, 0x0a, 0x0c, 0x70, 0x72, 0x65,
-	0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x24, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x76, 0x63, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x56,
-	0x65, 0x72, 0x69, 0x66, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x50, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0c, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x22, 0x81, 0x02, 0x0a, 0x0d, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65,
-	0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49,
-	0x44, 0x12, 0x2e, 0x0a, 0x12, 0x73, 0x74, 0x6f, 0x72, 0x65, 0x64, 0x43, 0x72, 0x65, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x61, 0x6c, 0x49, 0x44, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x73,
-	0x74, 0x6f, 0x72, 0x65, 0x64, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x49,
-	0x44, 0x12, 0x4a, 0x0a, 0x0e, 0x72, 0x61, 0x77, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69,
-	0x61, 0x6c, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x61, 0x70, 0x69, 0x2e,
-	0x76, 0x63, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x61,
-	0x62, 0x6c, 0x65, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x0e, 0x72,
-	0x61, 0x77, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x12, 0x48, 0x0a,
-	0x0c, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x76, 0x63, 0x2e, 0x74, 0x79, 0x70,
-	0x65, 0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x50, 0x72, 0x65,
-	0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0c, 0x70, 0x72, 0x65, 0x73, 0x65,
-	0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x42, 0x0a, 0x0e, 0x56, 0x65, 0x72, 0x69, 0x66,
-	0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x76, 0x65, 0x72,
-	0x69, 0x66, 0x69, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x76, 0x65, 0x72,
-	0x69, 0x66, 0x69, 0x65, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x22, 0x51, 0x0a, 0x0d, 0x44,
-	0x65, 0x72, 0x69, 0x76, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x2a, 0x0a, 0x05,
-	0x66, 0x72, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f,
-	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e,
-	0x79, 0x52, 0x05, 0x66, 0x72, 0x61, 0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x6e, 0x6f, 0x6e, 0x63,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x6f, 0x6e, 0x63, 0x65, 0x22, 0xfc,
-	0x01, 0x0a, 0x0d, 0x44, 0x65, 0x72, 0x69, 0x76, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
-	0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x2e, 0x0a, 0x12,
-	0x73, 0x74, 0x6f, 0x72, 0x65, 0x64, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c,
-	0x49, 0x44, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x73, 0x74, 0x6f, 0x72, 0x65, 0x64,
-	0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x49, 0x44, 0x12, 0x4a, 0x0a, 0x0e,
-	0x72, 0x61, 0x77, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x18, 0x04,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x76, 0x63, 0x2e, 0x74, 0x79,
-	0x70, 0x65, 0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x72,
-	0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x0e, 0x72, 0x61, 0x77, 0x43, 0x72, 0x65,
-	0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x12, 0x43, 0x0a, 0x0c, 0x64, 0x65, 0x72, 0x69,
-	0x76, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xd5, 0x01, 0x0a,
+	0x07, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72,
+	0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44,
+	0x12, 0x2e, 0x0a, 0x12, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x4b, 0x4d, 0x53, 0x50, 0x61, 0x73, 0x73,
+	0x70, 0x68, 0x72, 0x61, 0x73, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x6c, 0x6f,
+	0x63, 0x61, 0x6c, 0x4b, 0x4d, 0x53, 0x50, 0x61, 0x73, 0x73, 0x70, 0x68, 0x72, 0x61, 0x73, 0x65,
+	0x12, 0x22, 0x0a, 0x0c, 0x6b, 0x65, 0x79, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x55, 0x52, 0x4c,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x6b, 0x65, 0x79, 0x53, 0x65, 0x72, 0x76, 0x65,
+	0x72, 0x55, 0x52, 0x4c, 0x12, 0x4e, 0x0a, 0x10, 0x65, 0x64, 0x76, 0x43, 0x6f, 0x6e, 0x66, 0x69,
+	0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22,
 	0x2e, 0x61, 0x70, 0x69, 0x2e, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x2e, 0x74, 0x79, 0x70, 0x65,
-	0x73, 0x2e, 0x44, 0x65, 0x72, 0x69, 0x76, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52,
-	0x0c, 0x64, 0x65, 0x72, 0x69, 0x76, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x54, 0x0a,
-	0x0e, 0x44, 0x65, 0x72, 0x69, 0x76, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x42, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x76, 0x63, 0x2e, 0x74, 0x79, 0x70,
-	0x65, 0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x72, 0x65,
-	0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x0a, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74,
-	0x69, 0x61, 0x6c, 0x22, 0x5c, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4b, 0x65, 0x79,
-	0x50, 0x61, 0x69, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x61,
-	0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x75, 0x74, 0x68, 0x12,
-	0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x18, 0x0a, 0x07, 0x6b, 0x65, 0x79, 0x54, 0x79,
-	0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6b, 0x65, 0x79, 0x54, 0x79, 0x70,
-	0x65, 0x22, 0x3d, 0x0a, 0x07, 0x4b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72, 0x12, 0x14, 0x0a, 0x05,
-	0x6b, 0x65, 0x79, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6b, 0x65, 0x79,
-	0x49, 0x44, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79,
-	0x22, 0x4b, 0x0a, 0x15, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4b, 0x65, 0x79, 0x50, 0x61, 0x69,
-	0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x6b, 0x65, 0x79,
-	0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6b, 0x65, 0x79, 0x49, 0x44, 0x12,
-	0x1c, 0x0a, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x22, 0xd2, 0x02,
-	0x0a, 0x0e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
-	0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x3d, 0x0a, 0x0a,
-	0x69, 0x6e, 0x76, 0x69, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x1d, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x64, 0x6f, 0x63, 0x2e, 0x74,
-	0x79, 0x70, 0x65, 0x73, 0x2e, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52,
-	0x0a, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x18, 0x0a, 0x07, 0x6d,
-	0x79, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x79,
-	0x4c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x2c, 0x0a, 0x11, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x72, 0x43,
-	0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x09,
-	0x52, 0x11, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x72, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69,
-	0x6f, 0x6e, 0x73, 0x12, 0x28, 0x0a, 0x0f, 0x72, 0x65, 0x75, 0x73, 0x65, 0x43, 0x6f, 0x6e, 0x6e,
-	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x72, 0x65,
-	0x75, 0x73, 0x65, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x2e, 0x0a,
+	0x73, 0x2e, 0x45, 0x44, 0x56, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x52, 0x10, 0x65, 0x64, 0x76, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x22, 0x88, 0x01, 0x0a, 0x10, 0x45, 0x44, 0x56, 0x43, 0x6f, 0x6e, 0x66,
+	0x69, 0x67, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x73, 0x65, 0x72,
+	0x76, 0x65, 0x72, 0x55, 0x52, 0x4c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x65,
+	0x72, 0x76, 0x65, 0x72, 0x55, 0x52, 0x4c, 0x12, 0x18, 0x0a, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x49,
+	0x44, 0x12, 0x24, 0x0a, 0x0d, 0x65, 0x6e, 0x63, 0x72, 0x79, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x4b,
+	0x49, 0x44, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x65, 0x6e, 0x63, 0x72, 0x79, 0x70,
+	0x74, 0x69, 0x6f, 0x6e, 0x4b, 0x49, 0x44, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x61, 0x63, 0x4b, 0x49,
+	0x44, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x61, 0x63, 0x4b, 0x49, 0x44, 0x22,
+	0xb6, 0x01, 0x0a, 0x0a, 0x55, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x41, 0x75, 0x74, 0x68, 0x12, 0x1c,
+	0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x1c, 0x0a, 0x09,
+	0x67, 0x6e, 0x61, 0x70, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x67, 0x6e, 0x61, 0x70, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x61,
+	0x70, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a,
+	0x63, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x12, 0x2a, 0x0a, 0x10, 0x61, 0x75,
+	0x74, 0x68, 0x7a, 0x4b, 0x65, 0x79, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x55, 0x52, 0x4c, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x61, 0x75, 0x74, 0x68, 0x7a, 0x4b, 0x65, 0x79, 0x53, 0x74,
+	0x6f, 0x72, 0x65, 0x55, 0x52, 0x4c, 0x12, 0x20, 0x0a, 0x0b, 0x73, 0x65, 0x63, 0x72, 0x65, 0x74,
+	0x53, 0x68, 0x61, 0x72, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x65, 0x63,
+	0x72, 0x65, 0x74, 0x53, 0x68, 0x61, 0x72, 0x65, 0x22, 0x38, 0x0a, 0x0a, 0x57, 0x61, 0x6c, 0x6c,
+	0x65, 0x74, 0x41, 0x75, 0x74, 0x68, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73,
+	0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72,
+	0x49, 0x44, 0x22, 0x4b, 0x0a, 0x0b, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x28, 0x0a, 0x0f, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74,
+	0x69, 0x61, 0x6c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0c, 0x52, 0x0f,
+	0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x22,
+	0x51, 0x0a, 0x0d, 0x44, 0x65, 0x72, 0x69, 0x76, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x12, 0x2a, 0x0a, 0x05, 0x66, 0x72, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x05, 0x66, 0x72, 0x61, 0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05,
+	0x6e, 0x6f, 0x6e, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x6f, 0x6e,
+	0x63, 0x65, 0x22, 0x3d, 0x0a, 0x07, 0x4b, 0x65, 0x79, 0x50, 0x61, 0x69, 0x72, 0x12, 0x14, 0x0a,
+	0x05, 0x6b, 0x65, 0x79, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6b, 0x65,
+	0x79, 0x49, 0x44, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65,
+	0x79, 0x22, 0xe4, 0x01, 0x0a, 0x0b, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x4f, 0x70, 0x74,
+	0x73, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x79, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x6d, 0x79, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x2c, 0x0a, 0x11, 0x72,
+	0x6f, 0x75, 0x74, 0x65, 0x72, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x11, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x72, 0x43, 0x6f,
+	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x28, 0x0a, 0x0f, 0x72, 0x65, 0x75,
+	0x73, 0x65, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0f, 0x72, 0x65, 0x75, 0x73, 0x65, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x12, 0x2e, 0x0a, 0x12, 0x72, 0x65, 0x75, 0x73, 0x65, 0x41, 0x6e, 0x79, 0x43,
+	0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52,
 	0x12, 0x72, 0x65, 0x75, 0x73, 0x65, 0x41, 0x6e, 0x79, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
-	0x69, 0x6f, 0x6e, 0x18, 0x07, 0x20, 0x01, 0x28, 0x08, 0x52, 0x12, 0x72, 0x65, 0x75, 0x73, 0x65,
-	0x41, 0x6e, 0x79, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x33, 0x0a,
-	0x07, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19,
-	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x07, 0x74, 0x69, 0x6d, 0x65, 0x6f,
-	0x75, 0x74, 0x22, 0xe4, 0x01, 0x0a, 0x0b, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x4f, 0x70,
-	0x74, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x79, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x79, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x2c, 0x0a, 0x11,
-	0x72, 0x6f, 0x75, 0x74, 0x65, 0x72, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x11, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x72, 0x43,
-	0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x28, 0x0a, 0x0f, 0x72, 0x65,
-	0x75, 0x73, 0x65, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x0f, 0x72, 0x65, 0x75, 0x73, 0x65, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x2e, 0x0a, 0x12, 0x72, 0x65, 0x75, 0x73, 0x65, 0x41, 0x6e, 0x79,
-	0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08,
-	0x52, 0x12, 0x72, 0x65, 0x75, 0x73, 0x65, 0x41, 0x6e, 0x79, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x33, 0x0a, 0x07, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x18,
-	0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x52, 0x07, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x22, 0x35, 0x0a, 0x0f, 0x43, 0x6f, 0x6e,
-	0x6e, 0x65, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a, 0x0c,
-	0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0c, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x44,
-	0x22, 0x9e, 0x02, 0x0a, 0x1a, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x65, 0x50, 0x72, 0x65, 0x73,
-	0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61,
-	0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x44, 0x0a, 0x0a, 0x69,
-	0x6e, 0x76, 0x69, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x24, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x64, 0x6f, 0x63, 0x2e, 0x74, 0x79,
-	0x70, 0x65, 0x73, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x72, 0x69, 0x63, 0x49, 0x6e, 0x76, 0x69, 0x74,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0a, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x12, 0x12, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x66, 0x72, 0x6f, 0x6d, 0x12, 0x33, 0x0a, 0x07, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74,
-	0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x52, 0x07, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x12, 0x45, 0x0a, 0x0e, 0x63, 0x6f,
-	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x06, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x2e,
-	0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x4f, 0x70, 0x74,
-	0x73, 0x52, 0x0e, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e,
-	0x73, 0x22, 0xf5, 0x01, 0x0a, 0x1b, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x65, 0x50, 0x72, 0x65,
-	0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x78, 0x0a, 0x13, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x46,
-	0x2e, 0x61, 0x70, 0x69, 0x2e, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x2e, 0x74, 0x79, 0x70, 0x65,
-	0x73, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x65, 0x50, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x50, 0x72,
-	0x65, 0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x13, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x5c, 0x0a, 0x18, 0x50,
-	0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x2a, 0x0a, 0x05, 0x76, 0x61, 0x6c,
-	0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
-	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x05,
-	0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x9f, 0x02, 0x0a, 0x13, 0x50, 0x72,
-	0x65, 0x73, 0x65, 0x6e, 0x74, 0x50, 0x72, 0x6f, 0x6f, 0x66, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x1a, 0x0a,
-	0x08, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x49, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x49, 0x64, 0x12, 0x53, 0x0a, 0x0c, 0x70, 0x72, 0x65,
-	0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x2f, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e,
-	0x74, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x47, 0x65, 0x6e,
-	0x65, 0x72, 0x69, 0x63, 0x50, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x52, 0x0c, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x20,
-	0x0a, 0x0b, 0x77, 0x61, 0x69, 0x74, 0x46, 0x6f, 0x72, 0x44, 0x6f, 0x6e, 0x65, 0x18, 0x05, 0x20,
-	0x01, 0x28, 0x08, 0x52, 0x0b, 0x77, 0x61, 0x69, 0x74, 0x46, 0x6f, 0x72, 0x44, 0x6f, 0x6e, 0x65,
-	0x12, 0x49, 0x0a, 0x12, 0x77, 0x61, 0x69, 0x74, 0x46, 0x6f, 0x72, 0x44, 0x6f, 0x6e, 0x65, 0x54,
-	0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67,
-	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44,
-	0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x12, 0x77, 0x61, 0x69, 0x74, 0x46, 0x6f, 0x72,
-	0x44, 0x6f, 0x6e, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x22, 0x47, 0x0a, 0x1b, 0x43,
-	0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x61, 0x63,
-	0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74,
-	0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74,
-	0x75, 0x73, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x03, 0x75, 0x72, 0x6c, 0x22, 0x40, 0x0a, 0x14, 0x50, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x50,
-	0x72, 0x6f, 0x6f, 0x66, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06,
-	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74,
-	0x61, 0x74, 0x75, 0x73, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x22, 0xb2, 0x02, 0x0a, 0x18, 0x50, 0x72, 0x6f, 0x70, 0x6f,
-	0x73, 0x65, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49,
-	0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12,
-	0x44, 0x0a, 0x0a, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x64, 0x6f,
-	0x63, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x72, 0x69, 0x63, 0x49,
-	0x6e, 0x76, 0x69, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0a, 0x69, 0x6e, 0x76, 0x69, 0x74,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x12, 0x49, 0x0a, 0x12, 0x77, 0x61, 0x69,
-	0x74, 0x46, 0x6f, 0x72, 0x44, 0x6f, 0x6e, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x18,
-	0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x52, 0x12, 0x77, 0x61, 0x69, 0x74, 0x46, 0x6f, 0x72, 0x44, 0x6f, 0x6e, 0x65, 0x54, 0x69, 0x6d,
-	0x65, 0x6f, 0x75, 0x74, 0x12, 0x45, 0x0a, 0x0e, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x4f,
-	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x61,
-	0x70, 0x69, 0x2e, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e,
-	0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x4f, 0x70, 0x74, 0x73, 0x52, 0x0e, 0x63, 0x6f, 0x6e,
-	0x6e, 0x65, 0x63, 0x74, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0xe1, 0x01, 0x0a, 0x19,
-	0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x65, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61,
-	0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x6a, 0x0a, 0x0f, 0x6f, 0x66, 0x66,
-	0x65, 0x72, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x03,
-	0x28, 0x0b, 0x32, 0x40, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x2e,
-	0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x6f, 0x73, 0x65, 0x43, 0x72, 0x65,
-	0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e,
-	0x4f, 0x66, 0x66, 0x65, 0x72, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x45,
-	0x6e, 0x74, 0x72, 0x79, 0x52, 0x0f, 0x6f, 0x66, 0x66, 0x65, 0x72, 0x43, 0x72, 0x65, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x61, 0x6c, 0x1a, 0x58, 0x0a, 0x14, 0x4f, 0x66, 0x66, 0x65, 0x72, 0x43, 0x72,
-	0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a,
-	0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12,
-	0x2a, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14,
-	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x2e, 0x41, 0x6e, 0x79, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22,
-	0xa4, 0x02, 0x0a, 0x18, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04,
-	0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x75, 0x74, 0x68,
-	0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x68, 0x72, 0x65,
-	0x61, 0x64, 0x49, 0x44, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x68, 0x72, 0x65,
-	0x61, 0x64, 0x49, 0x44, 0x12, 0x53, 0x0a, 0x0c, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x61, 0x70, 0x69,
-	0x2e, 0x64, 0x69, 0x64, 0x2e, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x70, 0x72, 0x6f, 0x6f,
-	0x66, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x72, 0x69, 0x63, 0x50,
-	0x72, 0x65, 0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0c, 0x70, 0x72, 0x65,
-	0x73, 0x65, 0x6e, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x20, 0x0a, 0x0b, 0x77, 0x61, 0x69,
-	0x74, 0x46, 0x6f, 0x72, 0x44, 0x6f, 0x6e, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0b,
-	0x77, 0x61, 0x69, 0x74, 0x46, 0x6f, 0x72, 0x44, 0x6f, 0x6e, 0x65, 0x12, 0x49, 0x0a, 0x12, 0x77,
-	0x61, 0x69, 0x74, 0x46, 0x6f, 0x72, 0x44, 0x6f, 0x6e, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x6f, 0x75,
-	0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x52, 0x12, 0x77, 0x61, 0x69, 0x74, 0x46, 0x6f, 0x72, 0x44, 0x6f, 0x6e, 0x65, 0x54,
-	0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x22, 0x45, 0x0a, 0x19, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x10, 0x0a, 0x03, 0x75,
-	0x72, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x22, 0xfb, 0x02,
-	0x0a, 0x20, 0x52, 0x65, 0x73, 0x6f, 0x6c, 0x76, 0x65, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74,
-	0x69, 0x61, 0x6c, 0x4d, 0x61, 0x6e, 0x69, 0x66, 0x65, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x75, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x61, 0x75, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x4a,
-	0x0a, 0x08, 0x6d, 0x61, 0x6e, 0x69, 0x66, 0x65, 0x73, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x2e, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x70, 0x72, 0x65, 0x73, 0x65,
-	0x6e, 0x74, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x72,
-	0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x4d, 0x61, 0x6e, 0x69, 0x66, 0x65, 0x73, 0x74,
-	0x52, 0x08, 0x6d, 0x61, 0x6e, 0x69, 0x66, 0x65, 0x73, 0x74, 0x12, 0x53, 0x0a, 0x0b, 0x66, 0x75,
-	0x6c, 0x66, 0x69, 0x6c, 0x6c, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x31, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x70, 0x72, 0x65, 0x73, 0x65, 0x6e,
-	0x74, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x72, 0x65,
-	0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x46, 0x75, 0x6c, 0x66, 0x69, 0x6c, 0x6c, 0x6d, 0x65,
-	0x6e, 0x74, 0x52, 0x0b, 0x66, 0x75, 0x6c, 0x66, 0x69, 0x6c, 0x6c, 0x6d, 0x65, 0x6e, 0x74, 0x12,
-	0x42, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x18, 0x05, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x76, 0x63, 0x2e, 0x74, 0x79, 0x70,
-	0x65, 0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x72, 0x65,
-	0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x0a, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74,
-	0x69, 0x61, 0x6c, 0x12, 0x22, 0x0a, 0x0c, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61,
-	0x6c, 0x49, 0x44, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x63, 0x72, 0x65, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x61, 0x6c, 0x49, 0x44, 0x12, 0x22, 0x0a, 0x0c, 0x64, 0x65, 0x73, 0x63, 0x72,
-	0x69, 0x70, 0x74, 0x6f, 0x72, 0x49, 0x44, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x64,
-	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x6f, 0x72, 0x49, 0x44, 0x22, 0x6f, 0x0a, 0x21, 0x52,
-	0x65, 0x73, 0x6f, 0x6c, 0x76, 0x65, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c,
-	0x4d, 0x61, 0x6e, 0x69, 0x66, 0x65, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x4a, 0x0a, 0x08, 0x72, 0x65, 0x73, 0x6f, 0x6c, 0x76, 0x65, 0x64, 0x18, 0x01, 0x20, 0x03,
-	0x28, 0x0b, 0x32, 0x2e, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x70, 0x72, 0x65,
-	0x73, 0x65, 0x6e, 0x74, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e,
-	0x52, 0x65, 0x73, 0x6f, 0x6c, 0x76, 0x65, 0x64, 0x44, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74,
-	0x6f, 0x72, 0x52, 0x08, 0x72, 0x65, 0x73, 0x6f, 0x6c, 0x76, 0x65, 0x64, 0x42, 0x29, 0x5a, 0x27,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x62, 0x68, 0x61, 0x74, 0x74,
-	0x69, 0x2f, 0x47, 0x53, 0x53, 0x49, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x77, 0x61, 0x6c, 0x6c, 0x65,
-	0x74, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x69, 0x6f, 0x6e, 0x12, 0x33, 0x0a, 0x07, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52,
+	0x07, 0x74, 0x69, 0x6d, 0x65, 0x6f, 0x75, 0x74, 0x22, 0x47, 0x0a, 0x1b, 0x43, 0x72, 0x65, 0x64,
+	0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x61, 0x63, 0x74, 0x69, 0x6f,
+	0x6e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75,
+	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12,
+	0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72,
+	0x6c, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x62, 0x68, 0x61, 0x74, 0x74, 0x69, 0x2f, 0x47, 0x53, 0x53, 0x49, 0x2f, 0x61, 0x70, 0x69, 0x2f,
+	0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3548,114 +763,29 @@ func file_api_wallet_types_wallet_proto_rawDescGZIP() []byte {
 	return file_api_wallet_types_wallet_proto_rawDescData
 }
 
-var file_api_wallet_types_wallet_proto_msgTypes = make([]protoimpl.MessageInfo, 47)
+var file_api_wallet_types_wallet_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_api_wallet_types_wallet_proto_goTypes = []interface{}{
-	(*EDVConfiguration)(nil),                  // 0: api.wallet.types.EDVConfiguration
-	(*UnlockAuth)(nil),                        // 1: api.wallet.types.UnlockAuth
-	(*CreateOrUpdateProfileRequest)(nil),      // 2: api.wallet.types.CreateOrUpdateProfileRequest
-	(*UnlockWalletRequest)(nil),               // 3: api.wallet.types.UnlockWalletRequest
-	(*UnlockWalletResponse)(nil),              // 4: api.wallet.types.UnlockWalletResponse
-	(*LockWalletRequest)(nil),                 // 5: api.wallet.types.LockWalletRequest
-	(*LockWalletResponse)(nil),                // 6: api.wallet.types.LockWalletResponse
-	(*WalletAuth)(nil),                        // 7: api.wallet.types.WalletAuth
-	(*WalletUser)(nil),                        // 8: api.wallet.types.WalletUser
-	(*AddContentRequest)(nil),                 // 9: api.wallet.types.AddContentRequest
-	(*RemoveContentRequest)(nil),              // 10: api.wallet.types.RemoveContentRequest
-	(*GetContentRequest)(nil),                 // 11: api.wallet.types.GetContentRequest
-	(*GetContentResponse)(nil),                // 12: api.wallet.types.GetContentResponse
-	(*GetAllContentRequest)(nil),              // 13: api.wallet.types.GetAllContentRequest
-	(*GetAllContentResponse)(nil),             // 14: api.wallet.types.GetAllContentResponse
-	(*QueryParams)(nil),                       // 15: api.wallet.types.QueryParams
-	(*ContentQueryRequest)(nil),               // 16: api.wallet.types.ContentQueryRequest
-	(*ContentQueryResponse)(nil),              // 17: api.wallet.types.ContentQueryResponse
-	(*IssueRequest)(nil),                      // 18: api.wallet.types.IssueRequest
-	(*IssueResponse)(nil),                     // 19: api.wallet.types.IssueResponse
-	(*ProveRequest)(nil),                      // 20: api.wallet.types.ProveRequest
-	(*ProveResponse)(nil),                     // 21: api.wallet.types.ProveResponse
-	(*VerifyRequest)(nil),                     // 22: api.wallet.types.VerifyRequest
-	(*VerifyResponse)(nil),                    // 23: api.wallet.types.VerifyResponse
-	(*DeriveOptions)(nil),                     // 24: api.wallet.types.DeriveOptions
-	(*DeriveRequest)(nil),                     // 25: api.wallet.types.DeriveRequest
-	(*DeriveResponse)(nil),                    // 26: api.wallet.types.DeriveResponse
-	(*CreateKeyPairRequest)(nil),              // 27: api.wallet.types.CreateKeyPairRequest
-	(*KeyPair)(nil),                           // 28: api.wallet.types.KeyPair
-	(*CreateKeyPairResponse)(nil),             // 29: api.wallet.types.CreateKeyPairResponse
-	(*ConnectRequest)(nil),                    // 30: api.wallet.types.ConnectRequest
-	(*ConnectOpts)(nil),                       // 31: api.wallet.types.ConnectOpts
-	(*ConnectResponse)(nil),                   // 32: api.wallet.types.ConnectResponse
-	(*ProposePresentationRequest)(nil),        // 33: api.wallet.types.ProposePresentationRequest
-	(*ProposePresentationResponse)(nil),       // 34: api.wallet.types.ProposePresentationResponse
-	(*PresentProofRequest)(nil),               // 35: api.wallet.types.PresentProofRequest
-	(*CredentialInteractionStatus)(nil),       // 36: api.wallet.types.CredentialInteractionStatus
-	(*PresentProofResponse)(nil),              // 37: api.wallet.types.PresentProofResponse
-	(*ProposeCredentialRequest)(nil),          // 38: api.wallet.types.ProposeCredentialRequest
-	(*ProposeCredentialResponse)(nil),         // 39: api.wallet.types.ProposeCredentialResponse
-	(*RequestCredentialRequest)(nil),          // 40: api.wallet.types.RequestCredentialRequest
-	(*RequestCredentialResponse)(nil),         // 41: api.wallet.types.RequestCredentialResponse
-	(*ResolveCredentialManifestRequest)(nil),  // 42: api.wallet.types.ResolveCredentialManifestRequest
-	(*ResolveCredentialManifestResponse)(nil), // 43: api.wallet.types.ResolveCredentialManifestResponse
-	nil,                                  // 44: api.wallet.types.GetAllContentResponse.ContentsEntry
-	nil,                                  // 45: api.wallet.types.ProposePresentationResponse.PresentationRequestEntry
-	nil,                                  // 46: api.wallet.types.ProposeCredentialResponse.OfferCredentialEntry
-	(*durationpb.Duration)(nil),          // 47: google.protobuf.Duration
-	(*types.VerifiablePresentation)(nil), // 48: api.vc.types.VerifiablePresentation
-	(*types.VerifiableCredential)(nil),   // 49: api.vc.types.VerifiableCredential
-	(*types.ProofOptions)(nil),           // 50: api.vc.types.ProofOptions
-	(*anypb.Any)(nil),                    // 51: google.protobuf.Any
-	(*types1.Invitation)(nil),            // 52: api.did.doc.types.Invitation
-	(*types1.GenericInvitation)(nil),     // 53: api.did.doc.types.GenericInvitation
-	(*types2.GenericPresentation)(nil),   // 54: api.did.presentproof.types.GenericPresentation
-	(*types2.CredentialManifest)(nil),    // 55: api.did.presentproof.types.CredentialManifest
-	(*types2.CredentialFulfillment)(nil), // 56: api.did.presentproof.types.CredentialFulfillment
-	(*types2.ResolvedDescriptor)(nil),    // 57: api.did.presentproof.types.ResolvedDescriptor
+	(*Profile)(nil),                     // 0: api.wallet.types.Profile
+	(*EDVConfiguration)(nil),            // 1: api.wallet.types.EDVConfiguration
+	(*UnlockAuth)(nil),                  // 2: api.wallet.types.UnlockAuth
+	(*WalletAuth)(nil),                  // 3: api.wallet.types.WalletAuth
+	(*QueryParams)(nil),                 // 4: api.wallet.types.QueryParams
+	(*DeriveOptions)(nil),               // 5: api.wallet.types.DeriveOptions
+	(*KeyPair)(nil),                     // 6: api.wallet.types.KeyPair
+	(*ConnectOpts)(nil),                 // 7: api.wallet.types.ConnectOpts
+	(*CredentialInteractionStatus)(nil), // 8: api.wallet.types.CredentialInteractionStatus
+	(*anypb.Any)(nil),                   // 9: google.protobuf.Any
+	(*durationpb.Duration)(nil),         // 10: google.protobuf.Duration
 }
 var file_api_wallet_types_wallet_proto_depIdxs = []int32{
-	0,  // 0: api.wallet.types.CreateOrUpdateProfileRequest.edvConfiguration:type_name -> api.wallet.types.EDVConfiguration
-	1,  // 1: api.wallet.types.UnlockWalletRequest.webKMSAuth:type_name -> api.wallet.types.UnlockAuth
-	1,  // 2: api.wallet.types.UnlockWalletRequest.edvUnlocks:type_name -> api.wallet.types.UnlockAuth
-	47, // 3: api.wallet.types.UnlockWalletRequest.expiry:type_name -> google.protobuf.Duration
-	44, // 4: api.wallet.types.GetAllContentResponse.contents:type_name -> api.wallet.types.GetAllContentResponse.ContentsEntry
-	15, // 5: api.wallet.types.ContentQueryRequest.query:type_name -> api.wallet.types.QueryParams
-	48, // 6: api.wallet.types.ContentQueryResponse.results:type_name -> api.vc.types.VerifiablePresentation
-	49, // 7: api.wallet.types.IssueRequest.credential:type_name -> api.vc.types.VerifiableCredential
-	50, // 8: api.wallet.types.IssueRequest.proofOptions:type_name -> api.vc.types.ProofOptions
-	49, // 9: api.wallet.types.IssueResponse.credential:type_name -> api.vc.types.VerifiableCredential
-	49, // 10: api.wallet.types.ProveRequest.rawCredentials:type_name -> api.vc.types.VerifiableCredential
-	48, // 11: api.wallet.types.ProveRequest.presentation:type_name -> api.vc.types.VerifiablePresentation
-	50, // 12: api.wallet.types.ProveRequest.proofOptions:type_name -> api.vc.types.ProofOptions
-	48, // 13: api.wallet.types.ProveResponse.presentation:type_name -> api.vc.types.VerifiablePresentation
-	49, // 14: api.wallet.types.VerifyRequest.rawCredentials:type_name -> api.vc.types.VerifiableCredential
-	48, // 15: api.wallet.types.VerifyRequest.presentation:type_name -> api.vc.types.VerifiablePresentation
-	51, // 16: api.wallet.types.DeriveOptions.frame:type_name -> google.protobuf.Any
-	49, // 17: api.wallet.types.DeriveRequest.rawCredentials:type_name -> api.vc.types.VerifiableCredential
-	24, // 18: api.wallet.types.DeriveRequest.deriveOption:type_name -> api.wallet.types.DeriveOptions
-	49, // 19: api.wallet.types.DeriveResponse.credential:type_name -> api.vc.types.VerifiableCredential
-	52, // 20: api.wallet.types.ConnectRequest.invitation:type_name -> api.did.doc.types.Invitation
-	47, // 21: api.wallet.types.ConnectRequest.timeout:type_name -> google.protobuf.Duration
-	47, // 22: api.wallet.types.ConnectOpts.timeout:type_name -> google.protobuf.Duration
-	53, // 23: api.wallet.types.ProposePresentationRequest.invitation:type_name -> api.did.doc.types.GenericInvitation
-	47, // 24: api.wallet.types.ProposePresentationRequest.timeout:type_name -> google.protobuf.Duration
-	31, // 25: api.wallet.types.ProposePresentationRequest.connectOptions:type_name -> api.wallet.types.ConnectOpts
-	45, // 26: api.wallet.types.ProposePresentationResponse.presentationRequest:type_name -> api.wallet.types.ProposePresentationResponse.PresentationRequestEntry
-	54, // 27: api.wallet.types.PresentProofRequest.presentation:type_name -> api.did.presentproof.types.GenericPresentation
-	47, // 28: api.wallet.types.PresentProofRequest.waitForDoneTimeout:type_name -> google.protobuf.Duration
-	53, // 29: api.wallet.types.ProposeCredentialRequest.invitation:type_name -> api.did.doc.types.GenericInvitation
-	47, // 30: api.wallet.types.ProposeCredentialRequest.waitForDoneTimeout:type_name -> google.protobuf.Duration
-	31, // 31: api.wallet.types.ProposeCredentialRequest.connectOptions:type_name -> api.wallet.types.ConnectOpts
-	46, // 32: api.wallet.types.ProposeCredentialResponse.offerCredential:type_name -> api.wallet.types.ProposeCredentialResponse.OfferCredentialEntry
-	54, // 33: api.wallet.types.RequestCredentialRequest.presentation:type_name -> api.did.presentproof.types.GenericPresentation
-	47, // 34: api.wallet.types.RequestCredentialRequest.waitForDoneTimeout:type_name -> google.protobuf.Duration
-	55, // 35: api.wallet.types.ResolveCredentialManifestRequest.manifest:type_name -> api.did.presentproof.types.CredentialManifest
-	56, // 36: api.wallet.types.ResolveCredentialManifestRequest.fulfillment:type_name -> api.did.presentproof.types.CredentialFulfillment
-	49, // 37: api.wallet.types.ResolveCredentialManifestRequest.credential:type_name -> api.vc.types.VerifiableCredential
-	57, // 38: api.wallet.types.ResolveCredentialManifestResponse.resolved:type_name -> api.did.presentproof.types.ResolvedDescriptor
-	51, // 39: api.wallet.types.ProposePresentationResponse.PresentationRequestEntry.value:type_name -> google.protobuf.Any
-	51, // 40: api.wallet.types.ProposeCredentialResponse.OfferCredentialEntry.value:type_name -> google.protobuf.Any
-	41, // [41:41] is the sub-list for method output_type
-	41, // [41:41] is the sub-list for method input_type
-	41, // [41:41] is the sub-list for extension type_name
-	41, // [41:41] is the sub-list for extension extendee
-	0,  // [0:41] is the sub-list for field type_name
+	1,  // 0: api.wallet.types.Profile.edvConfiguration:type_name -> api.wallet.types.EDVConfiguration
+	9,  // 1: api.wallet.types.DeriveOptions.frame:type_name -> google.protobuf.Any
+	10, // 2: api.wallet.types.ConnectOpts.timeout:type_name -> google.protobuf.Duration
+	3,  // [3:3] is the sub-list for method output_type
+	3,  // [3:3] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_api_wallet_types_wallet_proto_init() }
@@ -3665,7 +795,7 @@ func file_api_wallet_types_wallet_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_api_wallet_types_wallet_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EDVConfiguration); i {
+			switch v := v.(*Profile); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3677,7 +807,7 @@ func file_api_wallet_types_wallet_proto_init() {
 			}
 		}
 		file_api_wallet_types_wallet_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UnlockAuth); i {
+			switch v := v.(*EDVConfiguration); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3689,7 +819,7 @@ func file_api_wallet_types_wallet_proto_init() {
 			}
 		}
 		file_api_wallet_types_wallet_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateOrUpdateProfileRequest); i {
+			switch v := v.(*UnlockAuth); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3701,54 +831,6 @@ func file_api_wallet_types_wallet_proto_init() {
 			}
 		}
 		file_api_wallet_types_wallet_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UnlockWalletRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UnlockWalletResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LockWalletRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LockWalletResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*WalletAuth); i {
 			case 0:
 				return &v.state
@@ -3760,91 +842,7 @@ func file_api_wallet_types_wallet_proto_init() {
 				return nil
 			}
 		}
-		file_api_wallet_types_wallet_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WalletUser); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AddContentRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RemoveContentRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetContentRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetContentResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetAllContentRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetAllContentResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+		file_api_wallet_types_wallet_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*QueryParams); i {
 			case 0:
 				return &v.state
@@ -3856,103 +854,7 @@ func file_api_wallet_types_wallet_proto_init() {
 				return nil
 			}
 		}
-		file_api_wallet_types_wallet_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ContentQueryRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ContentQueryResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*IssueRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*IssueResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProveRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProveResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VerifyRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VerifyResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+		file_api_wallet_types_wallet_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DeriveOptions); i {
 			case 0:
 				return &v.state
@@ -3964,43 +866,7 @@ func file_api_wallet_types_wallet_proto_init() {
 				return nil
 			}
 		}
-		file_api_wallet_types_wallet_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeriveRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeriveResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateKeyPairRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+		file_api_wallet_types_wallet_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*KeyPair); i {
 			case 0:
 				return &v.state
@@ -4012,31 +878,7 @@ func file_api_wallet_types_wallet_proto_init() {
 				return nil
 			}
 		}
-		file_api_wallet_types_wallet_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateKeyPairResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
+		file_api_wallet_types_wallet_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ConnectOpts); i {
 			case 0:
 				return &v.state
@@ -4048,140 +890,8 @@ func file_api_wallet_types_wallet_proto_init() {
 				return nil
 			}
 		}
-		file_api_wallet_types_wallet_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProposePresentationRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProposePresentationResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PresentProofRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
+		file_api_wallet_types_wallet_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CredentialInteractionStatus); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PresentProofResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProposeCredentialRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProposeCredentialResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RequestCredentialRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RequestCredentialResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ResolveCredentialManifestRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_wallet_types_wallet_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ResolveCredentialManifestResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4199,7 +909,7 @@ func file_api_wallet_types_wallet_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_wallet_types_wallet_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   47,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

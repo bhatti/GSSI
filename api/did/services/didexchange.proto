@@ -32,6 +32,21 @@ message CreateInvitationRequest {
   repeated api.did.doc.types.GenericAttachment attachments = 10;
 }
 
+
+
+// createInvitationRequest model
+//
+// This is used for operation to create invitation
+//
+// swagger:parameters createInvitation
+message docCreateInvitationRequest {// nolint: unused,deadcode
+  // Params for creating invitation
+  //
+  // in: body
+  // should it be path?
+  CreateInvitationRequest body = 1;
+}
+
 // CreateInvitationResponse model
 //
 // Represents a CreateInvitation response message.
@@ -42,21 +57,40 @@ message CreateInvitationResponse {
   string invitation_url = 3;
 }
 
+//
+// This is used for returning a create invitation response with a single connection invitation as body
+//
+// swagger:response createInvitationResponse
+message docCreateInvitationResponse {// nolint: unused,deadcode
+  // in: body
+  CreateInvitationResponse body = 1;
+}
+
 // AcceptInvitationRequest model
 //
 // This is used for accepting an invitation.
 // This is used for operation to accept connection invitation.
 //
+message AcceptInvitationBody {
+  // Optional Public DID to be used for this request
+  string public = 1; // controller
+  api.did.doc.types.Invitation invitation = 2;
+  string my_label = 3;
+  // Optional specifies router connections (comma-separated values)
+  string router_connections = 4;
+  string reuse_connection = 5;
+  bool reuse_any_connection = 6;
+}
+
+// swagger:parameters acceptInvitation
 message AcceptInvitationRequest {
   // Connection ID
+  //
+  // in: path
+  // required: true
   string id = 1; // controller
-  // Optional Public DID to be used for this request
-  string public = 2; // controller
-  api.did.doc.types.Invitation invitation = 3;
-  string my_label = 4;
-  string router_connections = 5;
-  string reuse_connection = 6;
-  bool reuse_any_connection = 7;
+  // in: body
+  AcceptInvitationBody body = 2;
 }
 
 // AcceptInvitationResponse model
@@ -117,53 +151,33 @@ message AcceptInvitationResponse {
 
 }
 
-
-
-
-// ActionStopRequest model
+// This is used for returning a accept invitation response for single invitation
 //
-// This is used when action needs to be rejected.
-//
-message ActionStopRequest {
-  // PIID Protocol instance ID
-  string piid = 1;
-  // Reason why action is declined
-  string reason = 2;
+// swagger:response acceptInvitationResponse
+message docAcceptInvitationResponse {// nolint: unused,deadcode
+  // in: body
+  AcceptInvitationResponse body = 1;
 }
 
-// ActionStopResponse model
+// ReceiveInvitationRequest  This is used for operation to receive connection invitation
 //
-// Represents a ActionStop response message.
-//
-message ActionStopResponse {
-
+message ReceiveInvitationRequest {// nolint: unused,deadcode
+  // The Invitation Invitation to receive
+  //
+  // required: true
+  // in: body
+  api.did.doc.types.Invitation body = 1;
 }
 
-// ActionsResponse model
-//
-// Represents Actions response message.
-//
-message ActionsResponse {
-  repeated api.did.doc.types.Action actions = 1;
+// swagger:parameters receiveInvitation
+message docReceiveInvitationRequest {// nolint: unused,deadcode
+  // The Invitation Invitation to receive
+  //
+  // required: true
+  // in: body
+  api.did.doc.types.Invitation body = 1;
 }
 
-// ActionContinueRequest model
-//
-// This is used when we need to proceed with the protocol.
-//
-message ActionContinueRequest {
-  // PIID Protocol instance ID
-  string piid = 1;
-  string label = 2;
-  string router_connections = 3;
-}
-
-// ActionContinueResponse model
-//
-// Represents a ActionContinue response message.
-//
-message ActionContinueResponse {
-}
 
 // ReceiveInvitationResponse model
 //
@@ -205,11 +219,18 @@ message ReceiveInvitationResponse {
   google.protobuf.Timestamp updated_at = 12;
 }
 
+// // swagger:response receiveInvitationResponse
+message docReceiveInvitationResponse {// nolint: unused,deadcode
+  // in: body
+  ReceiveInvitationResponse body = 1;
+}
+
 
 // ImplicitInvitationRequest model
 //
 // This is used by invitee to create implicit invitation.
 //
+// swagger:parameters implicitInvitation
 message ImplicitInvitationRequest {
   // InviterDID
   string their_did = 1;
@@ -236,12 +257,24 @@ message ImplicitInvitationResponse {
   string connection_id = 1;
 }
 
+// This is used for returning create implicit invitation response
+//
+// swagger:response implicitInvitationResponse
+message docImplicitInvitationResponse {// nolint: unused,deadcode
+  // in: body
+  ImplicitInvitationResponse body = 1;
+}
+
 // GetConnectionRequest model
 //
 // This is used for getting specific connection record.
 //
+// swagger:parameters getConnection
 message GetConnectionRequest {
   // The ID of the connection to get
+  //
+  // in: path
+  // required: true
   string id = 1;
 }
 
@@ -249,7 +282,11 @@ message GetConnectionRequest {
 //
 // This is used for querying connections.
 //
-message QueryConnectionsRequest {
+// swagger:parameters queryConnections
+message QueryConnectionsRequest {// nolint: unused,deadcode
+  //
+  // in: path
+  // required: true
   // Params for querying connections
   // QueryConnectionsParams
 
@@ -279,8 +316,26 @@ message QueryConnectionsRequest {
 
   // TheirRole is other party's role
   string their_role = 9;
+
+  int32 page = 10;
+
+  int32 page_size = 11;
 }
 
+
+
+// QueryConnectionsResponse model
+//
+// This is used for returning query connections results.
+//
+message QueryConnectionsResponse {
+  repeated api.did.doc.types.Record results = 1; // Connection
+}
+
+// swagger:response queryConnectionsResponse
+message docQueryConnectionsResponse {
+  QueryConnectionsResponse body = 1;
+}
 
 
 
@@ -292,20 +347,24 @@ message QueryConnectionResponse {
   api.did.doc.types.Record result = 1; // Connection
 }
 
-// QueryConnectionsResponse model
+// This is used for returning query connection result for single record search
 //
-// This is used for returning query connections results.
-//
-message QueryConnectionsResponse {
-  repeated api.did.doc.types.Record results = 1; // Connection
+// swagger:response queryConnectionResponse
+message docQueryConnectionResponse {
+  // in: body
+  QueryConnectionResponse body = 1;
 }
 
-// AcceptExchangeRequestRequest model
+// AcceptExchangeRequest model
 //
 // This is used for accepting connection request.
 //
-message AcceptExchangeRequestRequest {
+// swagger:parameters acceptRequest
+message AcceptExchangeRequest {
   // Connection ID
+  //
+  // in: path
+  // required: true
   string id = 1;
 
   // Optional Public DID to be used for this invitation
@@ -372,13 +431,37 @@ message ExchangeResponse {
   google.protobuf.Timestamp updated_at = 17;
 }
 
+// acceptExchangeResult model
+//
+// This is used for returning response for accept exchange request
+//
+// swagger:response acceptExchangeResponse
+message AcceptExchangeResponse {// nolint: unused,deadcode
+  // in: body
+  ExchangeResponse body = 1;
+}
+
+
 // RemoveConnectionRequest model
 //
 // This is used for removing connection request.
 //
+// swagger:parameters removeConnection
 message RemoveConnectionRequest {
   // The ID of the connection record to remove
+  //
+  // in: path
+  // required: true
   string id = 1;
+}
+
+//
+// response of remove connection action
+//
+// swagger:response removeConnectionResponse
+message RemoveConnectionResponse {
+  // in: body
+  bool deleted = 1;
 }
 
 // ConnectionID model
@@ -404,6 +487,27 @@ message CreateConnectionRequest {
   string parent_thread_id = 6;
   string thread_id = 7;
   bool implicit = 8;
+}
+
+// Request to create a new connection between two DIDs.
+//
+// swagger:parameters createConnection
+message docCreateConnectionRequest {// nolint: unused,deadcode
+  // Params for creating a connection.
+  //
+  // in: body
+  // required: true
+  CreateConnectionRequest params = 1;
+}
+
+// createConnectionResp model
+//
+// This is used as the response model for save connection api.
+//
+// swagger:response createConnectionResp
+message docCreateConnectionResp {// nolint: unused,deadcode
+  // in: body
+  ConnectionID body = 1;
 }
 
 // DIDDocument model.
@@ -610,3 +714,75 @@ message AcceptProblemReportRequest {
 message AcceptProblemReportResponse {
 
 }
+
+
+// DIDExchangeController defines methods for the DIDExchange protocol controller. - REST service controller for DID Exchange.
+service DIDExchangeController {
+  // createInvitation swagger:route POST /connections/create-invitation did-exchange createInvitation
+  // Creates a new connection invitation....
+  //
+  // Responses:
+  //        200: createInvitationResponse
+  rpc createInvitation(CreateInvitationRequest) returns (CreateInvitationResponse) {}
+
+
+  // receiveInvitation swagger:route POST /connections/receive-invitation did-exchange receiveInvitation
+  //
+  // Receive a new connection invitation....
+  //
+  // Responses:
+  //        200: receiveInvitationResponse
+  rpc receiveInvitation(ReceiveInvitationRequest) returns (ReceiveInvitationResponse) {}
+
+  // AcceptInvitation swagger:route POST /connections/{id}/accept-invitation did-exchange acceptInvitation
+  // Accept a stored connection invitation....
+  // Responses:
+  //        200: acceptInvitationResponse
+  rpc acceptInvitation(AcceptInvitationRequest) returns (AcceptInvitationResponse) {}
+
+  // CreateImplicitInvitation swagger:route POST /connections/create-implicit-invitation did-exchange implicitInvitation
+  //  Create implicit invitation using inviter DID.
+  // Responses:
+  //        200: implicitInvitationResponse
+  rpc createImplicitInvitation(ImplicitInvitationRequest) returns (ImplicitInvitationResponse) {}
+
+  // acceptExchangeRequest swagger:route POST /connections/{id}/accept-request did-exchange acceptRequest
+  //
+  // Accepts a stored connection request.
+  //
+  // Responses:
+  //        200: acceptExchangeResponse
+  rpc acceptExchangeRequest(AcceptExchangeRequest) returns (AcceptExchangeResponse) {}
+
+  // QueryConnections swagger:route GET /connections did-exchange queryConnections
+  //
+  // query agent to agent connections.
+  // Responses:
+  //        200: queryConnectionsResponse
+  //
+  rpc queryConnections(QueryConnectionsRequest) returns (QueryConnectionsResponse) {}
+
+  // queryConnectionByID swagger:route GET /connections/{id} did-exchange getConnection
+  //
+  // Fetch a single connection record.
+  // Responses:
+  //        200: queryConnectionResponse
+  rpc queryConnectionByID(GetConnectionRequest) returns (QueryConnectionResponse) {}
+
+  // createConnection swagger:route POST /connections/create did-exchange createConnection
+  //
+  // Saves the connection record.
+  //
+  // Responses:
+  //    200: createConnectionResp
+  rpc createConnection(CreateConnectionRequest) returns (ConnectionID) {}
+
+  // removeConnection swagger:route POST /connections/{id}/remove did-exchange removeConnection
+  //
+  // Removes given connection record.
+  //
+  // Responses:
+  //    200: removeConnectionResponse
+  rpc removeConnection(RemoveConnectionRequest) returns (RemoveConnectionRequest) {}
+}
+

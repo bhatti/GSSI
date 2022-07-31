@@ -38,6 +38,7 @@ message QueryOptions {
 }
 
 // Tag represents a Name + Value pair that can be associated with a key + value pair for querying later.
+// swagger:model
 message Tag {
   // Name can be used to tag a given key + value pair as belonging to some sort of common
   // group. Example: Identifying a key+value pair as being a Verifiable Credential by storing it
@@ -53,9 +54,6 @@ message Tag {
   // Tag Values are dynamic and are not specified in a StoreConfiguration.
   // Tag Values cannot contain any ':' characters.
   string value = 2;
-}
-
-message Void {
 }
 
 message Bool {
@@ -83,3 +81,17 @@ message Operation {
   bytes  value = 4;
 }
 
+
+// Record model containing name, ID and other fields of interest.
+// swagger:model
+message Record {
+  string id = 1;
+  string name = 2;
+  repeated string context = 3;
+  repeated string type = 4;
+  string subjectId = 5;
+  // MyDID and TheirDID contains information about participants who were involved in the process
+  // of issuing a credential or presentation.
+  string my_did = 6;
+  string their_did = 7;
+}

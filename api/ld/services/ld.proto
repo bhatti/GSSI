@@ -1,0 +1,143 @@
+syntax = "proto3";
+
+package api.ld.services;
+
+option go_package = "github.com/bhatti/GSSI/api/ld/services";
+
+import "api/ld/types/ld.proto";
+
+// AddContextsRequest is a request model for adding JSON-LD contexts.
+// swagger:parameters addContextsReq
+message AddContextsRequest {
+  // in: body
+  repeated api.ld.types.Document documents = 1;
+}
+
+message AddContextsResponse {
+}
+
+// RefreshRemoteProviderRequest model for updating JSON-LD contexts from the remote context provider.
+//
+// swagger:parameters refreshRemoteProviderReq
+message RefreshRemoteProviderRequest {//nolint: unused,deadcode
+  // in: path
+  // required: true
+  string id = 1;
+}
+
+message RefreshRemoteProviderResponse {//nolint: unused,deadcode
+}
+
+// DeleteRemoteProviderRequest model for deleting remote provider and JSON-LD contexts from that provider.
+//
+// swagger:parameters deleteRemoteProviderReq
+message DeleteRemoteProviderRequest {//nolint: unused,deadcode
+  // in: path
+  // required: true
+  string id = 1;
+}
+
+message DeleteRemoteProviderResponse {//nolint: unused,deadcode
+}
+
+
+// AddRemoteProviderRequest is a request model for adding a new remote context provider.
+message AddRemoteProviderRequest {
+  string endpoint = 1;
+}
+
+message AddRemoteProviderResponse {
+}
+
+// swagger:parameters addRemoteProviderReq
+message docAddRemoteProviderRequest {
+  // in: body
+  AddRemoteProviderRequest body = 1;
+}
+
+// GetAllRemoteProvidersRequest model is an empty model
+//
+// swagger:parameters getAllRemoteProvidersReq
+message GetAllRemoteProvidersRequest {// nolint:unused,deadcode
+  int32 page = 2;
+  int32 pageSize = 3;
+}
+
+// GetAllRemoteProvidersResponse model for getting list of all remote context providers from the underlying storage.
+message GetAllRemoteProvidersResponse {
+  repeated api.ld.types.RemoteProviderRecord providers = 1;
+}
+
+// swagger:response getAllRemoteProvidersResp
+message docGetAllRemoteProvidersResponse {
+  // in: body
+  GetAllRemoteProvidersResponse body = 1;
+}
+
+// RefreshAllRemoteProvidersRequest model is an empty model
+//
+// swagger:parameters refreshAllRemoteProvidersReq
+message RefreshAllRemoteProvidersRequst {// nolint:unused,deadcode
+  // in: body
+}
+
+message RefreshAllRemoteProvidersResponse {// nolint:unused,deadcode
+}
+
+// LinkedDataController - Operation contains REST operations provided by JSON-LD API.
+service LinkedDataController {
+
+  // addContexts swagger:route POST /ld/context ld addContextsReq
+  //
+  // Adds JSON-LD contexts to the underlying storage.
+  //
+  // Responses:
+  //    default: genericError
+  rpc addContexts(AddContextsRequest) returns (AddContextsResponse) {}
+
+  // addRemoteProvider swagger:route POST /ld/remote-provider ld addRemoteProviderReq
+  //
+  // Adds remote provider and JSON-LD contexts from that provider to the underlying storage.
+  //
+  // Responses:
+  //    default: genericError
+  rpc addRemoteProvider(AddRemoteProviderRequest) returns (AddRemoteProviderResponse) {}
+
+
+  // refreshRemoteProvider swagger:route POST /ld/remote-provider/{id}/refresh ld refreshRemoteProviderReq
+  //
+  // Updates contexts from the remote provider.
+  //
+  // Responses:
+  //    default: genericError
+  rpc refreshRemoteProvider(RefreshRemoteProviderRequest) returns (RefreshRemoteProviderResponse) {}
+
+
+  // deleteRemoteProvider swagger:route DELETE /ld/remote-provider/{id} ld deleteRemoteProviderReq
+  //
+  // Deletes remote provider and JSON-LD contexts from that provider from the underlying storage.
+  //
+  //
+  // Responses:
+  //    default: genericError
+  rpc deleteRemoteProvider(DeleteRemoteProviderRequest) returns (DeleteRemoteProviderResponse) {}
+
+
+  // getAllRemoteProviders swagger:route GET /ld/remote-providers ld getAllRemoteProvidersReq
+  //
+  // Gets all remote providers from the underlying storage.
+  //
+  // Responses:
+  //    default: genericError
+  //    200: getAllRemoteProvidersResp
+  rpc getAllRemoteProviders(GetAllRemoteProvidersRequest) returns (GetAllRemoteProvidersResponse) {}
+
+  // RefreshAllRemoteProviders swagger:route POST /ld/remote-providers/refresh ld refreshAllRemoteProvidersReq
+  //
+  // Updates contexts from all remote providers in the underlying storage.
+  //
+  // Responses:
+  //    default: genericError
+  //    200: getAllRemoteProvidersResp
+  rpc refreshAllRemoteProviders(RefreshAllRemoteProvidersRequst) returns (RefreshAllRemoteProvidersResponse) {}
+}

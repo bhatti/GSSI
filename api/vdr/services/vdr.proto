@@ -1,0 +1,175 @@
+syntax = "proto3";
+
+package api.vdr.services;
+
+option go_package = "github.com/bhatti/GSSI/api/vdr/services";
+
+// See https://w3c-ccg.github.io/did-resolution/#dfn-verifiable-data-registry
+
+import "google/protobuf/any.proto";
+
+import "api/spi/types/store.proto";
+import "api/vdr/types/vdr.proto";
+import "api/did/doc/types/doc.proto";
+import "api/common/types/common.proto";
+
+// SaveDIDReq model
+//
+// This is used to save the did with did document.
+//
+// swagger:parameters saveDIDReq
+message SaveDIDReq {// nolint: unused,deadcode
+  // Params for saving the did document (pass the did document as json raw message)
+  //
+  // in: body
+  types.DIDArgs params = 1;
+}
+
+// CreateDIDRequest is model for create did request.
+message CreateDIDRequest {
+  string method = 1;
+  bytes did = 2; // json.RawMessage
+  map<string, google.protobuf.Any> opts = 3;
+}
+
+// docCreateDIDReq model
+//
+// This is used to create the did.
+//
+// swagger:parameters saveDIDReq
+message docCreateIDReq {// nolint: unused,deadcode
+  // Params for creating the did document
+  //
+  // in: body
+  CreateDIDRequest params = 1;
+}
+
+// GetDIDReq model
+//
+// This is used to retrieve the did document.
+//
+// swagger:parameters getDIDReq
+message GetDIDReq {// nolint: unused,deadcode
+  // DID ID - pass the did
+  //
+  // in: path
+  // required: true
+  string id = 1;
+}
+
+// ResolveDIDReq model
+//
+// This is used to retrieve the did document.
+//
+// swagger:parameters resolveDIDReq
+message ResolveDIDReq {// nolint: unused,deadcode
+  // DID ID - pass the did
+  //
+  // in: path
+  // required: true
+  string id = 1;
+}
+
+// DocumentRes model
+//
+// This is used for returning query connection result for single record search
+//
+// swagger:response documentRes
+message DocumentRes {
+
+  // in: body
+  bytes did = 1; // json.RawMessage
+}
+
+// ResolveDIDRes model
+//
+// This is used for returning DID resolution response.
+//
+// swagger:response resolveDIDRes
+message ResolveDIDRes {// nolint: unused,deadcode
+
+  // in: body
+  bytes result = 1; // json.RawMessage
+}
+
+// docResolutionResponse model
+//
+// This is used for returning DID document resolution response.
+//
+// swagger:response docResResponse
+message docResolutionResponse {// nolint: unused,deadcode
+  // in: body
+  api.did.doc.types.DocResolution result = 1;
+}
+
+// swagger:parameters getDIDRecords
+message DetDIDRecordsReq {
+  int32 page = 1;
+  int32 pageSize = 2;
+}
+
+// DidRecordResult model
+//
+// This is used to return did records.
+//
+// GetDIDRecords retrieves the did doc containing name and didID. //TODO Add pagination feature #1566.
+// swagger:response didRecordResult
+message DidRecordResult {
+  // in: body
+  repeated api.spi.types.Record result = 1;
+  int64 total_records = 2;
+}
+
+
+// VDRController defines methods for the VDR controller.
+service VDRController {
+
+  // ResolveDID resolve did.
+  // ResolveDID swagger:route GET /vdr/did/resolve/{id} vdr resolveDIDReq
+  //
+  // Resolve did
+  //
+  // Responses:
+  //    default: genericError
+  //        200: resolveDIDRes
+  rpc resolveDID(ResolveDIDReq) returns (ResolveDIDRes) {}
+
+  // SaveDID saves the did doc to the store.
+  // SaveDID swagger:route POST /vdr/did vdr saveDIDReq
+  //
+  // Saves a did document with the friendly name.
+  //
+  // Responses:
+  //    default: genericError
+  rpc saveDID(SaveDIDReq) returns (api.common.types.EmptyResponse) {}
+
+  // CreateDID create the did doc.
+  // CreateDID swagger:route POST /vdr/did/create vdr createDIDReq
+  //
+  // Create a did document.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: documentRes
+  rpc createDID(CreateDIDRequest) returns (DocumentRes) {}
+
+  // GetDID retrieves the did from the store.
+  // GetDID swagger:route GET /vdr/did/{id} vdr getDIDReq
+  //
+  // Gets did document with the friendly name.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: documentRes
+  rpc getDID(GetDIDReq) returns (DocumentRes) {}
+
+  // GetDIDRecords retrieves the did doc containing name and didID.
+  // GetDIDRecords swagger:route GET /vdr/did/records vdr getDIDRecords
+  //
+  // Retrieves the did records
+  //
+  // Responses:
+  //    default: genericError
+  //        200: didRecordResult
+  rpc getDIDRecords(DetDIDRecordsReq) returns (DidRecordResult) {}
+}

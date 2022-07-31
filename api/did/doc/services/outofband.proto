@@ -1,0 +1,217 @@
+syntax = "proto3";
+
+package api.did.outofband.services;
+
+option go_package = "github.com/bhatti/GSSI/api/did/outofband/services";
+
+import "google/protobuf/any.proto";
+import "api/did/doc/types/outofband.proto";
+
+
+// CreateInvitationRequest model
+//
+// This is used for creating an invitation.
+//
+message CreateInvitationRequest {
+  string label = 1;
+
+  string goal = 2;
+  string goal_code = 3;
+  repeated google.protobuf.Any service = 4;
+  repeated string protocols = 5;
+  string router_connection_id = 6;
+
+  api.did.doc.types.InvitationBody body = 7;
+  string from = 8;
+  // Attachments are intended to provide the possibility to include files, links or even JSON payload to the message.
+  // required: true
+  api.did.doc.types.AttachmentV2 attachments = 9;
+}
+
+// swagger:parameters outofbandCreateInvitation
+// swagger:parameters outofbandV2CreateInvitation
+message docCreateInvitationRequest {
+  // in: body
+  CreateInvitationRequest body = 1;
+}
+
+// CreateInvitationResponse model
+//
+// Represents a CreateInvitation response message.
+//
+message CreateInvitationResponse {
+  api.did.doc.types.Invitation invitation = 1;
+}
+
+// swagger:response outofbandCreateInvitationResponse
+// swagger:response outofbandV2CreateInvitationResponse
+message docCreateInvitationResponse {
+  // in: body
+  CreateInvitationResponse body = 1;
+}
+
+// AcceptInvitationRequest model
+//
+// This is used for accepting an invitation.
+//
+message AcceptInvitationRequest {
+  api.did.doc.types.Invitation invitation = 1;
+  string my_label = 2;
+  string router_connections = 3;
+  string reuse_connection = 4;
+  bool reuse_any_connection = 5;
+  repeated string my_router_connections = 6;
+}
+
+// xswagger:parameters outofbandV2AcceptInvitation
+
+
+// swagger:parameters outofbandAcceptInvitation
+message docAcceptInvitationRequest {
+  // in: body
+  AcceptInvitationRequest body = 1;
+}
+
+// AcceptInvitationResponse model
+//
+// Represents a AcceptInvitation response message.
+//
+message AcceptInvitationResponse {
+  string connection_id = 1;
+}
+
+// xswagger:response outofbandV2AcceptInvitationResponse
+
+
+// swagger:response outofbandAcceptInvitationResponse
+message docAcceptInvitationResponse {
+  AcceptInvitationResponse body = 1;
+}
+
+
+// outofbandActionsRequest model
+//
+// Returns pending actions that have not yet to be executed or cancelled.
+//
+// swagger:parameters outofbandActions
+message ActionsRequest { // nolint: unused,deadcode
+  int32 page = 1;
+  int32 pageSize = 2;
+}
+
+// ActionsResponse model
+//
+// Represents Actions response message.
+//
+message ActionsResponse {
+  repeated api.did.doc.types.Action actions = 1;
+}
+
+// swagger:response outofbandActionsResponse
+message docActionsResponse {
+  // in: body
+  ActionsResponse body = 1;
+}
+
+
+// ActionStopRequest model
+//
+// This is used when action needs to be rejected.
+//
+// swagger:parameters outofbandActionStop
+message ActionStopRequest {
+  // PIID Protocol instance ID
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  string piid = 1;
+  // Reason why action is declined
+  string reason = 2;
+}
+
+// ActionStopResponse model
+//
+// Represents a ActionStop response message.
+//
+// swagger:response outofbandActionStopResponse
+message ActionStopResponse {
+  // in: body
+}
+
+// ActionContinueRequest model
+//
+// This is used when we need to proceed with the protocol.
+//
+// swagger:parameters outofbandActionContinue
+message ActionContinueRequest {
+  // PIID Protocol instance ID
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  string piid = 1;
+  string label = 2;
+  string router_connections = 3;
+}
+
+// ActionContinueResponse model
+//
+// Represents a ActionContinue response message.
+//
+// swagger:response outofbandActionContinueResponse
+message ActionContinueResponse {
+  // in: body
+}
+
+
+// OutOfBandController defines methods for the out-of-band protocol controller.
+service OutOfBandController {
+  // CreateInvitation creates and saves an out-of-band invitation.
+  // CreateInvitation swagger:route POST /outofband/create-invitation outofband outofbandCreateInvitation
+  // Responses:
+  //        200: outofbandCreateInvitationResponse
+  rpc createInvitation(CreateInvitationRequest) returns (CreateInvitationResponse) {}
+
+  // CreateInvitationV2 swagger:route POST /outofband/2.0/create-invitation outofbandv2 outofbandV2CreateInvitation
+  //
+  // Creates an invitation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: outofbandV2CreateInvitationResponse
+  rpc createInvitationV2(CreateInvitationRequest) returns (CreateInvitationResponse) {}
+
+  // AcceptInvitation from another agent and return the ID of the new connection records.
+  // AcceptInvitation swagger:route POST /outofband/accept-invitation outofband outofbandAcceptInvitation
+  // Responses:
+  //        200: outofbandAcceptInvitationResponse
+  rpc acceptInvitation(AcceptInvitationRequest) returns (AcceptInvitationResponse) {}
+
+  // AcceptInvitation swagger:route POST /outofband/2.0/accept-invitation outofbandv2 outofbandV2AcceptInvitation
+  //
+  // Accepts an invitation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: outofbandV2AcceptInvitationResponse
+  rpc acceptInvitationV2(AcceptInvitationRequest) returns (AcceptInvitationResponse) {}
+
+  // Actions returns pending actions that have not yet to be executed or canceled.
+  // Actions swagger:route GET /outofband/actions outofband outofbandActions
+  // Responses:
+  //        200: outofbandActionsResponse
+  rpc actions(ActionsRequest) returns (ActionsResponse) {}
+
+  // ActionContinue allows continuing with the protocol after an action event was triggered.a
+  // ActionContinue swagger:route POST /outofband/{piid}/action-continue outofband outofbandActionContinue
+  // Responses:
+  //        200: outofbandActionContinueResponse
+  rpc actionContinue(ActionContinueRequest) returns (ActionContinueResponse) {}
+
+  // ActionStop stops the protocol after an action event was triggered.
+  // ActionStop swagger:route POST /outofband/{piid}/action-stop outofband outofbandActionStop
+  // Responses:
+  //        200: outofbandActionStopResponse
+  rpc actionStop(ActionStopRequest) returns (ActionStopResponse) {}
+}

@@ -16,6 +16,7 @@ message Schema {
 
 
 // GenericProposePresentation combination of V2 and V3
+// swagger:model
 message GenericProposePresentation {
   string id = 1; // @id
   string type = 2; // @type
@@ -39,6 +40,7 @@ message GenericProposePresentation {
 // ProposePresentationV2 is an optional message sent by the prover to the verifier to initiate a proof presentation
 // process, or in response to a request-presentation message when the prover wants to propose
 // using a different presentation format or request.
+// swagger:model
 message ProposePresentationV2 {
   string id = 1; // @id
   string type = 2; // @type
@@ -56,6 +58,7 @@ message ProposePresentationV2 {
 // ProposePresentationV3 is an optional message sent by the prover to the verifier to initiate a proof presentation
 // process, or in response to a request-presentation message when the prover wants to propose
 // using a different presentation format or request.
+// swagger:model
 message ProposePresentationV3 {
   string id = 1; // @id
   string type = 2; // @type
@@ -75,6 +78,7 @@ message ProposePresentationV3Body {
 
 
 // GenericRequestPresentation combination of V2 and V3
+// swagger:model
 message GenericRequestPresentation {
   string id = 1; // @id
   string type = 2; // @type
@@ -96,6 +100,7 @@ message GenericRequestPresentation {
 }
 
 // RequestPresentationV2 describes values that need to be revealed and predicates that need to be fulfilled.
+// swagger:model
 message RequestPresentationV2 {
   string id = 1; // @id
   string type = 2; // @type
@@ -113,6 +118,7 @@ message RequestPresentationV2 {
 }
 
 // RequestPresentationV3 describes values that need to be revealed and predicates that need to be fulfilled.
+// swagger:model
 message RequestPresentationV3 {
   string id = 1; // @id
   string type = 2; // @type
@@ -141,6 +147,7 @@ message Format {
 
 // SubmissionRequirement describes input that must be submitted via a Presentation Submission
 // to satisfy Verifier demands.
+// swagger:model
 message SubmissionRequirement {
   string name = 1;
   string purpose = 2;
@@ -153,6 +160,7 @@ message SubmissionRequirement {
 }
 
 // InputDescriptor input descriptors.
+// swagger:model
 message InputDescriptor {
   string id = 1;
   repeated string group = 2;
@@ -184,6 +192,7 @@ message ResolvedProperty {
 // If the text field is used, then schema is not needed.
 // If the path field is used, then schema is required.
 // TODO (#3045) Support for JSONPath bracket notation.
+// swagger:model
 message DisplayMappingObject {
   string text = 1;
   repeated string path = 2;
@@ -193,6 +202,7 @@ message DisplayMappingObject {
 
 // LabeledDisplayMappingObject is a DisplayMappingObject with an additional Label field.
 // They are used for the dynamic Properties array in a DataDisplayDescriptor.
+// swagger:model
 message LabeledDisplayMappingObject {
   string text = 1;
   repeated string path = 2;
@@ -204,6 +214,7 @@ message LabeledDisplayMappingObject {
 // ResolvedDescriptor typically represents results of resolving manifests by credential fulfillment.
 // typically represents a DataDisplayDescriptor that's had its various "template" fields resolved
 // into concrete values based on a Verifiable Credential.
+// swagger:model
 message ResolvedDescriptor {
   string descriptor_id = 1; // descriptionId
   string title = 2;
@@ -215,6 +226,7 @@ message ResolvedDescriptor {
 
 // DataDisplayDescriptor represents a Data Display Descriptor as defined in
 // https://identity.foundation/credential-manifest/wallet-rendering/#data-display.
+// swagger:model
 message DataDisplayDescriptor {
   DisplayMappingObject title = 1;
   DisplayMappingObject subtitle = 2;
@@ -224,6 +236,7 @@ message DataDisplayDescriptor {
 
 // OutputDescriptor represents an Output Descriptor object as defined in
 // https://identity.foundation/credential-manifest/#output-descriptor.
+// swagger:model
 message OutputDescriptor {
   string id = 1;
   string schema = 2;
@@ -242,6 +255,7 @@ message OutputDescriptor {
 
 // CredentialFulfillment represents a Credential Fulfillment object as defined in
 // https://identity.foundation/credential-manifest/#credential-fulfillment.
+// swagger:model
 message CredentialFulfillment {
   string id = 1; // @id
   string manifest_id = 2;
@@ -250,6 +264,7 @@ message CredentialFulfillment {
 
 // CredentialManifest represents a Credential Manifest object as defined in
 // https://identity.foundation/credential-manifest/#credential-manifest-2.
+// swagger:model
 message CredentialManifest {
   string id = 1; // @id
   string version = 2;
@@ -262,6 +277,7 @@ message CredentialManifest {
 
 
 // PresentationDefinition presentation definitions (https://identity.foundation/presentation-exchange/).
+// swagger:model
 message PresentationDefinition {
   // ID unique resource identifier.
   string id = 1;
@@ -278,7 +294,35 @@ message PresentationDefinition {
   repeated SubmissionRequirement submission_requirements = 6;
   repeated InputDescriptor input_descriptors = 7;
 }
+
+// JWTPresClaims is JWT Claims extension by Verifiable Presentation (with custom "vp" claim).
+// swagger:model
+message JWTPresClaims {
+  string iss = 1; // issuer
+  string sub = 2; // subject
+  repeated string aud = 3; // audience
+  int64 exp = 4; // expiry
+  int64 nbf = 5; // NotBefore
+  int64 iat = 6; // IssuedAt
+  string jti = 7; // id
+  RawPresentation vp = 8;
+}
+
+// RawPresentation is a basic verifiable credential.
+// swagger:model
+message RawPresentation {
+  string id = 1; // @id
+  string type = 2; // @type
+  string holder = 3;
+  google.protobuf.Any context = 4; // interface{} context
+  google.protobuf.Any verifiableCredential = 5; // interface
+  bytes proof = 6; // json.RawMessage
+  // All unmapped fields are put here.
+  map<string, google.protobuf.Any> customFields = 7;
+}
+
 // Combination of V2 and V3
+// swagger:model
 message GenericPresentation {
   string id = 1; // @id
   string type = 2; // @type
@@ -299,6 +343,7 @@ message GenericPresentation {
 
 // PresentationV2 is a response to a RequestPresentationV2 message and contains signed presentations.
 // TODO: Add ~please_ack decorator support for the protocol [Issue #2047].
+// swagger:model
 message PresentationV2 {
   string id = 1; // @id
   string type = 2; // @type
@@ -313,6 +358,7 @@ message PresentationV2 {
 }
 
 // PresentationV3 is a response to a RequestPresentationV3 message and contains signed presentations.
+// swagger:model
 message PresentationV3 {
   string type = 1; // @type
   PresentationV3Body body = 2;

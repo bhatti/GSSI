@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package api.did.issuecredential.services;
+
+option go_package = "github.com/bhatti/GSSI/api/did/issuecredential/services";
+
+import "api/vc/types/credential.proto";
+import "api/did/issuecredential/types/issuecredential.proto";
+
+// GetCredentialSpecRequest model.
+message GetCredentialSpecRequest {
+  bytes message = 1; // json.RawMessage
+}
+
+// docGetCredentialSpecRequest model
+//
+// swagger:parameters getCredentialSpecRequest
+message docGetCredentialSpecRequest {// nolint:deadcode,unused
+  // in: body
+  GetCredentialSpecRequest body = 1;
+}
+
+
+// GetCredentialSpecResponse model.
+message GetCredentialSpecResponse {
+  types.CredentialSpec spec = 1;
+}
+
+// docGetCredentialSpecResponse model
+//
+// swagger:response getCredentialSpecResponse
+message docGetCredentialSpecResponse {// nolint:deadcode,unused
+  // in: body
+  GetCredentialSpecResponse body = 1;
+}
+
+// IssueCredentialRequest model.
+message IssueCredentialRequest {
+  types.CredentialSpec spec = 1;
+}
+
+// docIssueCredentialRequest model
+//
+// swagger:parameters issueCredentialRequest
+message docIssueCredentialRequest {// nolint:deadcode,unused
+  // in: body
+  IssueCredentialRequest body = 1;
+}
+
+
+// IssueCredentialResponse model.
+message IssueCredentialResponse {
+  types.IssueCredentialV2 issue_credential = 1;
+}
+
+// docIssueCredentialResponse model
+//
+// swagger:response issueCredentialResponse
+message docIssueCredentialResponse {// nolint:deadcode,unused
+  // in: body
+  IssueCredentialResponse body = 1;
+}
+
+// VerifyCredentialRequest model.
+message VerifyCredentialRequest {
+  api.vc.types.VerifiableCredential credential = 1;
+  types.CredentialSpec spec = 2;
+}
+
+// docVerifyCredentialRequest model
+//
+// swagger:parameters verifyCredentialRequest
+message docVerifyCredentialRequest {// nolint:deadcode,unused
+  // in: body
+  VerifyCredentialRequest body = 1;
+}
+
+
+// VerifyCredentialResponse model
+//
+// swagger:response verifyCredentialResponse
+message VerifyCredentialResponse {// nolint:deadcode,unused
+  // in: body
+}
+
+
+// Rfc0593Controller defines methods for the IssueCredential protocol controller.
+service Rfc0593Controller {
+  // GetCredentialSpec swagger:route POST /rfc0593/get-spec get-spec getCredentialSpecRequest
+  //
+  // Extracts an RFC0593 credential spec from an applicable issue-credential message.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: getCredentialSpecResponse
+  rpc getCredentialSpec(GetCredentialSpecRequest) returns (GetCredentialSpecResponse) {}
+
+  // IssueCredential swagger:route POST /rfc0593/issue-credential issue-credential issueCredentialRequest
+  //
+  // Issues a credential based on a RFC0593 credential spec.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: issueCredentialResponse
+  rpc issueCredential(IssueCredentialRequest) returns (IssueCredentialResponse) {}
+
+  // VerifyCredential swagger:route POST /rfc0593/verify-credential verify-credential verifyCredentialRequest
+  //
+  // Verifies a credential against a credential spec.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: verifyCredentialResponse
+  rpc verifyCredential(VerifyCredentialRequest) returns (VerifyCredentialResponse) {}
+}

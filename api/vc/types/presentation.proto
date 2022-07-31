@@ -33,6 +33,7 @@ message PresentationOptions {
 // from verifiable credentials that are cryptographically verifiable, but do not of themselves
 // contain verifiable credentials, might also be verifiable presentations.
 // VerifiablePresentation = Presentation metadata + VerifiableCredentials + Proofs
+// swagger:model
 message VerifiablePresentation {
   // The ID of the presentation.
   string id = 1;
@@ -63,6 +64,7 @@ message VerifiablePresentation {
 
 
 // RefreshableVerifiablePresentation for verifiable presentation
+// swagger:model
 message RefreshableVerifiablePresentation {
   // The ID of the presentation.
   string id = 1;

@@ -7,12 +7,38 @@ option go_package = "github.com/bhatti/GSSI/api/did/presentproof/services";
 import "api/did/presentproof/types/presentproof.proto";
 import "api/did/doc/types/outofband.proto";
 
-// DeclinePresentationRequest model
+// PresentProofActionsRequest model
+//
+// Returns pending actions that have not yet to be executed or cancelled.
+//
+// swagger:parameters presentProofActions
+message PresentProofActionsRequest {// nolint: unused,deadcode
+}
+
+// presentProofActionsResponse model
+//
+// Represents a Actions response message.
+//
+message PresentProofActionsResponse {// nolint: unused,deadcode
+  repeated api.did.doc.types.Action actions = 1;
+}
+
+// swagger:response presentProofActionsResponse
+message docPresentProofActionsResponse {// nolint: unused,deadcode
+  // in: body
+  PresentProofActionsResponse body = 1;
+}
+
+// PresentProofDeclinePresentationRequest model
 //
 // This is used when the presentation needs to be rejected.
 //
-message DeclinePresentationRequest {
+message PresentProofDeclinePresentationRequest {
   // PIID Protocol instance ID
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
   string piid = 1;
   // Reason why presentation is declined
   string reason = 2;
@@ -21,21 +47,28 @@ message DeclinePresentationRequest {
   string redirectURL = 3;
 }
 
-// DeclinePresentationResponse model
+// PresentProofDeclinePresentationResponse model
 //
 // Represents a DeclinePresentation response message.
 //
-message DeclinePresentationResponse{
-
+message PresentProofDeclinePresentationResponse {
+  // in: body
 }
 
-// DeclineProposePresentationRequest model
+
+// PresentProofDeclineProposePresentationRequest model
 //
-// This is used when proposal needs to be rejected.
+// This is used for operation to decline a propose presentation.
 //
-message DeclineProposePresentationRequest {
+// swagger:parameters presentProofDeclineProposePresentation
+message PresentProofDeclineProposePresentationRequest {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
   // PIID Protocol instance ID
   string piid = 1;
+
   // Reason why proposal is declined
   string reason = 2;
   // RedirectURL is optional web redirect URL that can be sent to prover.
@@ -43,31 +76,41 @@ message DeclineProposePresentationRequest {
   string redirectURL = 3;
 }
 
-
-// DeclineProposePresentationResponse model
+// PresentProofDeclineProposePresentationResponse model
 //
 // Represents a DeclineProposePresentation response message.
 //
-message DeclineProposePresentationResponse{
-
+// swagger:response presentProofDeclineProposePresentationResponse
+message PresentProofDeclineProposePresentationResponse{
+  // in: body
 }
 
-// DeclineRequestPresentationRequest model
+
+// PresentProofDeclineRequestPresentationRequest model
 //
-// This is used when the request needs to be rejected.
+// This is used for operation to decline a request presentation.
 //
-message DeclineRequestPresentationRequest {
+// swagger:parameters presentProofDeclineRequestPresentation
+message PresentProofDeclineRequestPresentationRequest {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
   // PIID Protocol instance ID
   string piid = 1;
-  // Reason why request is declined
+
+  // Reason is an explanation of why it was declined
   string reason = 2;
 }
 
-// DeclineRequestPresentationResponse model
+// PresentProofDeclineRequestPresentationResponse model
 //
 // Represents a DeclineRequestPresentation response message.
 //
-message DeclineRequestPresentationResponse{}
+// swagger:response presentProofDeclineRequestPresentationResponse
+message PresentProofDeclineRequestPresentationResponse {
+  // in: body
+}
 
 // ActionsResponse model
 //
@@ -77,13 +120,11 @@ message ActionsResponse {
   repeated api.did.doc.types.Action actions = 1;
 }
 
-// AcceptPresentationRequest model
+// AcceptPresentationBody model
 //
 // This is used for accepting a presentation.
 //
-message AcceptPresentationRequest {
-  // PIID Protocol instance ID
-  string piid = 1;
+message AcceptPresentationBody {
   // Names represent the names of how presentations will be stored
   repeated string names = 2;
   // RedirectURL is optional web redirect URL that can be sent to prover.
@@ -91,26 +132,53 @@ message AcceptPresentationRequest {
   string redirectURL = 3;
 }
 
+// PresentProofAcceptPresentationRequest model
+//
+// This is used for operation to accept a presentation.
+//
+// swagger:parameters presentProofAcceptPresentation
+message PresentProofAcceptPresentationRequest {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  // PIID Protocol instance ID
+  string piid = 1;
+
+  AcceptPresentationBody body = 2;
+}
 
 
-// AcceptPresentationResponse model
+// PresentProofAcceptPresentationResponse model
 //
 // Represents a AcceptPresentation response message.
 //
-message AcceptPresentationResponse{
-
+// swagger:response presentProofAcceptPresentationResponse
+message PresentProofAcceptPresentationResponse {
+  // in: body
 }
 
 // AcceptRequestPresentationRequest model
 //
-// This is used for accepting a request presentation.
+// PresentProofAcceptRequestPresentationRequest model
 //
-message AcceptRequestPresentationRequest {
+// This is used for operation to accept a request presentation.
+//
+// swagger:parameters presentProofAcceptRequestPresentation
+message PresentProofAcceptRequestPresentationRequest {// nolint: unused,deadcode
   // PIID Protocol instance ID
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
   string piid = 1;
+
+  // in: body
+  // required: true
   // Presentation is a message that contains signed presentations.
-    api.did.presentproof.types.GenericPresentation presentation = 2;
+  api.did.presentproof.types.PresentationV2 presentation = 2;
 }
+
 
 // AcceptRequestPresentationV2Request model
 //
@@ -126,113 +194,201 @@ message AcceptRequestPresentationV2Request {
 // AcceptRequestPresentationV3Request model
 //
 // This is used for accepting a request presentation.
+// PresentProofAcceptRequestPresentationV3Request model
 //
-message AcceptRequestPresentationV3Request {
+// This is used for operation to accept a request presentation.
+//
+// swagger:parameters presentProofAcceptRequestPresentationV3
+message PresentProofAcceptRequestPresentationV3Request {// nolint: unused,deadcode
   // PIID Protocol instance ID
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
   string piid = 1;
+
+  // in: body
   // Presentation is a message that contains signed presentations.
+  //
+  // required: true
   api.did.presentproof.types.PresentationV3 presentation = 2;
 }
 
-// AcceptRequestPresentationResponse model
+// PresentProofAcceptRequestPresentationResponse model
 //
 // Represents a AcceptRequestPresentation response message.
 //
-message AcceptRequestPresentationResponse{
-
+// swagger:response presentProofAcceptRequestPresentationResponse
+message PresentProofAcceptRequestPresentationResponse {// nolint: unused,deadcode
+  // in: body
 }
 
 
-// AcceptProposePresentationRequest model
+
+// AcceptProposePresentationBody model
 //
 // This is used for accepting a propose presentation.
 //
-message AcceptProposePresentationRequest {
-  // PIID Protocol instance ID
-  string piid = 1;
+message AcceptProposePresentationBody {
   // RequestPresentation describes values that need to be revealed and predicates that need to be fulfilled.
-  api.did.presentproof.types.GenericRequestPresentation request_presentation = 2;
+  api.did.presentproof.types.RequestPresentationV2 request_presentation = 1;
 }
 
-// AcceptProposePresentationV2Request model
+// PresentProofAcceptProposePresentationRequest model
+//
+// This is used for operation to accept a propose presentation.
+//
+// swagger:parameters presentProofAcceptProposePresentation
+message PresentProofAcceptProposePresentationRequest {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  // PIID Protocol instance ID
+  string piid = 1;
+
+  // in: body
+  // RequestPresentation describes values that need to be revealed and predicates that need to be fulfilled.
+  //
+  // required: true
+  AcceptProposePresentationBody body = 2;
+}
+
+// AcceptProposePresentationV3Body model
 //
 // This is used for accepting a propose presentation.
 //
-message AcceptProposePresentationV2Request {
-  // PIID Protocol instance ID
-  string piid = 1;
+message AcceptProposePresentationV3Body {
   // RequestPresentation describes values that need to be revealed and predicates that need to be fulfilled.
-  api.did.presentproof.types.RequestPresentationV2 request_presentation = 2;
+  api.did.presentproof.types.RequestPresentationV3 request_presentation = 1;
 }
 
-// AcceptProposePresentationV3Request model
+// PresentProofAcceptProposePresentationV3Request model
 //
-// This is used for accepting a propose presentation.
+// This is used for operation to accept a propose presentation.
 //
-message AcceptProposePresentationV3Request {
+// swagger:parameters presentProofAcceptProposePresentationV3
+message PresentProofAcceptProposePresentationV3Request {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
   // PIID Protocol instance ID
   string piid = 1;
+
+  // in: body
   // RequestPresentation describes values that need to be revealed and predicates that need to be fulfilled.
-  api.did.presentproof.types.RequestPresentationV3 request_presentation = 2;
+  //
+  // required: true
+  AcceptProposePresentationV3Body body = 2;
 }
 
-// AcceptProposePresentationResponse model
+// PresentProofAcceptProposePresentationResponse model
 //
 // Represents a AcceptProposePresentation response message.
 //
-message AcceptProposePresentationResponse{
-
+// swagger:response presentProofAcceptProposePresentationResponse
+message PresentProofAcceptProposePresentationResponse {
+  // in: body
 }
 
-// NegotiateRequestPresentationRequest model
+// NegotiateRequestPresentationV2Body model
 //
 // This is used by the Prover to counter a presentation request they received with a proposal.
 //
-message NegotiateRequestPresentationRequest {
-  // PIID Protocol instance ID
-  string piid = 1;
+message NegotiateRequestPresentationV2Body {
   // ProposePresentation is a response message to a request-presentation message when the Prover wants to
   // propose using a different presentation format.
-  api.did.presentproof.types.GenericProposePresentation propose_presentation = 2;
+  api.did.presentproof.types.ProposePresentationV2 propose_presentation = 1;
 }
 
-// NegotiateRequestPresentationV2Request model
+// PresentProofNegotiateRequestPresentationRequest model
+//
+// Is used by the Prover to counter a presentation request they received with a proposal.
+//
+// swagger:parameters presentProofNegotiateRequestPresentation
+message PresentProofNegotiateRequestPresentationRequest {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  // PIID Protocol instance ID
+  string piid = 1;
+
+  // in: body
+  // ProposePresentation is a response message to a request-presentation message when the Prover wants to
+  // propose using a different presentation format.
+  //
+  // required: true
+  NegotiateRequestPresentationV2Body body = 2;
+}
+
+// NegotiateRequestPresentationV3Body model
 //
 // This is used by the Prover to counter a presentation request they received with a proposal.
 //
-message NegotiateRequestPresentationV2Request {
-  // PIID Protocol instance ID
-  string piid = 1;
+message NegotiateRequestPresentationV3Body {
   // ProposePresentation is a response message to a request-presentation message when the Prover wants to
   // propose using a different presentation format.
-  api.did.presentproof.types.ProposePresentationV2 propose_presentation = 2;
+  api.did.presentproof.types.ProposePresentationV3 propose_presentation = 1;
 }
 
-// NegotiateRequestPresentationV3Request model
+// PresentProofNegotiateRequestPresentationV3Request model
 //
-// This is used by the Prover to counter a presentation request they received with a proposal.
+// Is used by the Prover to counter a presentation request they received with a proposal.
 //
-message NegotiateRequestPresentationV3Request {
+// swagger:parameters presentProofNegotiateRequestPresentationV3
+message PresentProofNegotiateRequestPresentationV3Request {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
   // PIID Protocol instance ID
   string piid = 1;
+
+  // in: body
   // ProposePresentation is a response message to a request-presentation message when the Prover wants to
   // propose using a different presentation format.
-  api.did.presentproof.types.ProposePresentationV3 propose_presentation = 2;
+  //
+  // required: true
+  NegotiateRequestPresentationV3Body body = 2;
 }
 
-// NegotiateRequestPresentationResponse model
+// PresentProofNegotiateRequestPresentationResponse model
 //
 // Represents a NegotiateRequestPresentation response message.
 //
-message NegotiateRequestPresentationResponse{
-
+// swagger:response presentProofNegotiateRequestPresentationResponse
+message PresentProofNegotiateRequestPresentationResponse{
+  // in: body
 }
 
-// SendProposePresentationRequest model
+// docPresentProofSendProposePresentationRequest model
+//
+// This is used for operation to send a propose presentation.
+//
+// swagger:parameters presentProofSendProposePresentation
+message docPresentProofSendProposePresentationRequest {// nolint: unused,deadcode
+  // in: body
+  PresentProofSendProposePresentationRequest body = 1;
+}
+
+// docPresentProofSendProposePresentationV3Request model
+//
+// This is used for operation to send a propose presentation.
+//
+// swagger:parameters presentProofSendProposePresentationV3
+message docPresentProofSendProposePresentationV3Request {// nolint: unused,deadcode
+  // in: body
+  PresentProofSendProposePresentationV3Request body = 1;
+}
+
+
+// PresentProofSendProposePresentationRequest model
 //
 // This is used for sending a propose presentation.
 //
-message SendProposePresentationRequest {
+message PresentProofSendProposePresentationRequest {
   // MyDID sender's did
   string my_did = 1;
   // TheirDID receiver's did
@@ -245,11 +401,11 @@ message SendProposePresentationRequest {
   api.did.presentproof.types.GenericProposePresentation propose_presentation = 4;
 }
 
-// SendProposePresentationV2Request model
+// PresentProofSendProposePresentationV2Request model
 //
 // This is used for sending a propose presentation.
 //
-message SendProposePresentationV2Request {
+message PresentProofSendProposePresentationV2Request {
   // MyDID sender's did
   string my_did = 1;
   // TheirDID receiver's did
@@ -262,11 +418,11 @@ message SendProposePresentationV2Request {
   api.did.presentproof.types.ProposePresentationV2 propose_presentation = 4;
 }
 
-// SendProposePresentationV3Request model
+// PresentProofSendProposePresentationV3Request model
 //
 // This is used for sending a propose presentation.
 //
-message SendProposePresentationV3Request {
+message PresentProofSendProposePresentationV3Request {
   // MyDID sender's did
   string my_did = 1;
   // TheirDID receiver's did
@@ -284,7 +440,7 @@ message SendProposePresentationV3Request {
 //
 // Represents a SendProposePresentation response message.
 //
-message SendProposePresentationResponse {
+message PresentProofSendProposePresentationResponse {
   // PIID Protocol instance ID. It can be used as a correlation ID
   string piid = 1;
 }
@@ -293,7 +449,7 @@ message SendProposePresentationResponse {
 //
 // This is used for sending a request presentation.
 //
-message SendRequestPresentationRequest {
+message PresentProofSendRequestPresentationRequest {
   // MyDID sender's did
   string my_did = 1;
   // TheirDID receiver's did
@@ -309,7 +465,7 @@ message SendRequestPresentationRequest {
 //
 // This is used for sending a request presentation.
 //
-message SendRequestPresentationV2Request {
+message PresentProofSendRequestPresentationV2Request {
   // MyDID sender's did
   string my_did = 1;
   // TheirDID receiver's did
@@ -326,7 +482,7 @@ message SendRequestPresentationV2Request {
 //
 // This is used for sending a request presentation.
 //
-message SendRequestPresentationV3Request {
+message PresentProofSendRequestPresentationV3Request {
   // MyDID sender's did
   string my_did = 1;
   // TheirDID receiver's did
@@ -338,29 +494,235 @@ message SendRequestPresentationV3Request {
   api.did.presentproof.types.RequestPresentationV3 request_presentation = 4;
 }
 
-// SendRequestPresentationResponse model
+// docPresentProofSendRequestPresentationRequest model
+//
+// This is used for operation to send a request presentation.
+//
+// swagger:parameters presentProofSendRequestPresentation
+message docPresentProofSendRequestPresentationRequest {// nolint: unused,deadcode
+  // in: body
+  PresentProofSendRequestPresentationV2Request body = 1;
+}
+
+// docPresentProofSendRequestPresentationV3Request model
+//
+// This is used for operation to send a request presentation.
+//
+// swagger:parameters presentProofSendRequestPresentationV3
+message docPresentProofSendRequestPresentationV3Request {// nolint: unused,deadcode
+  // in: body
+  PresentProofSendRequestPresentationV3Request body = 1;
+}
+
+// PresentProofSendRequestPresentationResponse model
 //
 // Represents a SendRequestPresentation response message.
 //
-message SendRequestPresentationResponse {
+message PresentProofSendRequestPresentationResponse {// nolint: unused,deadcode
   // PIID Protocol instance ID. It can be used as a correlation ID
   string piid = 1;
 }
 
-// AcceptProblemReportRequest model
+message docPresentProofSendRequestPresentationResponse {// nolint: unused,deadcode
+  // in: body
+  PresentProofSendRequestPresentationResponse body = 1;
+}
+
+
+// docPresentProofSendProposePresentationResponse model
+//
+// Represents a SendProposePresentation response message.
+//
+// swagger:response presentProofSendProposePresentationResponse
+message docPresentProofSendProposePresentationResponse {// nolint: unused,deadcode
+  // in: body
+  PresentProofSendRequestPresentationResponse body = 1;
+}
+
+
+// PresentProofAcceptProblemReportRequest model
 //
 // This is used for accepting a problem report.
 //
-message AcceptProblemReportRequest {
+// swagger:parameters presentProofAcceptProblemReport
+message PresentProofAcceptProblemReportRequest {
   // PIID Protocol instance ID
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
   string piid = 1;
 }
 
-// AcceptProblemReportResponse model
+// PresentProofAcceptProblemReportResponse model
 //
 // Represents a AcceptProblemReport response message.
 //
-message AcceptProblemReportResponse{
+// swagger:response presentProofAcceptProblemReportResponse
+message PresentProofAcceptProblemReportResponse {
+  // in: body
+}
 
+
+// PresentProofController defines methods for the PresentProof protocol controller.
+service PresentProofController {
+
+  // Actions returns pending actions that have not yet to be executed or canceled.
+  // Actions swagger:route GET /presentproof/actions present-proof presentProofActions
+  //
+  // Returns pending actions that have not yet to be executed or cancelled.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofActionsResponse
+  rpc actions(PresentProofActionsRequest) returns (PresentProofActionsResponse) {}
+
+  // SendRequestPresentation is used by the Verifier to send a request presentation.
+  // SendRequestPresentation swagger:route POST /presentproof/send-request-presentation present-proof presentProofSendRequestPresentation
+  //
+  // Sends a request presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofSendRequestPresentationResponse
+  rpc sendRequestPresentation(PresentProofSendRequestPresentationV2Request) returns (PresentProofSendRequestPresentationResponse) {}
+
+  // SendRequestPresentationV3 swagger:route POST /presentproof/v3/send-request-presentation present-proof presentProofSendRequestPresentationV3
+  //
+  // Sends a request presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofSendRequestPresentationResponse
+  rpc sendRequestPresentationV3(PresentProofSendRequestPresentationV3Request) returns (PresentProofSendRequestPresentationResponse) {}
+
+  // SendProposePresentation is used by the Prover to send a propose presentation.
+  // SendProposePresentation swagger:route POST /presentproof/send-propose-presentation present-proof presentProofSendProposePresentation
+  //
+  // Sends a propose presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofSendProposePresentationResponse
+  rpc sendProposePresentation(PresentProofSendProposePresentationRequest) returns (PresentProofSendRequestPresentationResponse) {}
+
+  // sendProposePresentationV3 swagger:route POST /presentproof/v3/send-propose-presentation present-proof presentProofSendProposePresentationV3
+  //
+  // Sends a propose presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofSendProposePresentationResponse
+  // AcceptRequestPresentation is used by the Prover is to accept a presentation request.
+  rpc sendProposePresentationV3(PresentProofSendProposePresentationV3Request) returns (PresentProofSendRequestPresentationResponse) {}
+
+  // AcceptProblemReport swagger:route POST /presentproof/{piid}/accept-problem-report present-proof presentProofAcceptProblemReport
+  //
+  // Accepts a problem report.
+  // AcceptProblemReport is used for accepting problem report.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofAcceptProblemReportResponse
+  rpc acceptProblemReport(PresentProofAcceptProblemReportRequest) returns (PresentProofAcceptProblemReportResponse) {}
+
+
+  // AcceptRequestPresentation swagger:route POST /presentproof/{piid}/accept-request-presentation present-proof presentProofAcceptRequestPresentation
+  //
+  // Accepts a request presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofAcceptRequestPresentationResponse
+  rpc acceptRequestPresentation(PresentProofAcceptProblemReportRequest) returns (PresentProofAcceptProblemReportResponse) {}
+
+  // AcceptRequestPresentationV3 swagger:route POST /presentproof/v3/{piid}/accept-request-presentation present-proof presentProofAcceptRequestPresentationV3
+  //
+  // Accepts a request presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofAcceptRequestPresentationResponse
+  rpc acceptRequestPresentationV3(PresentProofAcceptRequestPresentationV3Request) returns (PresentProofAcceptProblemReportResponse) {}
+
+  // acceptProposePresentation swagger:route POST /presentproof/{piid}/accept-propose-presentation present-proof presentProofAcceptProposePresentation
+  //
+  // AcceptProposePresentation is used when the Verifier is willing to accept the propose presentation.
+  // Accepts a propose presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofAcceptProposePresentationResponse
+  rpc acceptProposePresentation(PresentProofAcceptProposePresentationRequest) returns (PresentProofAcceptProposePresentationResponse) {}
+
+
+  // AcceptProposePresentationV3 swagger:route POST /presentproof/v3/{piid}/accept-propose-presentation present-proof presentProofAcceptProposePresentationV3
+  //
+  // Accepts a propose presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofAcceptProposePresentationResponse
+  rpc acceptProposePresentationV3(PresentProofAcceptProposePresentationV3Request) returns (PresentProofAcceptProposePresentationResponse) {}
+
+  // AcceptPresentation is used by the Verifier to accept a presentation.
+  // AcceptPresentation swagger:route POST /presentproof/{piid}/accept-presentation present-proof presentProofAcceptPresentation
+  //
+  // Accepts a presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofAcceptPresentationResponse
+  rpc acceptPresentation(PresentProofAcceptPresentationRequest) returns (PresentProofAcceptPresentationResponse) {}
+
+  // NegotiateRequestPresentation is used by the Prover to counter a presentation request they received with a proposal.
+  // NegotiateRequestPresentation swagger:route POST /presentproof/{piid}/negotiate-request-presentation present-proof presentProofNegotiateRequestPresentation
+  //
+  // Is used by the Prover to counter a presentation request they received with a proposal.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofNegotiateRequestPresentationResponse
+  rpc negotiateRequestPresentation(PresentProofNegotiateRequestPresentationRequest) returns (PresentProofNegotiateRequestPresentationResponse) {}
+
+  // NegotiateRequestPresentationV3 swagger:route POST /presentproof/v3/{piid}/negotiate-request-presentation present-proof presentProofNegotiateRequestPresentationV3
+  //
+  // Is used by the Prover to counter a presentation request they received with a proposal.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofNegotiateRequestPresentationResponse
+  rpc negotiateRequestPresentationV3(PresentProofNegotiateRequestPresentationV3Request) returns (PresentProofNegotiateRequestPresentationResponse) {}
+
+  // DeclineRequestPresentation is used when the Prover does not want to accept the request presentation.
+  // DeclineRequestPresentation swagger:route POST /presentproof/{piid}/decline-request-presentation present-proof presentProofDeclineRequestPresentation
+  //
+  // Declines a request presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofDeclineRequestPresentationResponse
+  rpc declineRequestPresentation(PresentProofDeclineRequestPresentationRequest) returns (PresentProofDeclineRequestPresentationResponse) {}
+
+  // DeclineProposePresentation is used when the Verifier does not want to accept the propose presentation.
+  // DeclineProposePresentation swagger:route POST /presentproof/{piid}/decline-propose-presentation present-proof presentProofDeclineProposePresentation
+  //
+  // Declines a propose presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofDeclineProposePresentationResponse
+  rpc declineProposePresentation(PresentProofDeclineProposePresentationRequest) returns (PresentProofDeclineProposePresentationResponse) {}
+
+
+  // DeclinePresentation is used by the Verifier to decline a presentation.
+  // DeclinePresentation swagger:route POST /presentproof/{piid}/decline-presentation present-proof presentProofDeclinePresentation
+  //
+  // Declines a presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofDeclinePresentationResponse
+  rpc declinePresentation(PresentProofDeclinePresentationRequest) returns (PresentProofDeclinePresentationResponse) {}
 }
 

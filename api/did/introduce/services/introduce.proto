@@ -1,0 +1,429 @@
+syntax = "proto3";
+
+package api.did.introduce.services;
+
+option go_package = "github.com/bhatti/GSSI/api/did/introduce/services";
+
+import "api/did/introduce/types/introduce.proto";
+import "api/did/doc/types/outofband.proto";
+
+// IntroduceActionsRequest model
+//
+// Returns pending actions that have not yet to be executed or cancelled.
+//
+// swagger:parameters introduceActionsReq
+message IntroduceActionsRequest {// nolint: unused,deadcode
+}
+
+// IntroduceActionsResponse model
+//
+// Represents Actions response message.
+//
+message IntroduceActionsResponse {// nolint: unused,deadcode
+  repeated api.did.doc.types.Action actions = 1;
+}
+
+// swagger:response introduceActionsResponse
+message docIntroduceActionsResponse {// nolint: unused,deadcode
+  // in: body
+  IntroduceActionsResponse body = 1;
+}
+
+// IntroduceSendProposalRequest model
+//
+// This is used for operation to send a proposal.
+//
+message IntroduceSendProposalRequest {// nolint: unused,deadcode
+  repeated types.Recipient recipients = 1;
+}
+
+// swagger:parameters introduceSendProposal
+message docIntroduceSendProposalRequest {// nolint: unused,deadcode
+  // in: body
+  IntroduceSendProposalRequest body = 1;
+}
+
+
+
+// IntroduceSendProposalResponse model
+//
+// Represents a SendProposal response message.
+//
+message IntroduceSendProposalResponse {// nolint: unused,deadcode
+  string piid = 1;
+}
+
+// swagger:response introduceSendProposalResponse
+message docIntroduceSendProposalResponse {// nolint: unused,deadcode
+  // in: body
+  IntroduceSendProposalResponse body = 1;
+}
+
+// IntroduceSendProposalWithOOBInvitationRequest model
+//
+// This is used for operation to send a proposal with OOBInvitation.
+//
+message IntroduceSendProposalWithOOBInvitationRequest {// nolint: unused,deadcode
+  // Request is the out-of-band protocol's 'request' message.
+  // required: true
+  api.did.doc.types.Invitation invitation = 1;
+  // Recipient specifies to whom proposal will be sent
+  // required: true
+  types.Recipient recipient = 2;
+}
+
+// swagger:parameters introduceSendProposalWithOOBInvitationRequest
+message docIntroduceSendProposalWithOOBInvitationRequest {// nolint: unused,deadcode
+  // in: body
+  IntroduceSendProposalWithOOBInvitationRequest body = 1;
+}
+
+// IntroduceSendProposalWithOOBInvitationResponse model
+//
+// Represents a SendProposalWithOOBInvitation response message.
+//
+message IntroduceSendProposalWithOOBInvitationResponse {// nolint: unused,deadcode
+  string piid = 1;
+}
+
+// swagger:response introduceSendProposalWithOOBInvitationResponse
+message docIntroduceSendProposalWithOOBInvitationResponse {// nolint: unused,deadcode
+  // in: body
+  IntroduceSendProposalWithOOBInvitationResponse body = 1;
+}
+
+
+
+// IntroduceAcceptProposalWithOOBInvitationRequest model
+//
+// This is used for operation to accept a proposal with OOBRequest.
+//
+// swagger:parameters introduceAcceptProposalWithOOBInvitationRequest
+message IntroduceAcceptProposalWithOOBInvitationRequest {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  string piid = 1;
+  // in: body
+  message Body {
+    // Request is the out-of-band protocol's 'invitation' message.
+    api.did.doc.types.Invitation invitation = 2;
+  }
+  Body body = 2;
+}
+
+// IntroduceAcceptProposalWithOOBResponse model
+//
+// Represents a AcceptProposalWithOOBInvitation response message.
+//
+// swagger:response introduceAcceptProposalWithOOBResponse
+message IntroduceAcceptProposalWithOOBResponse {// nolint: unused,deadcode
+  // in: body
+}
+
+// IntroduceAcceptRequestWithPublicOOBInvitation model
+//
+// This is used for operation to accept a request with public OOBRequest.
+//
+// swagger:parameters introduceAcceptRequestWithPublicOOBInvitation
+message IntroduceAcceptRequestWithPublicOOBInvitation {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  string piid = 1;
+  message Body {
+    // Request is the out-of-band protocol's 'invitation' message.
+    api.did.doc.types.Invitation invitation = 1;
+    types.To to = 2;
+
+  }
+  // in: body
+  Body body = 2;
+}
+
+// IntroduceAcceptRequestWithPublicOOBInvitationResponse model
+//
+// Represents a AcceptRequestWithPublicOOBInvitation response message.
+//
+// swagger:response introduceAcceptRequestWithPublicOOBInvitationResponse
+message IntroduceAcceptRequestWithPublicOOBInvitationResponse {// nolint: unused,deadcode
+  // in: body
+}
+
+// IntroduceAcceptRequestWithRecipients model
+//
+// This is used for operation to accept a request with recipients.
+//
+// swagger:parameters introduceAcceptRequestWithRecipients
+message IntroduceAcceptRequestWithRecipients {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  string piid = 1;
+  message Body {
+    // Recipient specifies to whom proposal will be sent
+    types.Recipient recipient = 1;
+    // To keeps information about the introduction
+    types.To to = 2;
+  }
+  // in: body
+  Body body = 2;
+}
+
+// IntroduceAcceptRequestWithRecipientsResponse model
+//
+// Represents a AcceptRequestWithRecipients response message.
+//
+// swagger:response introduceAcceptRequestWithRecipientsResponse
+message IntroduceAcceptRequestWithRecipientsResponse {// nolint: unused,deadcode
+  // in: body
+}
+
+
+
+// IntroduceSendRequest model
+//
+// This is used for operation to send a request.
+//
+message IntroduceSendRequest {// nolint: unused,deadcode
+  // MyDID sender's did
+  // required: true
+  string my_did = 1;
+  // TheirDID receiver's did
+  // required: true
+  string their_did = 2;
+  // PleaseIntroduceTo keeps information about the introduction
+  // required: true
+  types.PleaseIntroduceTo please_introduce_to = 3;
+}
+
+// swagger:parameters introduceSendRequest
+message docIntroduceSendRequest {// nolint: unused,deadcode
+  // in: body
+  IntroduceSendRequest body = 1;
+}
+
+// IntroduceSendResponse model
+//
+// Represents a SendRequest response message.
+//
+message IntroduceSendResponse {// nolint: unused,deadcode
+  // PIID Protocol instance ID. It can be used as a correlation ID
+  string piid = 1;
+}
+
+// swagger:response introduceSendResponse
+message docIntroduceSendResponse {// nolint: unused,deadcode
+  // in: body
+  IntroduceSendResponse body = 1;
+}
+
+// IntroduceDeclineProposalRequest model
+//
+// This is used for operation to decline a proposal.
+//
+// swagger:parameters introduceDeclineProposal
+message IntroduceDeclineProposalRequest {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  string piid = 1;
+
+  // Reason is an explanation of why it was declined
+  string reason = 2;
+}
+
+// IntroduceDeclineProposalResponse model
+//
+// Represents a DeclineProposal response message.
+//
+// swagger:response introduceDeclineProposalResponse
+message IntroduceDeclineProposalResponse {// nolint: unused,deadcode
+  // in: body
+}
+
+// IntroduceDeclineRequest model
+//
+// This is used for operation to decline a request.
+//
+// swagger:parameters introduceDeclineRequest
+message IntroduceDeclineRequest {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  string piid = 1;
+
+  // Reason is an explanation of why it was declined
+  string reason = 2;
+}
+
+// IntroduceDeclineResponse model
+//
+// Represents a DeclineRequest response message.
+//
+// swagger:response introduceDeclineResponse
+message IntroduceDeclineResponse {// nolint: unused,deadcode
+  // in: body
+}
+
+// IntroduceAcceptProposalRequest model
+//
+// This is used for operation to accept a proposal.
+//
+// swagger:parameters introduceAcceptProposal
+message IntroduceAcceptProposalRequest {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  string piid = 1;
+}
+
+// IntroduceAcceptProposalResponse model
+//
+// Represents a AcceptProposal response message.
+//
+// swagger:response introduceAcceptProposalResponse
+message IntroduceAcceptProposalResponse {// nolint: unused,deadcode
+  // in: body
+}
+
+// IntroduceAcceptProblemReportRequest model
+//
+// This is used for operation to accept a problem report.
+//
+// swagger:parameters introduceAcceptProblemReport
+message IntroduceAcceptProblemReportRequest {// nolint: unused,deadcode
+  // Protocol instance ID
+  //
+  // in: path
+  // required: true
+  string piid = 1;
+}
+
+// IntroduceAcceptProblemReportResponse model
+//
+// Represents a AcceptProblemReport response message
+//
+// swagger:response introduceAcceptProblemReportResponse
+message IntroduceAcceptProblemReportResponse {// nolint: unused,deadcode
+  // in: body
+}
+
+
+// IntroduceController defines methods for the introduce protocol controller.
+service IntroduceController {
+  // Actions returns unfinished actions for the async usage.
+  // Returns pending actions that have not yet to be executed or cancelled.
+  // Actions swagger:route GET /introduce/actions introduce introduceActionsReq
+  //
+  // Returns pending actions that have not yet to be executed or cancelled.
+  //
+  // Responses:
+  //        200: introduceActionsResponse
+  rpc actions(IntroduceActionsRequest) returns (IntroduceActionsResponse){}
+
+  // SendProposal sends a proposal to the introducees (the client has not published an out-of-band message)
+  // SendProposal swagger:route POST /introduce/send-proposal introduce introduceSendProposalRequest
+  //
+  // Sends a proposal.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: introduceSendProposalResponse
+  rpc sendProposal(IntroduceSendProposalRequest) returns (IntroduceSendProposalResponse) {}
+
+  // SendProposalWithOOBInvitation sends a proposal to the introducee (the client has published an out-of-band request)
+  // SendProposalWithOOBInvitation swagger:route POST /introduce/send-proposal-with-oob-invitation introduce introduceSendProposalWithOOBInvitationRequest
+  //
+  // Sends a proposal with OOBRequest.
+  //
+  // Responses:
+  //        200: introduceSendProposalWithOOBInvitationResponse
+  rpc sendProposalWithOOBInvitation(IntroduceSendProposalWithOOBInvitationRequest) returns (IntroduceSendProposalWithOOBInvitationResponse) {}
+
+
+  // SendRequest sends a request showing that the introducee is willing to share their own out-of-band message
+  // SendRequest swagger:route POST /introduce/send-request introduce introduceSendRequest
+  //
+  // Sends a request.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: introduceSendResponse
+  rpc sendRequest(IntroduceSendProposalRequest) returns (IntroduceSendProposalResponse) {}
+
+  // AcceptProposalWithOOBInvitation is used when introducee wants to provide an out-of-band request
+  // AcceptProposalWithOOBInvitation swagger:route POST /introduce/{piid}/accept-proposal-with-oob-invitation introduce introduceAcceptProposalWithOOBInvitation
+  //
+  // Accepts a proposal with OOBRequest.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: introduceAcceptProposalWithOOBResponse
+  rpc acceptProposalWithOOBInvitation(IntroduceAcceptProposalWithOOBInvitationRequest) returns (IntroduceAcceptProposalWithOOBResponse) {}
+
+  // AcceptProposal is used when introducee wants to accept a proposal without providing a OOBRequest
+  // AcceptProposal swagger:route POST /introduce/{piid}/accept-proposal introduce introduceAcceptProposal
+  //
+  // Accepts a proposal.
+  //
+  // Responses:
+  //        200: introduceAcceptProposalResponse
+  rpc acceptProposal(IntroduceAcceptProposalRequest) returns (IntroduceAcceptProposalResponse) {}
+
+  // AcceptRequestWithPublicOOBInvitation is used when introducer wants to provide a published out-of-band request
+  // AcceptRequestWithPublicOOBInvitation swagger:route POST /introduce/{piid}/accept-request-with-public-oob-invitation introduce introduceAcceptRequestWithPublicOOBInvitation
+  //
+  // Accept a request with public OOBRequest.
+  //
+  // Responses:
+  //        200: introduceAcceptRequestWithPublicOOBInvitationResponse
+  rpc acceptRequestWithPublicOOBInvitation(IntroduceAcceptProposalWithOOBInvitationRequest) returns (IntroduceAcceptRequestWithPublicOOBInvitationResponse) {}
+
+  // AcceptRequestWithRecipients is used when the introducer does not have a published out-of-band message on hand
+  // but they are willing to introduce agents to each other
+  // AcceptRequestWithRecipients swagger:route POST /introduce/{piid}/accept-request-with-recipients introduce introduceAcceptRequestWithRecipients
+  //
+  // Accept a request with recipients.
+  //
+  // Responses:
+  //        200: introduceAcceptRequestWithRecipientsResponse
+  rpc acceptRequestWithRecipients(IntroduceAcceptRequestWithRecipients) returns (IntroduceAcceptRequestWithRecipientsResponse) {}
+
+  // DeclineProposal is used to reject the proposal
+  // DeclineProposal swagger:route POST /introduce/{piid}/decline-proposal introduce introduceDeclineProposal
+  //
+  // Declines a proposal.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: introduceDeclineProposalResponse
+  rpc declineProposal(IntroduceDeclineProposalRequest) returns (IntroduceDeclineProposalRequest) {}
+
+  // DeclineRequest is used to reject the request
+
+  // DeclineRequest swagger:route POST /introduce/{piid}/decline-request introduce introduceDeclineRequest
+  //
+  // Declines a request.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: introduceDeclineRequestResponse
+  rpc declineRequest(IntroduceDeclineRequest) returns (IntroduceDeclineResponse) {}
+
+  // AcceptProblemReport is used for accepting problem report.
+
+  // AcceptProblemReport swagger:route POST /introduce/{piid}/accept-problem-report introduce introduceAcceptProblemReport
+  //
+  // Accepts a problem report.
+  //
+  // Responses:
+  //        200: introduceAcceptProblemReportResponse
+  rpc acceptProblemReport(IntroduceAcceptProblemReportRequest) returns (IntroduceAcceptProblemReportResponse) {}
+}

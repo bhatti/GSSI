@@ -21,15 +21,26 @@ const (
 )
 
 // RotateDIDRequest request to rotate MyDID in the connection with the given ID.
+//
+// This is used for connection did rotation request
+//
+// swagger:parameters rotateDID
 type RotateDIDRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Kid           string `protobuf:"bytes,2,opt,name=kid,proto3" json:"kid,omitempty"`
-	NewDid        string `protobuf:"bytes,3,opt,name=new_did,json=newDid,proto3" json:"new_did,omitempty"`
-	CreatePeerDid bool   `protobuf:"varint,4,opt,name=create_peer_did,json=createPeerDid,proto3" json:"create_peer_did,omitempty"`
+	// The ID of the connection record to rotate the DID of
+	//
+	// in: path
+	// required: true
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// KID Key ID of the signing key in the connection's current DID, used to sign the DID rotation.
+	Kid string `protobuf:"bytes,2,opt,name=kid,proto3" json:"kid,omitempty"`
+	// NewDID DID that the given connection will rotate to.
+	NewDid string `protobuf:"bytes,3,opt,name=new_did,json=newDid,proto3" json:"new_did,omitempty"`
+	// CreatePeerDID flag that, when true, makes the DID rotation create a new peer DID, ignoring the NewDID parameter.
+	CreatePeerDid bool `protobuf:"varint,4,opt,name=create_peer_did,json=createPeerDid,proto3" json:"create_peer_did,omitempty"`
 }
 
 func (x *RotateDIDRequest) Reset() {
@@ -140,6 +151,59 @@ func (x *RotateDIDResponse) GetNewDid() string {
 	return ""
 }
 
+// RotateDIDResponse response from a DID rotation call, with the new DID that the connection was rotated to.
+//
+// response of rotate DID action
+//
+// swagger:response rotateDIDResponse
+type DocRotateDIDResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// in: body
+	Body *RotateDIDResponse `protobuf:"bytes,1,opt,name=body,proto3" json:"body,omitempty"`
+}
+
+func (x *DocRotateDIDResponse) Reset() {
+	*x = DocRotateDIDResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_did_services_connection_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DocRotateDIDResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DocRotateDIDResponse) ProtoMessage() {}
+
+func (x *DocRotateDIDResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_did_services_connection_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DocRotateDIDResponse.ProtoReflect.Descriptor instead.
+func (*DocRotateDIDResponse) Descriptor() ([]byte, []int) {
+	return file_api_did_services_connection_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *DocRotateDIDResponse) GetBody() *RotateDIDResponse {
+	if x != nil {
+		return x.Body
+	}
+	return nil
+}
+
 // IDMessage is either a request or response message, holding connection ID.
 // Used for:
 // - response from creating a didcomm v2 connection.
@@ -155,7 +219,7 @@ type IDMessage struct {
 func (x *IDMessage) Reset() {
 	*x = IDMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_did_services_connection_proto_msgTypes[2]
+		mi := &file_api_did_services_connection_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -168,7 +232,7 @@ func (x *IDMessage) String() string {
 func (*IDMessage) ProtoMessage() {}
 
 func (x *IDMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_did_services_connection_proto_msgTypes[2]
+	mi := &file_api_did_services_connection_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -181,7 +245,7 @@ func (x *IDMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IDMessage.ProtoReflect.Descriptor instead.
 func (*IDMessage) Descriptor() ([]byte, []int) {
-	return file_api_did_services_connection_proto_rawDescGZIP(), []int{2}
+	return file_api_did_services_connection_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *IDMessage) GetId() string {
@@ -189,6 +253,119 @@ func (x *IDMessage) GetId() string {
 		return x.Id
 	}
 	return ""
+}
+
+// CreateConnectionRequestV2 model
+//
+// Request to create a didcomm v2 connection
+//
+// swagger:parameters createConnectionV2
+type CreateConnectionRequestV2 struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	MyDid    string `protobuf:"bytes,1,opt,name=my_did,json=myDid,proto3" json:"my_did,omitempty"`
+	TheirDid string `protobuf:"bytes,2,opt,name=their_did,json=theirDid,proto3" json:"their_did,omitempty"`
+}
+
+func (x *CreateConnectionRequestV2) Reset() {
+	*x = CreateConnectionRequestV2{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_did_services_connection_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateConnectionRequestV2) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateConnectionRequestV2) ProtoMessage() {}
+
+func (x *CreateConnectionRequestV2) ProtoReflect() protoreflect.Message {
+	mi := &file_api_did_services_connection_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateConnectionRequestV2.ProtoReflect.Descriptor instead.
+func (*CreateConnectionRequestV2) Descriptor() ([]byte, []int) {
+	return file_api_did_services_connection_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CreateConnectionRequestV2) GetMyDid() string {
+	if x != nil {
+		return x.MyDid
+	}
+	return ""
+}
+
+func (x *CreateConnectionRequestV2) GetTheirDid() string {
+	if x != nil {
+		return x.TheirDid
+	}
+	return ""
+}
+
+// CreateConnectionV2Response model
+//
+// response of create didcomm v2 connection action
+//
+// swagger:response createConnectionV2Response
+type CreateConnectionV2Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// in: body
+	Body *IDMessage `protobuf:"bytes,1,opt,name=body,proto3" json:"body,omitempty"`
+}
+
+func (x *CreateConnectionV2Response) Reset() {
+	*x = CreateConnectionV2Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_did_services_connection_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateConnectionV2Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateConnectionV2Response) ProtoMessage() {}
+
+func (x *CreateConnectionV2Response) ProtoReflect() protoreflect.Message {
+	mi := &file_api_did_services_connection_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateConnectionV2Response.ProtoReflect.Descriptor instead.
+func (*CreateConnectionV2Response) Descriptor() ([]byte, []int) {
+	return file_api_did_services_connection_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CreateConnectionV2Response) GetBody() *IDMessage {
+	if x != nil {
+		return x.Body
+	}
+	return nil
 }
 
 var File_api_did_services_connection_proto protoreflect.FileDescriptor
@@ -207,12 +384,47 @@ var file_api_did_services_connection_proto_rawDesc = []byte{
 	0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x65, 0x65, 0x72, 0x44, 0x69, 0x64, 0x22, 0x2c, 0x0a, 0x11,
 	0x52, 0x6f, 0x74, 0x61, 0x74, 0x65, 0x44, 0x49, 0x44, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
 	0x65, 0x12, 0x17, 0x0a, 0x07, 0x6e, 0x65, 0x77, 0x5f, 0x64, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x06, 0x6e, 0x65, 0x77, 0x44, 0x69, 0x64, 0x22, 0x1b, 0x0a, 0x09, 0x49, 0x44,
-	0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x62, 0x68, 0x61, 0x74, 0x74, 0x69, 0x2f, 0x47, 0x53, 0x53,
-	0x49, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x28, 0x09, 0x52, 0x06, 0x6e, 0x65, 0x77, 0x44, 0x69, 0x64, 0x22, 0x4f, 0x0a, 0x14, 0x64, 0x6f,
+	0x63, 0x52, 0x6f, 0x74, 0x61, 0x74, 0x65, 0x44, 0x49, 0x44, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x37, 0x0a, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x23, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x73, 0x2e, 0x52, 0x6f, 0x74, 0x61, 0x74, 0x65, 0x44, 0x49, 0x44, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x22, 0x1b, 0x0a, 0x09, 0x49,
+	0x44, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x4f, 0x0a, 0x19, 0x43, 0x72, 0x65, 0x61,
+	0x74, 0x65, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x56, 0x32, 0x12, 0x15, 0x0a, 0x06, 0x6d, 0x79, 0x5f, 0x64, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6d, 0x79, 0x44, 0x69, 0x64, 0x12, 0x1b, 0x0a, 0x09,
+	0x74, 0x68, 0x65, 0x69, 0x72, 0x5f, 0x64, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x74, 0x68, 0x65, 0x69, 0x72, 0x44, 0x69, 0x64, 0x22, 0x4d, 0x0a, 0x1a, 0x43, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x56, 0x32, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2f, 0x0a, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2e, 0x49, 0x44, 0x4d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x52, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x32, 0xb9, 0x02, 0x0a, 0x14, 0x43, 0x6f, 0x6e,
+	0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65,
+	0x72, 0x12, 0x56, 0x0a, 0x09, 0x72, 0x6f, 0x74, 0x61, 0x74, 0x65, 0x44, 0x49, 0x44, 0x12, 0x22,
+	0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x73, 0x2e, 0x52, 0x6f, 0x74, 0x61, 0x74, 0x65, 0x44, 0x49, 0x44, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x23, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x73, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x73, 0x2e, 0x52, 0x6f, 0x74, 0x61, 0x74, 0x65, 0x44, 0x49, 0x44, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x71, 0x0a, 0x12, 0x63, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x56, 0x32, 0x12,
+	0x2b, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x73, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x56, 0x32, 0x1a, 0x2c, 0x2e, 0x61,
+	0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2e,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x56, 0x32, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x56, 0x0a, 0x18,
+	0x73, 0x65, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x6f, 0x44,
+	0x49, 0x44, 0x43, 0x6f, 0x6d, 0x6d, 0x56, 0x32, 0x12, 0x1b, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64,
+	0x69, 0x64, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2e, 0x49, 0x44, 0x4d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x1a, 0x1b, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x64, 0x69, 0x64, 0x2e,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2e, 0x49, 0x44, 0x4d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x22, 0x00, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
+	0x6f, 0x6d, 0x2f, 0x62, 0x68, 0x61, 0x74, 0x74, 0x69, 0x2f, 0x47, 0x53, 0x53, 0x49, 0x2f, 0x61,
+	0x70, 0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -227,18 +439,29 @@ func file_api_did_services_connection_proto_rawDescGZIP() []byte {
 	return file_api_did_services_connection_proto_rawDescData
 }
 
-var file_api_did_services_connection_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_api_did_services_connection_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_api_did_services_connection_proto_goTypes = []interface{}{
-	(*RotateDIDRequest)(nil),  // 0: api.did.services.RotateDIDRequest
-	(*RotateDIDResponse)(nil), // 1: api.did.services.RotateDIDResponse
-	(*IDMessage)(nil),         // 2: api.did.services.IDMessage
+	(*RotateDIDRequest)(nil),           // 0: api.did.services.RotateDIDRequest
+	(*RotateDIDResponse)(nil),          // 1: api.did.services.RotateDIDResponse
+	(*DocRotateDIDResponse)(nil),       // 2: api.did.services.docRotateDIDResponse
+	(*IDMessage)(nil),                  // 3: api.did.services.IDMessage
+	(*CreateConnectionRequestV2)(nil),  // 4: api.did.services.CreateConnectionRequestV2
+	(*CreateConnectionV2Response)(nil), // 5: api.did.services.CreateConnectionV2Response
 }
 var file_api_did_services_connection_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: api.did.services.docRotateDIDResponse.body:type_name -> api.did.services.RotateDIDResponse
+	3, // 1: api.did.services.CreateConnectionV2Response.body:type_name -> api.did.services.IDMessage
+	0, // 2: api.did.services.ConnectionController.rotateDID:input_type -> api.did.services.RotateDIDRequest
+	4, // 3: api.did.services.ConnectionController.createConnectionV2:input_type -> api.did.services.CreateConnectionRequestV2
+	3, // 4: api.did.services.ConnectionController.setConnectionToDIDCommV2:input_type -> api.did.services.IDMessage
+	1, // 5: api.did.services.ConnectionController.rotateDID:output_type -> api.did.services.RotateDIDResponse
+	5, // 6: api.did.services.ConnectionController.createConnectionV2:output_type -> api.did.services.CreateConnectionV2Response
+	3, // 7: api.did.services.ConnectionController.setConnectionToDIDCommV2:output_type -> api.did.services.IDMessage
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_api_did_services_connection_proto_init() }
@@ -272,7 +495,43 @@ func file_api_did_services_connection_proto_init() {
 			}
 		}
 		file_api_did_services_connection_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DocRotateDIDResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_did_services_connection_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*IDMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_did_services_connection_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateConnectionRequestV2); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_did_services_connection_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateConnectionV2Response); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -290,9 +549,9 @@ func file_api_did_services_connection_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_did_services_connection_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   6,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   1,
 		},
 		GoTypes:           file_api_did_services_connection_proto_goTypes,
 		DependencyIndexes: file_api_did_services_connection_proto_depIdxs,

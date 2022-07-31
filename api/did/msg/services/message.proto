@@ -6,8 +6,7 @@ option go_package = "github.com/bhatti/GSSI/api/did/msg/services";
 
 import "google/protobuf/duration.proto";
 
-import "api/did/msg/types/message.proto";
-import "api/did/doc/types/outofband.proto";
+import "api/common/types/common.proto";
 
 
 // RegisterMsgSvcRequest contains parameters for registering a message service to message handler.
@@ -26,6 +25,18 @@ message RegisterMsgSvcRequest {
   string message = 3;
 }
 
+// docRegisterMessageServiceRequest model
+//
+// This is used for operation to register a message service to message handler
+//
+// swagger:parameters registerMsgSvc
+message docRegisterMessageServiceRequest {// nolint: unused,deadcode
+  // Params for registering message service
+  //
+  // in: body
+  RegisterMsgSvcRequest params = 1;
+}
+
 // UnregisterMsgSvcRequest contains parameters for unregistering a message service from message handler.
 message UnregisterMsgSvcRequest {
   // Name of the message service to be unregistered
@@ -33,9 +44,28 @@ message UnregisterMsgSvcRequest {
   string name = 1;
 }
 
+// docUnregisterMessageServiceRequest model
+//
+// This is used for operation to unregister a message service from message handler
+//
+// swagger:parameters unregisterMsgSvc
+message docUnregisterMessageServiceRequest {// nolint: unused,deadcode
+  // Params for unregistering a message service
+  //
+  // in: body
+  UnregisterMsgSvcRequest params = 1;
+}
+
+
+// RegisteredServicesRequest
+message RegisteredServicesRequest {
+}
+
 // RegisteredServicesResponse is for returning list of registered service names.
+// swagger:response registeredServicesResponse
 message RegisteredServicesResponse {
   // Registered service names
+  // in: body
   repeated string names = 1;
 }
 
@@ -58,7 +88,7 @@ message SendNewMessageRequest {
 
   // ServiceEndpointDestination service endpoint destination.
   // This param can be used to send messages outside connection.
-    ServiceEndpointDestinationParams service_endpoint = 3;
+  ServiceEndpointDestinationParams service_endpoint = 3;
 
   // Message body of the message
   bytes message_bod = 4; // json.RawMessage
@@ -66,6 +96,18 @@ message SendNewMessageRequest {
   // Await reply from receiver of this message
   // If provided, then send message feature will wait response of this message for same thread
   AwaitReply await_reply = 5;
+}
+
+// docSendNewMessageRequest model
+//
+// This is used for operation to send new message
+//
+// swagger:parameters sendNewMessage
+message docSendNewMessageRequest {// nolint: unused,deadcode
+  // Params for sending new message
+  //
+  // in: body
+  SendNewMessageRequest params = 1;
 }
 
 // ServiceEndpointDestinationParams contains service endpoint params.
@@ -105,8 +147,25 @@ message SendReplyMessageRequest {
   AwaitReply await_reply = 4;
 }
 
+// docSendReplyMessageRequest model
+//
+// This is used for operation to send reply to message
+//
+// swagger:parameters sendReplyMessage
+message docSendReplyMessageRequest {
+  // Params for sending message reply
+  //
+  // in: body
+  SendReplyMessageRequest params = 1;
+}
+
 // SendMessageResponse is response for send/reply message feature.
+// Response of send/reply message features.
+// Usually contains reply for the message sent if await reply feature is used.
+//
+// swagger:response sendMessageResponse
 message SendMessageResponse {
+  // in: body
   // Response will contain raw message reply content if AwaitReply is used in send message request.
   bytes response = 1; // json.RawMessage
 }
@@ -121,3 +180,78 @@ message RegisterHTTPMsgSvcRequest {
   // If not provided then all incoming messages of HTTP over DIDComm message will be handled by operation.
   repeated string purpose = 2;
 }
+
+// docRegisterHTTPMessageServiceRequest model
+//
+// This is used for operation to register an HTTP over DIDComm message service to message handler
+//
+// swagger:parameters registerHttpMsgSvc
+message docRegisterHTTPMessageServiceRequest {// nolint: unused,deadcode
+  // Params for registering http over did comm message service.
+  //
+  // in: body
+  RegisterHTTPMsgSvcRequest params = 1;
+}
+
+// MessagingController defines methods for the Messaging controller.
+service MessagingController {
+
+  // RegisterService registers new message service to message handler registrar.
+  // RegisterService swagger:route POST /message/register-service message registerMsgSvc
+  //
+  // registers new message service to message handler registrar
+  //
+  // Responses:
+  //    default: genericError
+  rpc registerService(RegisterMsgSvcRequest) returns (api.common.types.EmptyResponse) {}
+
+
+  // UnregisterService unregisters given message service handler registrar.
+  // UnregisterService swagger:route POST /message/unregister-service message http-over-didcomm unregisterMsgSvc
+  //
+  // unregisters given message service handler registrar
+  //
+  // Responses:
+  //    default: genericError
+  rpc unregisterService(UnregisterMsgSvcRequest) returns (api.common.types.EmptyResponse) {}
+
+  // Services returns list of registered service names.
+  // Services swagger:route GET /message/services message http-over-didcomm services
+  //
+  // returns list of registered service names
+  //
+  // Responses:
+  //    default: genericError
+  //    200: registeredServicesResponse
+  rpc services(RegisteredServicesRequest) returns (RegisteredServicesResponse) {}
+
+  // Send sends new message to destination provided.
+  // Send swagger:route POST /message/send message sendNewMessage
+  //
+  // sends new message to destination provided
+  //
+  // Responses:
+  //    default: genericError
+  //    200: sendMessageResponse
+  rpc send(SendNewMessageRequest) returns (SendMessageResponse) {}
+
+  // Reply sends reply to existing message.
+  // Reply swagger:route POST /message/reply message sendReplyMessage
+  //
+  // sends reply to existing message
+  //
+  // Responses:
+  //    default: genericError
+  //    200: sendMessageResponse
+  rpc reply(SendReplyMessageRequest) returns (SendMessageResponse) {}
+
+  // RegisterHTTPService registers new http over didcomm service to message handler registrar.
+  // RegisterHTTPService swagger:route POST /http-over-didcomm/register http-over-didcomm registerHttpMsgSvc
+  //
+  // registers new http over didcomm service to message handler registrar
+  //
+  // Responses:
+  //    default: genericError
+  rpc registerHTTPService(RegisterHTTPMsgSvcRequest) returns (api.common.types.EmptyResponse) {}
+}
+

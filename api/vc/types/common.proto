@@ -12,6 +12,72 @@ option go_package = "github.com/bhatti/GSSI/api/vc/types";
 import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
 
+// swagger:response genericError
+message docGenericError {// nolint:unused,deadcode
+  // in: body
+  GenericError body = 1;
+}
+
+// TODO command types shouldn't be mentioned in common error package, [Issue#1182].
+enum Code {
+  DEFAULT = 0;
+  // Common error group for general command errors.
+    Common = 1000;
+
+  // DIDExchange error group for DID exchange command errors.
+    DIDExchange = 2000;
+
+  // Messaging error group for messaging service errors.
+    Messaging = 3000;
+
+  // VDR error group for VDR command errors.
+    VDR = 4000;
+
+  // ROUTE error group for Route command errors.
+    ROUTE = 5000;
+
+  // VC error group for Verifiable Credential command errors.
+    VC = 6000;
+
+  // KMS error group for key management service errors.
+    KMS = 7000;
+
+  // IssueCredential error group for issue credential command errors.
+  IssueCredential = 8000;
+
+  // PresentProof error group for present proof command errors.
+  PresentProof = 9000;
+
+  // Introduce error group for introduce command errors.
+  Introduce = 10000;
+
+  // Outofband error group for outofband command errors.
+  Outofband = 11000;
+
+  // OutofbandV2 error group for outofband command errors.
+  OutofbandV2 = 11100;
+
+  // VCWallet error group for verifiable Credential wallet command errors.
+  VCWallet = 12000;
+
+  // RFC0593 error group for RFC0593 command errors.
+  RFC0593 = 13000;
+
+  // LD error group for JSON-LD command errors.
+  LD = 14000;
+
+  // Connection error group for connection management errors.
+  Connection = 15000;
+}
+
+
+// GenericError is aries rest api error response
+message GenericError {
+  Code code = 1;
+  string message = 2;
+}
+
+
 message Void {
 }
 
@@ -26,12 +92,15 @@ message LangValue {
 }
 
 // TypedID defines a flexible structure with id and name fields and arbitrary extra fields
+// swagger:model
 message TypedID {
   string id = 1;
   string type = 2;
+  map<string, google.protobuf.Any> customFields = 3;
 }
 
 // CommandError contains a basic command Error.
+// swagger:model
 message CommandError {
   string message = 1;
   int32 code = 2;
@@ -59,25 +128,37 @@ message ResponseEnvelope {
 
 // Issuer - A JSON-LD Verifiable Credential Issuer.
 // Issuer represents the issuer object defined in https://identity.foundation/credential-manifest/#general-composition.
+// swagger:model
 message Issuer {
   string id = 1; // Must be a valid URI
   string name = 2;
   Styles styles = 3;
+  map<string, google.protobuf.Any> customFields = 4;
+}
+
+// Subject of the Verifiable Credential.
+// swagger:model
+message Subject {
+  string id = 1;
+  map<string, google.protobuf.Any> customFields = 2;
 }
 
 // ImageURIWithAltText represents a URI that points to an image along with the alt text for it.
+// swagger:model
 message ImageURIWithAltText {
   string uri = 1;
   string alt = 2;
 }
 
 // Color represents a single color in RGB hex code format.
+// swagger:model
 message Color {
   string color = 1;
 }
 
 // Styles represents an Entity Styles object as defined in
 // https://identity.foundation/credential-manifest/wallet-rendering/#entity-styles.
+// swagger:model
 message Styles {
   ImageURIWithAltText thumbnail = 1;
   ImageURIWithAltText hero = 2;
@@ -87,6 +168,7 @@ message Styles {
 
 // Schema represents Type and (optional) Format information for a DisplayMappingObject that uses the Paths field,
 // as defined in https://identity.foundation/credential-manifest/wallet-rendering/#using-path.
+// swagger:model
 message Schema {
   string type = 1;
   string format = 2;
@@ -95,12 +177,14 @@ message Schema {
 }
 
 // Holder describes Constraints`s  holder object.
+// swagger:model
 message Holder {
   repeated string field_id = 1;
   string directive = 2; // preference
 }
 
 // Constraints describes InputDescriptor`s Constraints field.
+// swagger:model
 message Constraints {
   string limit_disclosure = 1; // preference
   string subject_is_issuer = 2; // preference
@@ -109,6 +193,7 @@ message Constraints {
 }
 
 // Field describes Constraints`s Fields field.
+// swagger:model
 message Field {
   string id = 1;
   repeated string path = 2;
@@ -118,6 +203,7 @@ message Field {
 }
 
 // Filter describes filter.
+// swagger:model
 message Filter {
   string type = 1;
   string format = 2;
@@ -146,6 +232,7 @@ message Filter {
 // correlatable identifiers for subjects.
 
 // RefreshService for Verifiable Credential
+// swagger:model
 message RefreshService {
   // The id for refresh
   // e.g. https://example.edu/exchanges/refresh-degree or https://example.edu/refresh/3732
@@ -158,6 +245,7 @@ message RefreshService {
   google.protobuf.Timestamp validUntil = 4;
 }
 
+// swagger:model
 message Prohibition {
   // The assigner, e.g. https://example.edu/issuers/14
   string assigner = 1;
@@ -169,6 +257,7 @@ message Prohibition {
   repeated string actions = 4;
 }
 
+// swagger:model
 message TermsOfUse {
   // The id for terms
   // e.g. http://example.com/policies/credential/4

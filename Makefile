@@ -74,5 +74,16 @@ release-actual:
 
 release: vendor release-actual
 
+# npm install -g swagger-markdown
+check-swagger: build
+	which swagger || (GO111MODULE=off go get -u github.com/go-swagger/go-swagger/cmd/swagger)
+
+swagger: check-swagger
+	GO111MODULE=on go mod vendor  && swagger generate spec --log-output swagger.log -o ./docs/swagger.yaml
+	swagger-markdown -i docs/swagger.yaml
+
+serve-swagger: swagger
+	swagger serve -F=swagger docs/swagger.yaml
+
 
 .PHONY: compile build release vendor

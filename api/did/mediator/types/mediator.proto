@@ -3,18 +3,21 @@ syntax = "proto3";
 package api.did.mediator.messages;
 
 option go_package = "github.com/bhatti/GSSI/api/did/mediator/messages";
-import "api/did/doc/types/doc.proto";
+
+import "api/common/types/common.proto";
 
 // Request route request message.
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0211-route-coordination#route-request
+// swagger:model
 message Request {
   string id = 1; // @id
   string type = 2; // @type
-  api.did.doc.types.Timing timing = 3; // ~timing
+  api.common.types.Timing timing = 3; // ~timing
 }
 
 // Grant route grant message.
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0211-route-coordination#route-grant
+// swagger:model
 message Grant {
   string id = 1; // @id
   string type = 2; // @type
@@ -24,6 +27,7 @@ message Grant {
 
 // KeylistUpdate route keylist update message.
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0211-route-coordination#keylist-update
+// swagger:model
 message KeylistUpdate {
   string id = 1; // @id
   string type = 2; // @type
@@ -31,6 +35,7 @@ message KeylistUpdate {
 }
 
 // Update route key update message.
+// swagger:model
 message Update {
   string recipient_key = 1;
   string action = 2;

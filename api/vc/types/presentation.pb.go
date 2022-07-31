@@ -123,6 +123,7 @@ func (x *PresentationOptions) GetCreated() *timestamppb.Timestamp {
 // from verifiable credentials that are cryptographically verifiable, but do not of themselves
 // contain verifiable credentials, might also be verifiable presentations.
 // VerifiablePresentation = Presentation metadata + VerifiableCredentials + Proofs
+// swagger:model
 type VerifiablePresentation struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -247,6 +248,7 @@ func (x *VerifiablePresentation) GetName() string {
 }
 
 // RefreshableVerifiablePresentation for verifiable presentation
+// swagger:model
 type RefreshableVerifiablePresentation struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

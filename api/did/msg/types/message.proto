@@ -13,6 +13,7 @@ message I10n {
   string locale = 1;
 }
 
+// swagger:model
 message Message {
   string id = 1; // @id
   string type = 2; // @type
@@ -28,6 +29,7 @@ message Message {
 
 // StatusRequest sent by the recipient to the message_holder to request a status message./0212-pickup#statusrequest
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#statusrequest
+// swagger:model
 message StatusRequest {
   string id = 1; // @id
   string type = 2; // @type
@@ -36,6 +38,7 @@ message StatusRequest {
 
 // Status details about pending messages
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#status
+// swagger:model
 message Status {
   string id = 1; // @id
   string type = 2; // @type
@@ -50,6 +53,7 @@ message Status {
 
 // BatchPickup a request to have multiple waiting messages sent inside a batch message.
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#batch-pickup
+// swagger:model
 message BatchPickup {
   string id = 1; // @id
   string type = 2; // @type
@@ -60,6 +64,7 @@ message BatchPickup {
 
 // Batch a message that contains multiple waiting messages.
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#batch
+// swagger:model
 message Batch {
   string id = 1; // @id
   string type = 2; // @type
@@ -70,11 +75,13 @@ message Batch {
 
 // Noop message
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#noop
+// swagger:model
 message Noop {
   string id = 1; // @id
   string type = 2; // @type
 }
 
+// swagger:model
 message Inbox {
   string did = 1;
   int32 message_count = 2;
@@ -94,6 +101,8 @@ message HttpHeader {
   string name = 1;
   string value = 2;
 }
+
+// swagger:model
 message HttpOverDIDCommMsg {
   string id = 1; // @id
   string method = 2;

@@ -72,6 +72,7 @@ func (x *I10N) GetLocale() string {
 	return ""
 }
 
+// swagger:model
 type Message struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -170,6 +171,7 @@ func (x *Message) GetAddedTime() *timestamppb.Timestamp {
 
 // StatusRequest sent by the recipient to the message_holder to request a status message./0212-pickup#statusrequest
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#statusrequest
+// swagger:model
 type StatusRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -235,6 +237,7 @@ func (x *StatusRequest) GetThread() *types.Thread {
 
 // Status details about pending messages
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#status
+// swagger:model
 type Status struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -348,6 +351,7 @@ func (x *Status) GetThread() *types.Thread {
 
 // BatchPickup a request to have multiple waiting messages sent inside a batch message.
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#batch-pickup
+// swagger:model
 type BatchPickup struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -421,6 +425,7 @@ func (x *BatchPickup) GetThread() *types.Thread {
 
 // Batch a message that contains multiple waiting messages.
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#batch
+// swagger:model
 type Batch struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -502,6 +507,7 @@ func (x *Batch) GetMessages() []*Message {
 
 // Noop message
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0212-pickup#noop
+// swagger:model
 type Noop struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -557,6 +563,7 @@ func (x *Noop) GetType() string {
 	return ""
 }
 
+// swagger:model
 type Inbox struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -710,6 +717,7 @@ func (x *HttpHeader) GetValue() string {
 	return ""
 }
 
+// swagger:model
 type HttpOverDIDCommMsg struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

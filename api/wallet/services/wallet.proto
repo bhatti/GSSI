@@ -4,6 +4,1117 @@ package api.wallet.services;
 
 option go_package = "github.com/bhatti/GSSI/api/wallet/services";
 
-import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+
+import "api/did/doc/types/outofband.proto";
+import "api/did/presentproof/types/presentproof.proto";
+import "api/vc/types/presentation.proto";
+import "api/vc/types/credential.proto";
 import "api/wallet/types/wallet.proto";
 
+// CreateOrUpdateProfileRequest is request model for
+// creating a new wallet profile or updating an existing wallet profile.
+message CreateOrUpdateProfileRequest {
+  // Unique identifier to identify wallet user
+  string userID = 1;
+
+  // passphrase for local kms for key operations.
+  // Optional, if this option is provided then wallet for this profile will use local KMS for key operations.
+  string localKMSPassphrase = 2;
+
+  // passphrase for web/remote kms for key operations.
+  // Optional, if this option is provided then wallet for this profile will use web/remote KMS for key operations.
+  string keyStoreURL = 3;
+
+  // edv configuration for storing wallet contents for this profile
+  // Optional, if not provided then agent storage provider will be used as store provider.
+  types.EDVConfiguration edvConfiguration = 4;
+}
+
+// createProfileRequest is request model for creating a new wallet profile.
+//
+// swagger:parameters createProfileRequest
+message CreateProfileRequest {// nolint: unused,deadcode
+  // Params for creating new wallet profile.
+  //
+  // in: body
+  CreateOrUpdateProfileRequest params = 1;
+}
+
+// swagger:parameters createProfileResponse
+message CreateProfileResponse {// nolint: unused,deadcode
+  types.Profile result = 1 ;
+}
+
+// UpdateProfileRequest is request model for updating an existing wallet profile.
+//
+// swagger:parameters updateProfileRequest
+message UpdateProfileRequest {// nolint: unused,deadcode
+  // Params for updating an existing wallet profile.
+  //
+  // in: body
+  CreateOrUpdateProfileRequest params = 1;
+}
+
+// swagger:parameters updateProfileResponse
+message UpdateProfileResponse {// nolint: unused,deadcode
+  types.Profile result = 1 ;
+}
+
+
+// WalletUserRequest contains wallet user info for performing profile operations.
+// swagger:parameters walletUserRequest
+message WalletUserRequest {
+  // ID of wallet user.
+  string userID = 1;
+}
+
+// WalletUserResponse
+// swagger:parameters walletUserResponse
+message WalletUserResponse {
+  // in: body
+  bool exists = 1;
+}
+
+// UnlockWalletRequest contains different options for unlocking wallet.
+//
+message UnlockWalletRequest {
+  // user ID of the wallet to be unlocked.
+  string userID = 1;
+
+  // passphrase for local kms for key operations.
+  // Optional, to be used if profile for this wallet user is setup with local KMS.
+  string localKMSPassphrase = 2;
+
+  // WebKMSAuth for authorizing acccess to web/remote kms.
+  // Optional, to be used if profile for this wallet user is setup with web/remote KMS.
+  types.UnlockAuth webKMSAuth = 3;
+
+  // Options for authorizing access to wallet's EDV content store.
+  // Optional, to be used only if profile for this wallet user is setup to use EDV as content store.
+  types.UnlockAuth edvUnlocks = 4;
+
+  // Time duration in milliseconds after which wallet will expire its unlock status.
+  google.protobuf.Duration expiry = 5;
+}
+
+// swagger:parameters unlockWalletReq
+message docUnlockWalletRequest {// nolint: unused,deadcode
+  // Params for unlocking wallet.
+  //
+  // in: body
+  UnlockWalletRequest params = 1;
+}
+
+// UnlockWalletResponse contains response for wallet unlock operation.
+message UnlockWalletResponse {
+  // Token for granting access to wallet for subsequent wallet operations.
+  string token = 1;
+}
+
+// swagger:response unlockWalletRes
+message docUnlockWalletResponse {
+  // in: body
+  UnlockWalletResponse result = 1;
+}
+
+// LockWalletRequest contains options for locking wallet.
+message LockWalletRequest {
+  // user ID of the wallet to be locked.
+  string userID = 1;
+}
+
+// swagger:parameters lockWalletReq
+message docLockWalletRequest {
+  // Params for locking wallet.
+  //
+  // in: body
+  LockWalletRequest params = 1;
+}
+
+// LockWalletResponse contains response for wallet lock operation.
+// swagger:response lockWalletRes
+message LockWalletResponse {
+  // Closed status of the wallet lock operation.
+  // if true, wallet is closed successfully
+  // if false, wallet is already closed or never unlocked.
+  // in: body
+  bool closed = 1;
+}
+
+
+// AddContentRequest is request for adding a content to wallet.
+message AddContentRequest {
+  // WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // type of the content to be added to the wallet.
+  // supported types: collection, credential, didResolutionResponse, metadata, connection, key
+  string contentType = 3;
+
+  // content to be added to wallet content store.
+  bytes content = 4; // json
+
+  // ID of the wallet collection to which this content should belong.
+  string collectionID = 5;
+}
+
+// swagger:parameters addContentReq
+message docAddContentRequest {
+  // Params for adding content to wallet.
+  // in: body
+  AddContentRequest params = 1;
+}
+
+// AddContentResponse is response for adding a content to wallet.
+message AddContentResponse {
+  string contentID = 1;
+}
+
+// swagger:parameters addContentRes
+message docAddContentResponse {
+  // in: body
+  AddContentResponse result = 1;
+}
+
+// RemoveContentRequest is request for removing a content from wallet.
+message RemoveContentRequest {
+  ///WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // type of the content to be removed from the wallet.
+  // supported types: collection, credential, didResolutionResponse, metadata, connection
+  string contentType = 3;
+
+  // ID of the content to be removed from wallet
+  string contentID = 4;
+}
+
+// swagger:parameters removeContentReq
+message docRemoveContentRequest {
+  // Params for removing content from wallet.
+  //
+  // in: body
+  RemoveContentRequest params = 1;
+}
+
+// RemoveContentResponse is response for removing a content from wallet.
+message RemoveContentResponse {
+  bool deleted = 1;
+}
+
+// swagger:parameters removeContentRes
+message docRemoveContentResponse {
+  // in: body
+  RemoveContentResponse result = 1;
+}
+
+
+// GetContentRequest is request for getting a content from wallet.
+message GetContentRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+
+  // type of the content to be returned from wallet.
+  // supported types: collection, credential, didResolutionResponse, metadata, connection
+  string contentType = 3;
+
+  // ID of the content to be returned from wallet
+  string contentID = 4;
+}
+
+// swagger:parameters getContentReq
+message docGetContentRequest {
+  // Params for getting content from wallet.
+  //
+  // in: body
+  GetContentRequest params = 1;
+}
+
+// GetContentResponse response for get content from wallet operation.
+message GetContentResponse {
+  // content retrieved from wallet content store.
+  //
+  // type of the content to be added to the wallet.
+  string contentType = 1;
+
+  // content retrieved from wallet content store.
+  bytes content = 2;
+}
+
+// swagger:response getContentRes
+message docGetContentResponse {
+  // content retrieved from wallet content store.
+  //
+  // in: body
+  GetContentResponse result = 1;
+}
+
+// GetAllContentRequest is request for getting all contents from wallet for given content type.
+message GetAllContentRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+
+  // type of the contents to be returned from wallet.
+  // supported types: collection, credential, didResolutionResponse, metadata, connection
+  string contentType = 3;
+
+  // ID of the collection on which the response contents to be filtered.
+  string collectionID = 4;
+
+  string query = 5;
+}
+
+// swagger:parameters getAllContentReq
+message docGetAllContentRequest {
+  // Params for getting all contents from wallet.
+  //
+  // in: body
+  GetAllContentRequest params = 1;
+
+  int32 page = 2;
+
+  int32 pageSize = 3;
+}
+
+// GetAllContentResponse response for get all content by content type wallet operation.
+message GetAllContentResponse {
+  // contents retrieved from wallet content store.
+  // map of content ID to content.
+  map<string, bytes> contents = 1;// json
+  int64 totalRecords = 2;
+}
+
+// swagger:response getAllContentRes
+message docGetAllContentResponse {
+  // contents retrieved from wallet content store.
+  // in: body
+  GetAllContentResponse result = 1;
+}
+
+// ContentQueryRequest is request model for querying wallet contents.
+message ContentQueryRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // credential query(s) for querying wallet contents.
+  repeated types.QueryParams query = 3;
+}
+
+// swagger:parameters contentQueryReq
+message docContentQueryRequest {
+  // in: body
+  ContentQueryRequest params = 1;
+
+  int32 page = 2;
+
+  int32 pageSize = 3;
+}
+
+// ContentQueryResponse response for wallet content query.
+message ContentQueryResponse {
+  // response presentation(s) containing query results.
+  repeated api.vc.types.VerifiablePresentation results = 1;
+  int64 totalRecords = 2;
+}
+
+// swagger:response contentQueryRes
+message docContentQueryResponse {
+  // response presentation(s) containing query results.
+  // in: body
+  ContentQueryResponse result = 1;
+}
+
+// IssueRequest is request model for issuing credential from wallet.
+message IssueRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // raw credential to be issued from wallet.
+  api.vc.types.VerifiableCredential credential = 3;
+
+  // proof options for issuing credential
+  api.vc.types.ProofOptions proofOptions = 4;
+}
+
+// swagger:parameters issueReq
+message docIssueRequest {
+  // in: body
+  IssueRequest params = 1;
+}
+
+// IssueResponse is response for issue credential interface from wallet.
+message IssueResponse {
+  // credential issued.
+  api.vc.types.VerifiableCredential credential = 1;
+}
+
+// swagger:response issueRes
+message docIssueResponse {
+  // credential issued.
+  // in: body
+  IssueResponse result = 1;
+}
+
+// ProveRequest for producing verifiable presentation from wallet.
+// Contains options for proofs and credential. Any combination of credential option can be mixed.
+message ProveRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // IDs of credentials already saved in wallet content store.
+  repeated string storedCredentials = 3;
+
+  // List of raw credentials to be presented.
+  repeated api.vc.types.VerifiableCredential rawCredentials = 4; // credentials
+
+  // Presentation to be proved.
+  api.vc.types.VerifiablePresentation presentation = 5;
+
+  // proof options for issuing credential.
+  api.vc.types.ProofOptions proofOptions = 6;
+}
+
+// swagger:parameters proveReq
+message docProveRequest {
+  // Params for producing verifiable presentation from wallet.
+  //
+  // in: body
+  ProveRequest params = 1;
+}
+
+// ProveResponse contains response presentation from prove operation.
+message ProveResponse {
+  // presentation response from prove operation.
+  api.vc.types.VerifiablePresentation presentation = 1;
+}
+
+// swagger:response proveRes
+message docProveResponse {
+  // presentation response from prove operation.
+  // in: body
+  ProveResponse result = 1;
+}
+
+
+// VerifyRequest request for verifying a credential or presentation from wallet.
+// Any one of the credential option should be used.
+message VerifyRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // ID of the credential already saved in wallet content store.
+  // optional, if provided then this option takes precedence over other options.
+  string storedCredentialID = 3;
+
+  // List of raw credential to be presented.
+  // optional, if provided then this option takes precedence over presentation options.
+  repeated api.vc.types.VerifiableCredential rawCredentials = 4; // credentials
+
+  // Presentation to be proved.
+  // optional, will be used only if other options are not provided.
+  api.vc.types.VerifiablePresentation presentation = 5;
+}
+
+// swagger:parameters verifyReq
+message docVerifyRequest {
+  // Params for producing verifying a credential or presentation from wallet.
+  //
+  // in: body
+  VerifyRequest params = 1;
+}
+
+// VerifyResponse is response model for wallet verify operation.
+message VerifyResponse {
+  // if true then verification is successful.
+  bool verified = 1;
+
+  // error details if verified is false.
+  string error = 2;
+}
+
+// swagger:response verifyRes
+message docVerifyResponse {
+  // in: body
+  VerifyResponse result = 1;
+}
+
+// DeriveRequest is request model for deriving a credential from wallet.
+message DeriveRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // ID of the credential already saved in wallet content store.
+  // optional, if provided then this option takes precedence.
+  string storedCredentialID = 3;
+
+  // List of raw credential to be presented.
+  // optional, will be used only if other options is not provided.
+  api.vc.types.VerifiableCredential rawCredentials = 4; // credentials
+
+  // DeriveOptions options for deriving credential
+  types.DeriveOptions deriveOption = 5;
+}
+
+// swagger:parameters deriveReq
+message docDeriveRequest {
+  // Params for deriving a credential from wallet.
+  //
+  // in: body
+  DeriveRequest params = 1;
+}
+
+
+// DeriveResponse is response for derived credential operation.
+message DeriveResponse {
+  // credential derived.
+  api.vc.types.VerifiableCredential credential = 1; // credentials
+}
+
+// swagger:response deriveRes
+message docDeriveResponse {
+  // credential derived.
+  // in: body
+  DeriveResponse result = 1;
+}
+
+// ConnectRequest is request model for wallet DID connect operation.
+message ConnectRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // out-of-band invitation to establish connection.
+  api.did.doc.types.Invitation invitation = 3;
+  // ConnectOpts
+  // Label to be shared with the other agent during the subsequent DID exchange.
+  string myLabel = 4;
+
+  // router connections to be used to establish connection.
+  repeated string routerConnections = 5;
+
+  // DID to be used when reusing a connection.
+  string reuseConnection = 6;
+
+  // To use any recognized DID in the services array for a reusable connection.
+  bool reuseAnyConnection = 7;
+
+  // Timeout (in milliseconds) waiting for connection status to be completed.
+  google.protobuf.Duration timeout = 8;
+}
+
+// swagger:parameters connectReq
+message docConnectRequest {
+  // Params for connecting to wallet for DIDComm.
+  //
+  // in: body
+  ConnectRequest params = 1;
+}
+
+// ConnectResponse is response model from wallet DID connection operation.
+message ConnectResponse {
+  // connection ID of the connection established.
+  string connectionID = 1;
+}
+
+// swagger:response connectRes
+message docConnectResponse {
+  // in: body
+  ConnectResponse result = 1;
+}
+
+
+// CreateKeyPairRequest is request model for creating key pair from wallet.
+message CreateKeyPairRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // type of the key to be created.
+  string keyType = 3;
+}
+
+// swagger:parameters createKeyPairReq
+message docCreateKeyPairRequest {
+  // Params for creating key pair from wallet.
+  //
+  // in: body
+  CreateKeyPairRequest params = 1;
+}
+
+
+// CreateKeyPairResponse is response model for creating key pair from wallet.
+message CreateKeyPairResponse {
+  // wallet.KeyPair
+  // base64 encoded key ID of the key created.
+  string keyID = 1;
+  // base64 encoded public key of the key pair created.
+  string publicKey = 2;
+}
+
+// swagger:response createKeyPairRes
+message docCreateKeyPairResponse {
+  // in: body
+  CreateKeyPairResponse result = 1;
+}
+
+
+// checkProfileRequest model
+//
+// to check if wallet profile exists for given wallet user.
+//
+// swagger:parameters checkProfile
+message CheckProfileRequest {// nolint: unused,deadcode
+  // Wallet User's ID used to create profile.
+  //
+  // in: path
+  // required: true
+  string id = 1;
+}
+
+// ProposePresentationRequest is request model for performing propose presentation operation from wallet.
+message ProposePresentationRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // WalletAuth
+
+  api.did.doc.types.GenericInvitation invitation = 3;
+
+  // Optional From DID option to customize sender DID.
+  string from = 4;
+
+  // Timeout (in milliseconds) waiting for operation to be completed.
+  google.protobuf.Duration timeout = 5;
+
+  // Options for accepting out-of-band invitation and to perform DID exchange (for DIDComm V1).
+  types.ConnectOpts connectOptions = 6;
+}
+
+// swagger:parameters proposePresReq
+message docProposePresentationRequest {
+  // Params for proposing presentation from wallet.
+  //
+  // in: body
+  ProposePresentationRequest params = 1;
+}
+
+// ProposePresentationResponse is response model from wallet propose presentation operation.
+message ProposePresentationResponse {
+  // response request presentation message from  relying party.
+  map<string, google.protobuf.Any> presentationRequest = 1;
+}
+
+// swagger:response proposePresRes
+message docProposePresentationResponse {
+  // in: body
+  ProposePresentationResponse result = 1;
+}
+
+
+// PresentProofRequest is request model from wallet present proof operation.
+// Supported attachment MIME type "application/ld+json".
+message PresentProofRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // Thread ID from request presentation response
+  string threadId = 3;
+
+  // presentation to be sent as part of present proof message.
+  api.did.presentproof.types.GenericPresentation presentation = 4; // raw json
+
+  // If true then wallet will wait for present proof protocol status to be
+  // done or abandoned till given Timeout.
+  // Also, will return web redirect info if found in acknowledgment message or problem-report.
+  bool waitForDone = 5;
+
+  // Optional timeout (in milliseconds) waiting for present proof operation to be done.
+  // will be taken into account only when WaitForDone is enabled.
+  // If not provided then wallet will use its default timeout.
+  google.protobuf.Duration waitForDoneTimeout = 6;
+}
+
+// swagger:parameters presentProofReq
+message docPresentProofRequest {
+  // Params for accepting presentation request and sending present proof message to relying party.
+  //
+  // in: body
+  PresentProofRequest params = 1;
+}
+
+
+// PresentProofResponse is response model from wallet present proof operation.
+message PresentProofResponse {
+  string status = 1;
+  // Optional web redirect URL info sent by verifier.
+  string url = 2; // redirectUrl
+}
+
+// swagger:response presentProofRes
+message docPresentProofResponse {
+  // response containing status of present proof operation.
+  //
+  // in: body
+  PresentProofResponse result = 1;
+}
+
+// ProposeCredentialRequest is request model for performing propose credential operation from wallet.
+message ProposeCredentialRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // out-of-band invitation to establish connection and send propose credential message.
+  api.did.doc.types.GenericInvitation invitation = 3;
+
+  // Optional From DID option to customize sender DID.
+  string from = 4;
+
+  // Timeout (in milliseconds) waiting for operation to be completed.
+  google.protobuf.Duration waitForDoneTimeout = 5;
+
+  // Options for accepting out-of-band invitation and to perform DID exchange (for DIDComm V1).
+  types.ConnectOpts connectOptions = 6;
+}
+
+// swagger:parameters proposeCredReq
+message docProposeCredentialRequest {
+  // Params for proposing credential from wallet.
+  //
+  // in: body
+  ProposeCredentialRequest params = 1;
+}
+
+// ProposeCredentialResponse is response model from wallet propose credential operation.
+message ProposeCredentialResponse {
+  // response offer credential message from issuer.
+  // response containing offer credential response from issuer.
+  //
+  map<string, google.protobuf.Any> offerCredential = 1;
+}
+
+// swagger:response proposeCredRes
+message docProposeCredentialResponse {
+  // in: body
+  ProposeCredentialResponse result = 1;
+}
+
+// RequestCredentialRequest is request model from wallet request credential operation.
+// Supported attachment MIME type "application/ld+json".
+message RequestCredentialRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // Thread ID from offer credential response previously received during propose credential interaction.
+  string threadID = 3;
+
+  // presentation to be sent as part of request credential message.
+  api.did.presentproof.types.GenericPresentation presentation = 4; // raw json
+
+  // If true then wallet will wait till it receives credential fulfillment response from issuer for given Timeout.
+  // Also, will return web redirect info if found in fulfillment message or problem-report.
+  bool waitForDone = 5;
+
+  // Optional timeout (in milliseconds) waiting for credential fulfillment to arrive.
+  // will be taken into account only when WaitForDone is enabled.
+  // If not provided then wallet will use its default timeout.
+  google.protobuf.Duration waitForDoneTimeout = 6;
+}
+
+// swagger:parameters requestCredReq
+message docRequestCredentialRequest {
+  // Params for sending request credential message from wallet and optionally wait for credential fulfillment.
+  //
+  // in: body
+  RequestCredentialRequest params = 1;
+}
+
+// RequestCredentialResponse is response model from wallet request credential operation.
+message RequestCredentialResponse {
+  // One of the status present proof or issue credential interaction
+  // Refer https://github.com/hyperledger/aries-rfcs/blob/main/features/0015-acks/README.md#ack-status.
+  string status = 1;
+  // Optional web redirect URL info sent by verifier.
+  string url = 2; // redirectUrl
+}
+
+// swagger:response requestCredRes
+message docRequestCredentialResponse {
+  // response containing status of request credential operation.
+  //
+  // in: body
+  RequestCredentialResponse result = 1;
+}
+
+// ResolveCredentialManifestRequest is request model for resolving credential manifest from wallet.
+message ResolveCredentialManifestRequest {
+  //WalletAuth
+  // Authorization token for performing wallet operations.
+  string auth = 1;
+
+  // ID of wallet user.
+  string userID = 2;
+
+  // Credential Manifest on which given credential fulfillment or credential needs to be resolved.
+  api.did.presentproof.types.CredentialManifest manifest = 3;
+
+  // Fulfillment to be be resolved.
+  // If provided, then this option takes precedence over credential resolve option.
+  api.did.presentproof.types.CredentialFulfillment fulfillment = 4;
+
+  // Credential to be be resolved, to be provided along with 'DescriptorID' to be used for resolving.
+  api.vc.types.VerifiableCredential credential = 5;
+
+  // ID of the Credential from wallet content to be be resolved, to be provided along with 'DescriptorID'.
+  string credentialID = 6;
+
+  // ID of the output descriptor to be used for resolving given credential.
+  string descriptorID = 7;
+}
+
+// swagger:parameters resolveCredManifestReq
+message docResolveCredentialManifestRequest {
+  // Params for resolving credential manifests from wallet.
+  //
+  // in: body
+  ResolveCredentialManifestRequest params = 1;
+}
+
+// ResolveCredentialManifestResponse is response model from wallet credential manifest resolve operation.
+message ResolveCredentialManifestResponse {
+  repeated api.did.presentproof.types.ResolvedDescriptor resolved = 1;
+}
+
+// swagger:response resolveCredManifestRes
+message docResolveCredentialManifestResponse {
+  // in: body
+  ResolveCredentialManifestResponse result = 1;
+}
+
+// VCWalletController is a Verifiable Credential Wallet based on Universal Wallet 2020
+// https://w3c-ccg.github.io/universal-wallet-interop-spec/#interface.
+// https://identity.foundation/confidential-storage
+// A wallet profile with local KMS can be created by providing passphrase or secret lock service option.
+// A wallet profile with Remote KMS can be created by providing secret lock service option.
+// A wallet profile with EDV as storage type can be created by providing EDV storage options like edv
+// server URL, Vault ID, encryption key ID and mac operation key ID.
+service VCWalletController {
+
+  // Creates new wallet profile and returns error if wallet profile is already created.
+  // CreateProfile swagger:route POST /vcwallet/create-profile vcwallet createProfileRequest
+  //
+  // Responses:
+  // 200: createProfileRes
+  rpc createProfile(CreateProfileRequest) returns (CreateProfileResponse) {}
+
+  // Updates an existing wallet profile and returns error if profile doesn't exists.
+  // UpdateProfile swagger:route POST /vcwallet/update-profile vcwallet UpdateProfileRequest
+  // Caution:
+  // - you might lose your existing keys if you change kms options.
+  // - you might lose your existing wallet contents if you change storage/EDV options
+  // (ex: switching context storage provider or changing EDV settings).
+  // Responses:
+  // 200: updateProfileRes
+  rpc updateProfile(UpdateProfileRequest) returns (UpdateProfileResponse) {}
+
+  // Checks if profile exists for given wallet user.
+  // ProfileExists swagger:route GET /vcwallet/profile/{id} vcwallet checkProfile
+  // Responses:
+  // 200: emptyRes
+  // 400	Bad Request
+  // 401	Not Authorized
+  // 500	Internal Error
+  rpc profileExists(WalletUserRequest) returns (WalletUserResponse) {}
+
+  // Open swagger:route POST /vcwallet/open vcwallet unlockWalletReq
+  // Unlocks given wallet's key manager instance & content store and
+  // returns a authorization token to be used for performing wallet operations.
+  // Responses:
+  //    default: genericError
+  //        200: unlockWalletRes
+  rpc open(UnlockWalletRequest) returns (UnlockWalletResponse) {}
+
+  // Close swagger:route POST /vcwallet/close vcwallet lockWalletReq
+  // Expires token issued to this VC wallet, removes wallet's key manager instance and closes wallet content store.
+  // returns response containing bool flag false if token is not found or already expired for this wallet user.
+  // Responses:
+  //    default: genericError
+  //        200: lockWalletRes
+  rpc close(LockWalletRequest) returns (LockWalletResponse) {}
+
+  // adds given data model to wallet content store.
+  // Add swagger:route POST /vcwallet/add vcwallet addContentReq
+  // Supported data models:
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#Collection
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#Credential
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#DIDResolutionResponse
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#meta-data
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#connection
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#Key
+  //
+  // Responses:
+  //    default: genericError
+  //        200: emptyRes
+  rpc add(AddContentRequest) returns (AddContentResponse) {}
+
+  // removes given content from wallet content store.
+  // Remove swagger:route POST /vcwallet/remove vcwallet removeContentReq
+  //
+  // removes given content from wallet content store.
+  //
+  // Supported data models:
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#Collection
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#Credential
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#DIDResolutionResponse
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#meta-data
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#connection
+  //
+  // Responses:
+  //    default: genericError
+  //        200: emptyRes
+  rpc remove(RemoveContentRequest) returns (RemoveContentResponse) {}
+
+  // get swagger:route GET /vcwallet/get vcwallet getContentReq
+  // changed POST to GET
+  // gets content from wallet content store.
+  //
+  // Supported data models:
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#Collection
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#Credential
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#DIDResolutionResponse
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#meta-data
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#connection
+  //
+  // Responses:
+  //    default: genericError
+  //        200: getContentRes
+  rpc get(GetContentRequest) returns (GetContentResponse) {}
+
+  // getAll swagger:route GET /vcwallet/getall vcwallet getAllContentReq
+  // changed POST to GET
+  //
+  // gets all contents from wallet content store for given content type.
+  //
+  // Supported data models:
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#Collection
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#Credential
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#DIDResolutionResponse
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#meta-data
+  //      - https://w3c-ccg.github.io/universal-wallet-interop-spec/#connection
+  //
+  // Responses:
+  //    default: genericError
+  //        200: getAllContentRes
+  rpc getAll(GetAllContentRequest) returns (GetAllContentResponse) {}
+
+  // guery swagger:route GET /vcwallet/query vcwallet contentQueryReq
+  //
+  // runs query against wallet credential contents and returns presentation containing credential results.
+  //
+  // This function may return multiple presentations as a result based on combination of query types used.
+  //
+  // https://w3c-ccg.github.io/universal-wallet-interop-spec/#query
+  //
+  // Supported Query Types:
+  //      - https://www.w3.org/TR/json-ld11-framing
+  //      - https://identity.foundation/presentation-exchange
+  //      - https://w3c-ccg.github.io/vp-request-spec/#query-by-example
+  //      - https://w3c-ccg.github.io/vp-request-spec/#did-authentication-request
+  //
+  // Responses:
+  //    default: genericError
+  //        200: contentQueryRes
+  rpc query(ContentQueryRequest) returns (ContentQueryResponse) {}
+
+  // Issue swagger:route POST /vcwallet/issue vcwallet issueReq
+  //
+  // adds proof to a Verifiable Credential.
+  //
+  // https://w3c-ccg.github.io/universal-wallet-interop-spec/#issue
+  //
+  // Responses:
+  //    default: genericError
+  //        200: issueRes
+  rpc issue(IssueRequest) returns (IssueResponse) {}
+
+  // prove swagger:route POST /vcwallet/prove vcwallet proveReq
+  //
+  // produces a Verifiable Presentation.
+  //
+  // https://w3c-ccg.github.io/universal-wallet-interop-spec/#prove
+  //
+  // Responses:
+  //    default: genericError
+  //        200: proveRes
+  rpc prove(ProveRequest) returns (ProveResponse) {}
+
+  // Verify swagger:route POST /vcwallet/verify vcwallet verifyReq
+  //
+  // verifies a Verifiable Credential or a Verifiable Presentation.
+  //
+  // https://w3c-ccg.github.io/universal-wallet-interop-spec/#prove
+  //
+  // Responses:
+  //    default: genericError
+  //        200: verifyRes
+  rpc verify(VerifyRequest) returns (VerifyResponse) {}
+
+  // Derive swagger:route POST /vcwallet/derive vcwallet deriveReq
+  //
+  // derives a Verifiable Credential.
+  //
+  // https://w3c-ccg.github.io/universal-wallet-interop-spec/#derive
+  //
+  // Responses:
+  //    default: genericError
+  //        200: deriveRes
+  rpc derive(DeriveRequest) returns (DeriveResponse) {}
+
+  // createKeyPair swagger:route POST /vcwallet/create-key-pair vcwallet createKeyPairReq
+  //
+  // creates a new key pair from wallet.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: createKeyPairRes
+  rpc createKeyPair(CreateKeyPairRequest) returns (CreateKeyPairResponse) {}
+
+  // connect swagger:route POST /vcwallet/connect vcwallet connectReq
+  //
+  // accepts out-of-band invitations and performs DID exchange.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: connectRes
+  rpc connect(ConnectRequest) returns (ConnectResponse) {}
+
+  // accepts out-of-band invitation and sends message proposing presentation
+  // from wallet to relying party.
+  // ProposePresentation accepts out-of-band invitation and sends message proposing presentation
+  // from wallet to relying party.
+  // https://w3c-ccg.github.io/universal-wallet-interop-spec/#proposepresentation
+  //
+  // proposePresentation swagger:route POST /vcwallet/propose-presentation vcwallet proposePresReq
+  //
+  // accepts out-of-band invitation and sends message proposing presentation
+  // from wallet to relying party.
+  // https://w3c-ccg.github.io/universal-wallet-interop-spec/#proposepresentation
+  //
+  // Currently Supporting
+  // [0454-present-proof-v2](https://github.com/hyperledger/aries-rfcs/tree/master/features/0454-present-proof-v2)
+  //
+  // Responses:
+  //    default: genericError
+  //        200: proposePresRes
+  rpc proposePresentation(ProposePresentationRequest) returns (ProposePresentationResponse) {}
+
+  // presentProof swagger:route POST /vcwallet/present-proof vcwallet presentProofReq
+  //
+  // sends message present proof message from wallet to relying party.
+  // https://w3c-ccg.github.io/universal-wallet-interop-spec/#presentproof
+  //
+  // Currently Supporting
+  // [0454-present-proof-v2](https://github.com/hyperledger/aries-rfcs/tree/master/features/0454-present-proof-v2)
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentProofRes
+  rpc presentProof(PresentProofRequest) returns (PresentProofResponse) {}
+
+  // proposeCredential swagger:route POST /vcwallet/propose-credential vcwallet proposeCredReq
+  //
+  // Sends propose credential message from wallet to issuer and optionally waits for offer credential response.
+  // https://w3c-ccg.github.io/universal-wallet-interop-spec/#proposecredential
+  //
+  // Currently Supporting : 0453-issueCredentialV2
+  // https://github.com/hyperledger/aries-rfcs/blob/main/features/0453-issue-credential-v2/README.md
+  //
+  // Responses:
+  //    default: genericError
+  //        200: proposeCredRes
+  rpc proposeCredential(ProposeCredentialRequest) returns (ProposeCredentialResponse) {}
+
+  // requestCredential swagger:route POST /vcwallet/request-credential vcwallet requestCredReq
+  //
+  // Sends request credential message from wallet to issuer and optionally waits for credential fulfillment.
+  // https://w3c-ccg.github.io/universal-wallet-interop-spec/#requestcredential
+  //
+  // Currently Supporting : 0453-issueCredentialV2
+  // https://github.com/hyperledger/aries-rfcs/blob/main/features/0453-issue-credential-v2/README.md
+  //
+  // Responses:
+  //    default: genericError
+  //        200: requestCredRes
+  rpc requestCredential(RequestCredentialRequest) returns (RequestCredentialResponse) {}
+
+  // resolveCredentialManifest swagger:route POST /vcwallet/resolve-credential-manifest vcwallet resolveCredManifest
+  //
+  // Resolves given credential manifest by credential fulfillment or credential.
+  // Supports: https://identity.foundation/credential-manifest/
+  //
+  // Responses:
+  //    default: genericError
+  //        200: resolveCredManifest
+  rpc resolveCredentialManifest(ResolveCredentialManifestRequest) returns (ResolveCredentialManifestResponse) {}
+}

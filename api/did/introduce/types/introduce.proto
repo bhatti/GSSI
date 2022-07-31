@@ -5,23 +5,26 @@ package api.did.introduce.types;
 option go_package = "github.com/bhatti/GSSI/api/did/introduce/types";
 import "google/protobuf/any.proto";
 
+import "api/common/types/common.proto";
 import "api/did/doc/types/doc.proto";
 import "api/did/doc/types/outofband.proto";
 
 // Proposal defines proposal request.
+// swagger:model
 message Proposal {
   string id = 1; // @id
   string type = 2; // @type
   To to = 3;
   bool nwise = 4;
   api.did.doc.types.Thread thread = 5; // ~thread
-  api.did.doc.types.Timing timing = 6; //~timing
+  api.common.types.Timing timing = 6; //~timing
   string goal = 7;
   string goal_code = 8;
 }
 
 // To introducee descriptor keeps information about the introduction
 // e.g introducer wants to introduce Bot to introducee { "name": "Bob" }.
+// swagger:model
 message To {
   string name = 1;
   string description = 2;
@@ -40,6 +43,7 @@ message ImgAttach {
 }
 
 // Content keeps image data.
+// swagger:model
 message Content {
   string link = 1;
   int64 byte_count = 2;
@@ -48,6 +52,7 @@ message Content {
 
 // PleaseIntroduceTo includes all field from To structure
 // also it has Discovered the field which should be provided by help-me-discover protocol.
+// swagger:model
 message PleaseIntroduceTo {
   // nolint: staticcheck
   string name = 1;
@@ -63,15 +68,17 @@ message PleaseIntroduceTo {
 // and when it is received, the recipient can choose whether or not to honor it in their own way
 // TODO: need to clarify about decorator ~please_ack and problem_report
 //               should Request contain those fields? What type it should be for each field?
+// swagger:model
 message Request {
   string id = 1; // @id
   string type = 2; // @type
   PleaseIntroduceTo please_introduce_to = 3;
   bool nwise = 4;
-  api.did.doc.types.Timing timing = 5; // ~timing
+  api.common.types.Timing timing = 5; // ~timing
 }
 
 // Response message that introducee usually sends in response to an introduction proposal.
+// swagger:model
 message Response {
   string id = 1; // @id
   string type = 2; // @type
@@ -84,6 +91,7 @@ message Response {
 // Recipient keeps information needed for the service
 // 'To' field is needed for the proposal message
 // 'MyDID' and 'TheirDID' fields are needed for sending messages e.g report-problem, proposal, ack etc.
+// swagger:model
 message Recipient {
   To to = 1;
   string goal = 2;

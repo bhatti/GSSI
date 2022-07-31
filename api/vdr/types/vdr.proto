@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package api.vdr.types;
+
+option go_package = "github.com/bhatti/GSSI/api/vdr/types";
+
+import "api/spi/types/store.proto";
+
+
+// Document is model for did document.
+message Document {
+  string url = 1;
+  string documentURL = 2;
+  bytes did = 3; // json.RawMessage
+}
+
+
+// DIDArgs is model for did doc with fields related to command features.
+message DIDArgs {
+  string url = 1;
+  string documentURL = 2;
+  bytes did = 3; // json.RawMessage
+  string name = 4;
+}
+
+// IDArg model
+//
+// This is used for querying/removing by did ID from input json.
+//
+message IDArg {
+  // DidID
+  string id = 1;
+}
+
+// DIDRecordResult holds the did doc records.
+message DIDRecordResult {
+  // Result
+  repeated api.spi.types.Record result = 1;
+}
+
+// NameArg model
+//
+// This is used for querying by did name from input json.
+//
+message NameArg {
+  // Name
+  string name = 1;
+}
+

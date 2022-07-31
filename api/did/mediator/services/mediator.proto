@@ -5,10 +5,8 @@ package api.did.mediator.services;
 option go_package = "github.com/bhatti/GSSI/api/did/mediator/services";
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/duration.proto";
 import "google/protobuf/any.proto";
 
-import "api/did/mediator/types/mediator.proto";
 import "api/did/doc/types/doc.proto";
 import "api/did/doc/types/outofband.proto";
 
@@ -17,9 +15,23 @@ message RegisterRoute {
   string connection_ID = 1;
 }
 
+// ConnectionsReq
+message ConnectionsReq {
+}
+
 // ConnectionsResponse is response for router`s connections.
 message ConnectionsResponse {
   repeated string connections = 1;
+}
+
+// docConnectionsResponse model
+//
+// Represents a Connections response message
+//
+// swagger:response getConnectionsResponse
+message docConnectionsResponse {
+  // in: body
+  ConnectionsResponse params = 1;
 }
 
 // StatusRequest is request for getting details about pending messages.
@@ -74,3 +86,173 @@ message CreateInvitationResponse {
   api.did.doc.types.Invitation invitation = 1;
 }
 
+//
+// reconnectRouteReq model
+//
+// This is used register router for the agent.
+//
+// swagger:parameters reconnectRouteRequest
+message ReconnectRouteReq {// nolint: unused,deadcode
+  // Params for reconnecting the router
+  //
+  // in: body
+  RegisterRoute params = 1;
+}
+
+message ReconnectRouteRes {// nolint: unused,deadcode
+}
+
+
+// docStatusRequest model
+//
+// This is used for getting details of pending messages for given connection.
+//
+// swagger:parameters statusRequest
+message docStatusRequest {// nolint: unused,deadcode
+  // Params for getting details of pending messages for given connection.
+  //
+  // in: body
+  StatusRequest params = 1;
+}
+
+// docStatusResponse model
+//
+// Response containing details of pending messages for given connection.
+//
+// swagger:response statusResponse
+message docStatusResponse {
+  // Details of pending messages for given connection.
+  //
+  // in: body
+  StatusResponse body = 1;
+}
+
+// docBatchPickupRequest model
+//
+// For dispatching pending messages for given connection.
+//
+// swagger:parameters batchPickupRequest
+message docBatchPickupRequest {// nolint: unused,deadcode
+  // Params for dispatching pending messages for given connection..
+  //
+  // in: body
+  BatchPickupRequest params = 1;
+}
+
+
+
+// docBatchPickupResponse model
+//
+// Response from router after pending messages dispatched for given connection.
+//
+// swagger:response batchPickupResponse
+message docBatchPickupResponse {
+  // Response after dispatching pending messages for given connection...
+  //
+  // in: body
+  BatchPickupResponse body = 1;
+}
+
+// RegisterRouteReq model
+//
+// This is used register router for the agent.
+//
+// swagger:parameters registerRouteRequest
+message RegisterRouteReq {// nolint: unused,deadcode
+  // Params for registering the route
+  //
+  // in: body
+  RegisterRoute params = 1;
+}
+
+// RegisterRouteRes model
+//
+// swagger:response registerRouteRes
+message RegisterRouteRes {
+  // in: body
+}
+
+// UnregisterRouterReq model
+//
+// This is used for unregister a router for the agent.
+//
+// swagger:parameters unregisterRouter
+message UnregisterRouterReq {// nolint: unused,deadcode
+  // Params for unregister the router
+  //
+  // in: body
+  RegisterRoute params = 1;
+}
+
+
+// UnregisterRouteRes model
+//
+// swagger:response unregisterRouteRes
+message UnregisterRouteRes {// nolint: unused,deadcode
+  // in: body
+}
+
+// controller API handler available for this service.
+service MediatorController {
+  // Register swagger:route POST /mediator/register mediator registerRouteRequest
+  //
+  // Registers the agent with the router.
+  //
+  // Responses:
+  //    default: genericError
+  //    200: registerRouteRes
+  rpc register(RegisterRouteReq) returns (RegisterRouteRes) {}
+
+  // Unregister swagger:route DELETE /mediator/unregister mediator unregisterRouter
+  //
+  // Unregisters the agent with the router.
+  //
+  // Responses:
+  //    default: genericError
+  //    200: unregisterRouteRes
+  rpc unregister(UnregisterRouterReq) returns (UnregisterRouteRes) {}
+
+  // Connections swagger:route GET /mediator/connections mediator connectionsRequest
+  //
+  // Retrieves the router`s connections.
+  //
+  // Responses:
+  //    default: genericError
+  //    200: getConnectionsResponse
+  rpc connections(ConnectionsReq) returns (ConnectionsResponse) {}
+
+  // Reconnect swagger:route POST /mediator/reconnect mediator reconnectRouteRequest
+  //
+  // Reconnect the agent with the router to re-establish lost connection.
+  //
+  // Responses:
+  //    default: genericError
+  rpc reconnect(ReconnectRouteReq) returns (ReconnectRouteRes) {}
+
+
+  // Status swagger:route POST /mediator/status mediator statusRequest
+  //
+  // Status returns details about pending messages for given connection.
+  //
+  // Responses:
+  //    default: genericError
+  //    200: statusResponse
+  rpc status(StatusRequest) returns (StatusResponse) {}
+
+  // BatchPickup swagger:route POST /mediator/batchpickup mediator batchPickupRequest
+  //
+  // BatchPickup dispatches pending messages for given connection.
+  //
+  // Responses:
+  //    default: genericError
+  //    200: batchPickupResponse
+  rpc batchPickup(BatchPickupRequest) returns (BatchPickupResponse) {}
+
+  // ReconnectAll swagger:route GET /mediator/reconnect-all mediator reconnectAll
+  //
+  // Re-establishes network connections for all mediator connections.
+  //
+  // Responses:
+  //    default: genericError
+  rpc reconnectAll(ReconnectRouteReq) returns (ReconnectRouteRes) {}
+}

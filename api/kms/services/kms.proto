@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package api.kms.services;
+
+option go_package = "github.com/bhatti/GSSI/api/kms/types";
+
+import "api/common/types/common.proto";
+import "api/did/jwk/types/jwk.proto";
+
+// CreateKeySetRequest is model for createKeySey request.
+// swagger:parameters createKeySetReq
+message CreateKeySetRequest {
+  // Params for createKeySet
+  //
+  // in: body
+  string keyType = 1;
+}
+
+// CreateKeySetResponse for returning key pair.
+// This is used for returning the create set response
+//
+// swagger:response createKeySetRes
+message CreateKeySetResponse {
+  // in: body
+  //  key id base64 encoded
+  string keyID = 1;
+  //  public key base64 encoded
+  string publicKey = 2;
+}
+
+// importKeyReq model
+//
+// This is used for import key req
+//
+// swagger:parameters importKeyReq
+message ImportKeyReq {
+  // in: body
+  api.did.jwk.types.JSONWebKey params = 1; // kms.JSONWebKey
+}
+
+// KMSController defines methods for the KMS controller.
+service KMSController {
+
+  // CreateKeySet create a new public/private encryption and signature key pairs set.
+  // CreateKeySet swagger:route POST /kms/keyset kms createKeySet
+  //
+  // Create key set.
+  //
+  // Responses:
+  //        200: createKeySetRes
+  rpc createKeySet(CreateKeySetRequest) returns (CreateKeySetResponse) {}
+
+
+  // ImportKey imports a key.
+  // ImportKey swagger:route POST /kms/import kms importKey
+  //
+  // Responses:
+  rpc importKey(ImportKeyReq) returns (api.common.types.EmptyResponse) {}
+}

@@ -6,48 +6,17 @@ option go_package = "github.com/bhatti/GSSI/api/did/doc/types";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
+import "api/common/types/common.proto";
 import "api/did/jwk/types/jwk.proto";
 
-// These are the encodings specified in the standard, not are all
-// These are the encodings specified in the standard, not are all
-// supported yet
-enum Encoding {
-  Identity = 0;
-  Base2 = 48; // '0'
-  Base8 = 55; // '7'
-  Base10 = 57; // '9'
-  Base16 = 102; //'f'
-  Base16Upper = 70; // 'F'
-  Base32 = 98; // 'b'
-  Base32Upper = 66; // 'B'
-  Base32pad = 99; /// 'c'
-  Base32padUpper = 67; // 'C'
-  Base32hex = 118; // 'v'
-  Base32hexUpper = 86; // 'V'
-  Base32hexPad = 116; // 't'
-  Base32hexPadUpper = 84; // 'T'
-  Base36 = 107; // 'k'
-  Base36Upper = 75; // 'K'
-  Base58BTC = 122; // 'z'
-  Base58Flickr = 90; // 'Z'
-  Base64 = 109; // 'm'
-  Base64url = 117; // 'u'
-  Base64pad = 77; // 'M'
-  Base64urlPad = 85; // 'U'
-  Base256Emoji = 128640; /// '🚀'
-}
 
 // Thread thread data.
+// swagger:model
 message Thread {
   string thid = 1;
   string pthid = 2;
   int32 sender_order = 3;
   map<string, int32> received_orders = 4;
-}
-
-// Timing keeps expiration time.
-message Timing {
-  google.protobuf.Timestamp expires_time = 1;
 }
 
 // VerificationRelationship defines a verification relationship between DID subject and a verification method.
@@ -75,12 +44,12 @@ enum VerificationRelationship {
 
 // EndpointType endpoint type.
 enum EndpointType {
-  // DIDCommV1 type.
-  DIDCommV1 = 0;
-  // DIDCommV2 type.
-  DIDCommV2 = 1;
   // Generic type.
-  Generic = 2;
+  Generic = 0;
+  // DIDCommV1 type.
+  DIDCommV1 = 1;
+  // DIDCommV2 type.
+  DIDCommV2 = 2;
 }
 
 // Endpoint contains endpoint specific content. Content of ServiceEndpoint api above will be used by priority:
@@ -102,28 +71,32 @@ message DIDRotationRecord {
 }
 
 // Record contain info about did exchange connection.
+// swagger:model
 message Record {
-  string connection_id = 1;
-  string state = 2;
-  string thread_id = 3;
-  string parent_thread_id = 4;
-  string their_label = 5;
-  string their_did = 6;
-  string my_did = 7;
-  Endpoint service_endPoint = 8; // ServiceEndPoint is 'their' DIDComm service endpoint.
-  repeated string recipient_keys = 9; // RecipientKeys holds 'their' DIDComm recipient keys.
-  repeated string routing_keys = 10; // RoutingKeys holds 'their' DIDComm routing keys.
-  string invitation_id = 11;
-  string invitation_did = 12;
-  bool implicit = 13;
-  string namespace = 14;
-  repeated string media_type_profiles = 15;
-  string did_comm_version = 16;
-  string peer_did_initial_state = 17;
-  DIDRotationRecord my_did_rotation = 18;
+  string id = 1;
+  string name = 2;
+  string connection_id = 3;
+  string state = 4;
+  string thread_id = 5;
+  string parent_thread_id = 6;
+  string their_label = 7;
+  string their_did = 8;
+  string my_did = 9;
+  Endpoint service_endPoint = 10; // ServiceEndPoint is 'their' DIDComm service endpoint.
+  repeated string recipient_keys = 11; // RecipientKeys holds 'their' DIDComm recipient keys.
+  repeated string routing_keys = 12; // RoutingKeys holds 'their' DIDComm routing keys.
+  string invitation_id = 13;
+  string invitation_did = 14;
+  bool implicit = 15;
+  string namespace = 16;
+  repeated string media_type_profiles = 17;
+  string did_comm_version = 18;
+  string peer_did_initial_state = 19;
+  DIDRotationRecord my_did_rotation = 20;
 }
 
 // RecordResult holds the credential records.
+// swagger:model
 message RecordResult {
   // Result
   repeated Record result = 1;
@@ -184,6 +157,7 @@ message DIDCommV2Endpoint {
 }
 
 // DID is parsed according to the generic syntax: https://w3c.github.io/did-core/#generic-did-syntax
+// swagger:model
 message DID {
   string scheme = 1; // is always "did"
   string method = 2; // Method is the specific DID methods
@@ -191,6 +165,7 @@ message DID {
 }
 
 // DIDURL holds a DID URL.
+// swagger:model
 message DIDURL {// nolint:golint // ignore name stutter
   string scheme = 1; // is always "did"
   string method = 2; // Method is the specific DID methods
@@ -201,6 +176,7 @@ message DIDURL {// nolint:golint // ignore name stutter
 }
 
 // DocResolution did resolution.
+// swagger:model
 message DocResolution {
   repeated string context = 1;
   Doc didDocument = 2;
@@ -265,6 +241,7 @@ message ProcessingMeta {
 }
 
 // Doc DID Document definition.
+// swagger:model
 message Doc {
   string id = 1;
   repeated string context = 2;
@@ -291,10 +268,11 @@ message VerificationMethod {
   bytes value = 4;
   bool relativeURL = 5;
   api.did.jwk.types.JSONWebKey jsonWebKey = 6;
-  Encoding multibaseEncoding = 7;
+  api.common.types.Encoding multibaseEncoding = 7;
 }
 
 // Service DID doc service.
+// swagger:model
 message Service {
   string id = 1; // @id
   string type = 2; // @type
@@ -310,6 +288,7 @@ message Service {
 }
 
 // Verification authentication verification.
+// swagger:model
 message Verification {
   VerificationMethod verificationMethod = 1;
   VerificationRelationship relationship = 2;
@@ -318,6 +297,7 @@ message Verification {
 
 
 // Proof is cryptographic proof of the integrity of the DID Document.
+// swagger:model
 message Proof {
   string type = 1;
   string creator = 2;

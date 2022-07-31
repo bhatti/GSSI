@@ -8,7 +8,7 @@ package services
 
 import (
 	context "context"
-	types "github.com/bhatti/GSSI/api/spi/types"
+	types "github.com/bhatti/GSSI/api/common/types"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -30,7 +30,7 @@ type StoreClient interface {
 	// 413	Payload too large
 	// 429	Request rate limit exceeded.
 	// 500	error!
-	Put(ctx context.Context, in *StorePutRequest, opts ...grpc.CallOption) (*types.Void, error)
+	Put(ctx context.Context, in *StorePutRequest, opts ...grpc.CallOption) (*types.Empty, error)
 	// Get fetches the value associated with the given key.
 	// If key cannot be found, then an error wrapping ErrDataNotFound will be returned.
 	// If key is empty, then an error will be returned.
@@ -105,7 +105,7 @@ type StoreClient interface {
 	// 413	Payload too large
 	// 429	Request rate limit exceeded.
 	// 500	error!
-	PutBulk(ctx context.Context, in *StoreBulkPutRequest, opts ...grpc.CallOption) (*types.Void, error)
+	PutBulk(ctx context.Context, in *StoreBulkPutRequest, opts ...grpc.CallOption) (*types.Empty, error)
 	// Delete deletes the key + value pair (and all tags) associated with key.
 	// If key is empty, then an error will be returned.
 	// DELETE /store/{id}
@@ -114,7 +114,7 @@ type StoreClient interface {
 	// 413	Payload too large
 	// 429	Request rate limit exceeded.
 	// 500	error!
-	Delete(ctx context.Context, in *StoreKeyRequest, opts ...grpc.CallOption) (*types.Void, error)
+	Delete(ctx context.Context, in *StoreKeyRequest, opts ...grpc.CallOption) (*types.Empty, error)
 	// Flush forces any queued up Put and/or Delete operations to execute.
 	// If the Store implementation doesn't queue up operations, then this method is a no-op.
 	// As of writing, aries-framework-go code does not use this, but it may be useful for custom solutions.
@@ -124,7 +124,7 @@ type StoreClient interface {
 	// 413	Payload too large
 	// 429	Request rate limit exceeded.
 	// 500	error!
-	Flush(ctx context.Context, in *types.Void, opts ...grpc.CallOption) (*types.Void, error)
+	Flush(ctx context.Context, in *types.Empty, opts ...grpc.CallOption) (*types.Empty, error)
 	// Close closes this store object, freeing resources. For persistent store implementations, this does not delete
 	// any data in the underlying databases.
 	// Close can be called repeatedly on the same store multiple times without causing an error.
@@ -134,7 +134,7 @@ type StoreClient interface {
 	// 413	Payload too large
 	// 429	Request rate limit exceeded.
 	// 500	error!
-	Close(ctx context.Context, in *types.Void, opts ...grpc.CallOption) (*types.Void, error)
+	Close(ctx context.Context, in *types.Empty, opts ...grpc.CallOption) (*types.Empty, error)
 }
 
 type storeClient struct {
@@ -145,8 +145,8 @@ func NewStoreClient(cc grpc.ClientConnInterface) StoreClient {
 	return &storeClient{cc}
 }
 
-func (c *storeClient) Put(ctx context.Context, in *StorePutRequest, opts ...grpc.CallOption) (*types.Void, error) {
-	out := new(types.Void)
+func (c *storeClient) Put(ctx context.Context, in *StorePutRequest, opts ...grpc.CallOption) (*types.Empty, error) {
+	out := new(types.Empty)
 	err := c.cc.Invoke(ctx, "/api.spi.services.Store/put", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -213,8 +213,8 @@ func (x *storeQueryClient) Recv() (*StoreGetResponse, error) {
 	return m, nil
 }
 
-func (c *storeClient) PutBulk(ctx context.Context, in *StoreBulkPutRequest, opts ...grpc.CallOption) (*types.Void, error) {
-	out := new(types.Void)
+func (c *storeClient) PutBulk(ctx context.Context, in *StoreBulkPutRequest, opts ...grpc.CallOption) (*types.Empty, error) {
+	out := new(types.Empty)
 	err := c.cc.Invoke(ctx, "/api.spi.services.Store/putBulk", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -222,8 +222,8 @@ func (c *storeClient) PutBulk(ctx context.Context, in *StoreBulkPutRequest, opts
 	return out, nil
 }
 
-func (c *storeClient) Delete(ctx context.Context, in *StoreKeyRequest, opts ...grpc.CallOption) (*types.Void, error) {
-	out := new(types.Void)
+func (c *storeClient) Delete(ctx context.Context, in *StoreKeyRequest, opts ...grpc.CallOption) (*types.Empty, error) {
+	out := new(types.Empty)
 	err := c.cc.Invoke(ctx, "/api.spi.services.Store/delete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -231,8 +231,8 @@ func (c *storeClient) Delete(ctx context.Context, in *StoreKeyRequest, opts ...g
 	return out, nil
 }
 
-func (c *storeClient) Flush(ctx context.Context, in *types.Void, opts ...grpc.CallOption) (*types.Void, error) {
-	out := new(types.Void)
+func (c *storeClient) Flush(ctx context.Context, in *types.Empty, opts ...grpc.CallOption) (*types.Empty, error) {
+	out := new(types.Empty)
 	err := c.cc.Invoke(ctx, "/api.spi.services.Store/flush", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -240,8 +240,8 @@ func (c *storeClient) Flush(ctx context.Context, in *types.Void, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *storeClient) Close(ctx context.Context, in *types.Void, opts ...grpc.CallOption) (*types.Void, error) {
-	out := new(types.Void)
+func (c *storeClient) Close(ctx context.Context, in *types.Empty, opts ...grpc.CallOption) (*types.Empty, error) {
+	out := new(types.Empty)
 	err := c.cc.Invoke(ctx, "/api.spi.services.Store/close", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -260,7 +260,7 @@ type StoreServer interface {
 	// 413	Payload too large
 	// 429	Request rate limit exceeded.
 	// 500	error!
-	Put(context.Context, *StorePutRequest) (*types.Void, error)
+	Put(context.Context, *StorePutRequest) (*types.Empty, error)
 	// Get fetches the value associated with the given key.
 	// If key cannot be found, then an error wrapping ErrDataNotFound will be returned.
 	// If key is empty, then an error will be returned.
@@ -335,7 +335,7 @@ type StoreServer interface {
 	// 413	Payload too large
 	// 429	Request rate limit exceeded.
 	// 500	error!
-	PutBulk(context.Context, *StoreBulkPutRequest) (*types.Void, error)
+	PutBulk(context.Context, *StoreBulkPutRequest) (*types.Empty, error)
 	// Delete deletes the key + value pair (and all tags) associated with key.
 	// If key is empty, then an error will be returned.
 	// DELETE /store/{id}
@@ -344,7 +344,7 @@ type StoreServer interface {
 	// 413	Payload too large
 	// 429	Request rate limit exceeded.
 	// 500	error!
-	Delete(context.Context, *StoreKeyRequest) (*types.Void, error)
+	Delete(context.Context, *StoreKeyRequest) (*types.Empty, error)
 	// Flush forces any queued up Put and/or Delete operations to execute.
 	// If the Store implementation doesn't queue up operations, then this method is a no-op.
 	// As of writing, aries-framework-go code does not use this, but it may be useful for custom solutions.
@@ -354,7 +354,7 @@ type StoreServer interface {
 	// 413	Payload too large
 	// 429	Request rate limit exceeded.
 	// 500	error!
-	Flush(context.Context, *types.Void) (*types.Void, error)
+	Flush(context.Context, *types.Empty) (*types.Empty, error)
 	// Close closes this store object, freeing resources. For persistent store implementations, this does not delete
 	// any data in the underlying databases.
 	// Close can be called repeatedly on the same store multiple times without causing an error.
@@ -364,7 +364,7 @@ type StoreServer interface {
 	// 413	Payload too large
 	// 429	Request rate limit exceeded.
 	// 500	error!
-	Close(context.Context, *types.Void) (*types.Void, error)
+	Close(context.Context, *types.Empty) (*types.Empty, error)
 	mustEmbedUnimplementedStoreServer()
 }
 
@@ -372,7 +372,7 @@ type StoreServer interface {
 type UnimplementedStoreServer struct {
 }
 
-func (UnimplementedStoreServer) Put(context.Context, *StorePutRequest) (*types.Void, error) {
+func (UnimplementedStoreServer) Put(context.Context, *StorePutRequest) (*types.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Put not implemented")
 }
 func (UnimplementedStoreServer) Get(context.Context, *StoreKeyRequest) (*StoreGetResponse, error) {
@@ -387,16 +387,16 @@ func (UnimplementedStoreServer) GetBulk(context.Context, *StoreBulkKeyRequest) (
 func (UnimplementedStoreServer) Query(*StoreQueryRequest, Store_QueryServer) error {
 	return status.Errorf(codes.Unimplemented, "method Query not implemented")
 }
-func (UnimplementedStoreServer) PutBulk(context.Context, *StoreBulkPutRequest) (*types.Void, error) {
+func (UnimplementedStoreServer) PutBulk(context.Context, *StoreBulkPutRequest) (*types.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutBulk not implemented")
 }
-func (UnimplementedStoreServer) Delete(context.Context, *StoreKeyRequest) (*types.Void, error) {
+func (UnimplementedStoreServer) Delete(context.Context, *StoreKeyRequest) (*types.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedStoreServer) Flush(context.Context, *types.Void) (*types.Void, error) {
+func (UnimplementedStoreServer) Flush(context.Context, *types.Empty) (*types.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Flush not implemented")
 }
-func (UnimplementedStoreServer) Close(context.Context, *types.Void) (*types.Void, error) {
+func (UnimplementedStoreServer) Close(context.Context, *types.Empty) (*types.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Close not implemented")
 }
 func (UnimplementedStoreServer) mustEmbedUnimplementedStoreServer() {}
@@ -542,7 +542,7 @@ func _Store_Delete_Handler(srv interface{}, ctx context.Context, dec func(interf
 }
 
 func _Store_Flush_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(types.Void)
+	in := new(types.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -554,13 +554,13 @@ func _Store_Flush_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/api.spi.services.Store/flush",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StoreServer).Flush(ctx, req.(*types.Void))
+		return srv.(StoreServer).Flush(ctx, req.(*types.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Store_Close_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(types.Void)
+	in := new(types.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -572,7 +572,7 @@ func _Store_Close_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/api.spi.services.Store/close",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StoreServer).Close(ctx, req.(*types.Void))
+		return srv.(StoreServer).Close(ctx, req.(*types.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }

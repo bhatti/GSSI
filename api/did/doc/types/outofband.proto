@@ -27,6 +27,7 @@ enum DIDCommVersion {
 }
 
 // Envelope for the DIDComm transport messages.
+// swagger:model
 message Envelope {
   string protected = 1;
   string iv = 2;
@@ -37,6 +38,7 @@ message Envelope {
 // Forward route forward message.
 // nolint:lll // url in the next line is long
 // https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0094-cross-domain-messaging/README.md#corerouting10forward
+// swagger:model
 message Forward {
   string id = 1; // @id
   string type = 2; // @type
@@ -56,6 +58,7 @@ message Transport {
 }
 
 // Action contains helpful information about action.
+// swagger:model
 message Action {
   // Protocol instance ID
   string piid = 1;
@@ -67,6 +70,7 @@ message Action {
 
 // Attachment is intended to provide the possibility to include files, links or even JSON payload to the message.
 // To find out more please visit https://github.com/hyperledger/aries-rfcs/tree/master/concepts/0017-attachments
+// swagger:model
 message Attachment {
   // ID is a JSON-LD construct that uniquely identifies attached content within the scope of a given message.
   // Recommended on appended attachment descriptors. Possible but generally unused on embedded attachment descriptors.
@@ -96,6 +100,7 @@ message Attachment {
 
 // AttachmentV2 is intended to provide the possibility to include files, links or even JSON payload to the message.
 // To find out more please visit https://identity.foundation/didcomm-messaging/spec/#attachments
+// swagger:model
 message AttachmentV2 {
   // ID is a JSON-LD construct that uniquely identifies attached content within the scope of a given message.
   // Recommended on appended attachment descriptors. Possible but generally unused on embedded attachment descriptors.
@@ -125,6 +130,7 @@ message AttachmentV2 {
 
 
 // GenericAttachment is used to work with DIDComm attachments that can be either DIDComm v1 or DIDComm v2.
+// swagger:model
 message GenericAttachment {
   // ID is the attachment ID..
   string id = 1;
@@ -150,6 +156,7 @@ message GenericAttachment {
 
 
 // GenericInvitation holds either a DIDComm V1 or V2 invitation.
+// swagger:model
 message GenericInvitation {
   string id = 1; // @id
   string type = 2; // @type
@@ -166,6 +173,7 @@ message GenericInvitation {
 
 
 // OOBInvitation to connect with did-exchange.
+// swagger:model
 message OOBInvitation {
   // ID of this invitation (for record-keeping purposes).
   // TODO can we remove this?
@@ -193,6 +201,7 @@ message OOBInvitation {
 // Invitation defines DID exchange invitation message
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#0-invitation-to-exchange
 //  to 'Invitation'.
+// swagger:model
 message Invitation {
   // the ID of the connection invitation
   string id = 1; // @id
@@ -232,6 +241,7 @@ message Invitation {
 }
 
 // InvitationBody contains invitation's goal and accept headers.
+// swagger:model
 message InvitationBody {
   string goal = 1;
   string goal_code = 2;
@@ -240,12 +250,14 @@ message InvitationBody {
 
 
 // HandshakeReuse is this protocol's 'handshake-reuse' message.
+// swagger:model
 message HandshakeReuse {
   string id = 1; // @id
   string type = 2; // @type
 }
 
 // HandshakeReuseAccepted is this protocol's 'handshake-reuse-accepted' message.
+// swagger:model
 message HandshakeReuseAccepted {
   string id = 1; // @id
   string type = 2; // @type
@@ -253,6 +265,7 @@ message HandshakeReuseAccepted {
 
 
 // AttachmentData contains attachment payload.
+// swagger:model
 message AttachmentData {
   // Sha256 is a hash of the content. Optional. Used as an integrity check if content is inlined.
   // if content is only referenced, then including this field makes the content tamper-evident.
@@ -284,6 +297,7 @@ message WebRedirect {
 }
 
 // Ack acknowledgement struct.
+// swagger:model
 message Ack {
   string id = 1; // @id
   string type = 2; // @type
@@ -293,6 +307,7 @@ message Ack {
 }
 
 // AckV2 acknowledgement struct.
+// swagger:model
 message AckV2 {
   string id = 1; // @id
   string type = 2; // @type
@@ -308,6 +323,7 @@ message AckV2Body {
 
 // Request defines a2a DID exchange request
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#1-exchange-request
+// swagger:model
 message Request {
   string id = 1; // @id
   string type = 2; // @type
@@ -325,6 +341,7 @@ message Request {
 
 // Response defines a2a DID exchange response
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#2-exchange-response
+// swagger:model
 message Response {
   string id = 1; // @id
   string type = 2; // @type
@@ -339,6 +356,7 @@ message Response {
 }
 
 // ConnectionSignature connection signature.
+// swagger:model
 message ConnectionSignature {
   string type = 1; // @type
   string signature = 2;
@@ -347,6 +365,7 @@ message ConnectionSignature {
 }
 
 // Connection connection.
+// swagger:model
 message Connection {
   string did = 1;
   Doc did_doc = 2;
@@ -355,6 +374,7 @@ message Connection {
 
 // Complete defines a2a DID exchange complete message.
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#3-exchange-complete
+// swagger:model
 message Complete {
   string id = 1; // @id
   string type = 2; // @type
@@ -365,6 +385,7 @@ message Complete {
 
 // ProblemReport problem report definition
 // TODO: need to provide full ProblemReport structure https://github.com/hyperledger/aries-framework-go/issues/912
+// swagger:model
 message ProblemReport {
   string id = 1; // @id
   string type = 2; // @type
@@ -378,6 +399,7 @@ message Code {
 }
 
 // ProblemReportV2 problem report definition.
+// swagger:model
 message ProblemReportV2 {
   string id = 1; // @id
   string type = 2; // @type

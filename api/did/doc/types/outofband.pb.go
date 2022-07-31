@@ -123,6 +123,7 @@ func (DIDCommVersion) EnumDescriptor() ([]byte, []int) {
 }
 
 // Envelope for the DIDComm transport messages.
+// swagger:model
 type Envelope struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -197,6 +198,7 @@ func (x *Envelope) GetTag() string {
 // Forward route forward message.
 // nolint:lll // url in the next line is long
 // https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0094-cross-domain-messaging/README.md#corerouting10forward
+// swagger:model
 type Forward struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -366,6 +368,7 @@ func (x *Transport) GetTransport() *ReturnRoute {
 }
 
 // Action contains helpful information about action.
+// swagger:model
 type Action struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -448,6 +451,7 @@ func (x *Action) GetTheirDid() string {
 
 // Attachment is intended to provide the possibility to include files, links or even JSON payload to the message.
 // To find out more please visit https://github.com/hyperledger/aries-rfcs/tree/master/concepts/0017-attachments
+// swagger:model
 type Attachment struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -568,6 +572,7 @@ func (x *Attachment) GetData() *AttachmentData {
 
 // AttachmentV2 is intended to provide the possibility to include files, links or even JSON payload to the message.
 // To find out more please visit https://identity.foundation/didcomm-messaging/spec/#attachments
+// swagger:model
 type AttachmentV2 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -688,6 +693,7 @@ func (x *AttachmentV2) GetFormat() string {
 }
 
 // GenericAttachment is used to work with DIDComm attachments that can be either DIDComm v1 or DIDComm v2.
+// swagger:model
 type GenericAttachment struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -811,6 +817,7 @@ func (x *GenericAttachment) GetVersion() string {
 }
 
 // GenericInvitation holds either a DIDComm V1 or V2 invitation.
+// swagger:model
 type GenericInvitation struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -939,6 +946,7 @@ func (x *GenericInvitation) GetVersion() string {
 }
 
 // OOBInvitation to connect with did-exchange.
+// swagger:model
 type OOBInvitation struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1051,6 +1059,7 @@ func (x *OOBInvitation) GetMediaTypeProfiles() []string {
 // Invitation defines DID exchange invitation message
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#0-invitation-to-exchange
 //  to 'Invitation'.
+// swagger:model
 type Invitation struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1245,6 +1254,7 @@ func (x *Invitation) GetThread() *Thread {
 }
 
 // InvitationBody contains invitation's goal and accept headers.
+// swagger:model
 type InvitationBody struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1309,6 +1319,7 @@ func (x *InvitationBody) GetAccept() []string {
 }
 
 // HandshakeReuse is this protocol's 'handshake-reuse' message.
+// swagger:model
 type HandshakeReuse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1365,6 +1376,7 @@ func (x *HandshakeReuse) GetType() string {
 }
 
 // HandshakeReuseAccepted is this protocol's 'handshake-reuse-accepted' message.
+// swagger:model
 type HandshakeReuseAccepted struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1421,6 +1433,7 @@ func (x *HandshakeReuseAccepted) GetType() string {
 }
 
 // AttachmentData contains attachment payload.
+// swagger:model
 type AttachmentData struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1572,6 +1585,7 @@ func (x *WebRedirect) GetUrl() string {
 }
 
 // Ack acknowledgement struct.
+// swagger:model
 type Ack struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1652,6 +1666,7 @@ func (x *Ack) GetWebRedirect() *WebRedirect {
 }
 
 // AckV2 acknowledgement struct.
+// swagger:model
 type AckV2 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1773,6 +1788,7 @@ func (x *AckV2Body) GetStatus() string {
 
 // Request defines a2a DID exchange request
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#1-exchange-request
+// swagger:model
 type Request struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1875,6 +1891,7 @@ func (x *Request) GetConnection() *Connection {
 
 // Response defines a2a DID exchange response
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#2-exchange-response
+// swagger:model
 type Response struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1967,6 +1984,7 @@ func (x *Response) GetDidDocAttach() *Attachment {
 }
 
 // ConnectionSignature connection signature.
+// swagger:model
 type ConnectionSignature struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2039,6 +2057,7 @@ func (x *ConnectionSignature) GetSigners() string {
 }
 
 // Connection connection.
+// swagger:model
 type Connection struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2096,6 +2115,7 @@ func (x *Connection) GetDidDoc() *Doc {
 
 // Complete defines a2a DID exchange complete message.
 // https://github.com/hyperledger/aries-rfcs/tree/master/features/0023-did-exchange#3-exchange-complete
+// swagger:model
 type Complete struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2161,6 +2181,7 @@ func (x *Complete) GetThread() *Thread {
 
 // ProblemReport problem report definition
 // TODO: need to provide full ProblemReport structure https://github.com/hyperledger/aries-framework-go/issues/912
+// swagger:model
 type ProblemReport struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2281,6 +2302,7 @@ func (x *Code) GetCode() string {
 }
 
 // ProblemReportV2 problem report definition.
+// swagger:model
 type ProblemReportV2 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

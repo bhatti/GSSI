@@ -1,0 +1,392 @@
+syntax = "proto3";
+
+package api.vc.services;
+
+option go_package = "github.com/bhatti/GSSI/api/vc/services";
+
+import "api/common/types/common.proto";
+import "api/vc/services/presentation.proto";
+import "api/vc/types/credential.proto";
+import "api/vc/types/presentation.proto";
+import "api/spi/types/store.proto";
+
+
+// ValidateCredentialReq model
+//
+// This is used to validate the verifiable credential.
+//
+// swagger:parameters validateCredentialReq
+message ValidateCredentialReq {// nolint: unused,deadcode
+  // Params for validating the verifiable credential (pass the vc document as a string)
+  //
+  // in: body
+  types.VerifiableCredential credential = 1;
+}
+
+// SaveCredentialReq model
+//
+// This is used to save the verifiable credential.
+//
+// swagger:parameters saveCredentialReq
+message SaveCredentialReq {// nolint: unused,deadcode
+  // Params for saving the verifiable credential (pass the vc document as a string)
+  //
+  // in: body
+  types.VerifiableCredential credential = 1;
+}
+
+
+// SavePresentationReq model
+//
+// This is used to save the verifiable presentation.
+//
+// swagger:parameters savePresentationReq
+message SavePresentationReq {// nolint: unused,deadcode
+  // Params for saving the verifiable presentation
+  //
+  // in: body
+  types.VerifiablePresentation credential = 1;
+}
+
+// GetCredentialReq model
+//
+// This is used to retrieve the verifiable credential.
+//
+// swagger:parameters getCredentialReq
+message GetCredentialReq {// nolint: unused,deadcode
+  // VC ID - pass base64 version of the ID
+  //
+  // in: path
+  // required: true
+  string id = 1;
+}
+
+// CredentialRes model
+//
+// This is used for returning query connection result for single record search
+//
+// swagger:response credentialRes
+message CredentialRes {
+
+  // in: body
+  types.VerifiablePresentation credential = 1;
+}
+
+// GetPresentationReq model
+//
+// This is used to retrieve the verifiable presentation.
+//
+// swagger:parameters getPresentationReq
+message GetPresentationReq {// nolint: unused,deadcode
+  // VP ID - pass base64 version of the ID
+  // in: path
+  // required: true
+  string id = 1;
+}
+
+// GetCredentialByNameReq model
+//
+// This is used to retrieve the verifiable credential by name.
+//
+// swagger:parameters getCredentialByNameReq
+message GetCredentialByNameReq {// nolint: unused,deadcode
+  // VC Name
+  //
+  // in: path
+  // required: true
+  string name = 1;
+}
+
+// RemoveCredentialByNameReq model
+//
+// This is used to remove the verifiable credential by name.
+//
+// swagger:parameters removeCredentialByNameReq
+message RemoveCredentialByNameReq {// nolint: unused,deadcode
+  // VC Name
+  //
+  // in: path
+  // required: true
+  string name = 1;
+}
+
+// RemovePresentationByNameReq model
+//
+// This is used to remove the verifiable presentation by name.
+//
+// swagger:parameters removePresentationByNameReq
+message RemovePresentationByNameReq {// nolint: unused,deadcode
+  // VC Name
+  //
+  // in: path
+  // required: true
+  string name = 1;
+}
+
+// CredentialRecord model
+//
+// This is used to return credential record.
+//
+// swagger:response credentialRecord
+message CredentialRecord {
+  // in: body
+  api.spi.types.Record body = 1;
+}
+
+
+// CredentialRecordResult model
+//
+// This is used to return credential records.
+//
+// swagger:response credentialRecordResult
+message CredentialRecordResult {
+  // in: body
+  repeated api.spi.types.Record result = 1;
+  int64 total_records = 2;
+}
+
+// presentationRecordResult model
+//
+// This is used to return presentation records.
+//
+// swagger:response presentationRecordResult
+message PresentationRecordResult {
+  // in: body
+  repeated api.spi.types.Record result = 1;
+}
+
+// GeneratePresentationReq model
+//
+// This is used to generate the verifiable presentation.
+//
+// swagger:parameters generatePresentationReq
+message GeneratePresentationReq {// nolint: unused,deadcode
+  // Params for generating the verifiable presentation (pass the vc document as a raw JSON)
+  //
+  // in: body
+  PresentationRequest body = 1;
+}
+
+// GeneratePresentationByIDReq model
+//
+// This is used to generate the verifiable presentation by id.
+//
+// swagger:parameters generatePresentationByIDReq
+message GeneratePresentationByIDReq {// nolint: unused,deadcode
+  // Params for generating the verifiable presentation by id (pass the vc document as a raw JSON)
+  //
+  // in: body
+  PresentationRequestByID params = 1;
+}
+
+// PresentationRes model
+//
+// This is used for returning the verifiable presentation
+//
+// swagger:response presentationRes
+message PresentationRes {
+
+  // in: body
+  types.VerifiablePresentation verifiablePresentation = 1; // json.RawMessage
+}
+
+// SignCredentialReq model
+//
+// This is used to sign a credential.
+//
+// swagger:parameters signCredentialReq
+message SignCredentialReq {// nolint: unused,deadcode
+  // Params for signing a credential
+  //
+  // in: body
+  SignCredentialRequest params = 1;
+}
+
+// SignCredentialRes model
+//
+// This is used for returning the sign credential response
+//
+// swagger:response signCredentialRes
+message SignCredentialRes {
+
+  // in: body
+  types.VerifiableCredential verifiableCredential = 1; // json.RawMessage
+}
+
+// DeriveCredentialReq model
+//
+// This is used for deriving a credential.
+//
+// swagger:parameters deriveCredentialReq
+message DeriveCredentialReq {// nolint: unused,deadcode
+  // Params for deriving a credential
+  //
+  // in: body
+  DeriveCredentialRequest body = 1;
+}
+
+
+// DeriveCredentialRes model
+//
+// This is used for returning the derive credential response.
+//
+// swagger:response deriveCredentialRes
+message DeriveCredentialRes {
+  // in: body
+  types.VerifiableCredential verifiableCredential = 1; // json.RawMessage
+}
+
+// CredentialsRequest
+//
+// This is used to return credential input
+//
+// swagger:parameters getCredentials
+message GetCredentialsReq {
+  int32 page = 1;
+  int32 pageSize = 2;
+}
+
+
+// VerifiableController defines methods for the verifiable controller.
+service VerifiableController {
+
+  // ValidateCredential validates the verifiable credential.
+  // ValidateCredential swagger:route POST /verifiable/credential/validate verifiable validateCredentialReq
+  //
+  // Validates the verifiable credential.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: emptyRes
+    rpc validateCredential(ValidateCredentialReq) returns (api.common.types.EmptyResponse) {}
+
+  // SaveCredential saves the verifiable credential to the store.
+  // SaveCredential swagger:route POST /verifiable/credential verifiable saveCredentialReq
+  //
+  // Saves the verifiable credential.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: emptyRes
+  rpc saveCredential(SaveCredentialReq) returns (api.common.types.EmptyResponse) {}
+
+  // SavePresentation swagger:route POST /verifiable/presentation verifiable savePresentationReq
+  //
+  // Saves the verifiable presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: emptyRes
+  // SavePresentation saves the presentation to the store.
+  rpc savePresentation(SavePresentationReq) returns (api.common.types.EmptyResponse) {}
+
+  // GetCredential retrieves the verifiable credential from the store.
+  // GetCredential swagger:route GET /verifiable/credential/{id} verifiable getCredentialReq
+  //
+  // Retrieves the verifiable credential.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: credentialRes
+  rpc getCredential(GetCredentialReq) returns (CredentialRes) {}
+
+  // GetPresentation retrieves the verifiable presentation from the store.
+  // GetPresentation swagger:route GET /verifiable/presentation/{id} verifiable getPresentationReq
+  //
+  // Retrieves the verifiable presentation.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentationRes
+  rpc getPresentation(GetPresentationReq) returns (PresentationRes) {}
+
+  // GetCredentialByName retrieves the verifiable credential by name from the store.
+  // GetCredentialByName swagger:route GET /verifiable/credential/name/{name} verifiable getCredentialByNameReq
+  //
+  // Retrieves the verifiable credential by name.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: credentialRecord
+  rpc getCredentialByName(GetCredentialByNameReq) returns (CredentialRecord) {}
+
+  // GetCredentials retrieves the verifiable credential records containing name and fields of interest.
+  // GetCredentials swagger:route GET /verifiable/credentials verifiable getCredentials
+  //
+  // Retrieves the verifiable credentials.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: credentialRecordResult
+  rpc getCredentials(GetCredentialsReq) returns (CredentialRecordResult) {}
+
+
+  // SignCredential adds proof to given verifiable credential.
+  // SignCredential swagger:route POST /verifiable/signcredential verifiable signCredentialReq
+  //
+  // Signs given credential.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: signCredentialRes
+  rpc signCredential(SignCredentialReq) returns (SignCredentialRes) {}
+
+  // DeriveCredential swagger:route POST /verifiable/derivecredential verifiable deriveCredentialReq
+  //
+  // Derives a given verifiable credential for selective disclosure.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: deriveCredentialRes
+  rpc deriveCredential(DeriveCredentialReq) returns (DeriveCredentialRes) {}
+
+  // GetPresentations retrieves the verifiable presentation records containing name and fields of interest.
+  // GetPresentations swagger:route GET /verifiable/presentations verifiable
+  //
+  // Retrieves the verifiable credentials.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentationRecordResult
+  rpc getPresentations(api.common.types.Empty) returns (PresentationRecordResult) {}
+
+  // GeneratePresentation generates a verifiable presentation from a verifiable credential.
+  // GeneratePresentation swagger:route POST /verifiable/presentation/generate verifiable generatePresentationReq
+  //
+  // Generates the verifiable presentation from a verifiable credential.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentationRes
+  rpc generatePresentation(GeneratePresentationReq) returns (PresentationRes) {}
+
+  // GeneratePresentationByID generates verifiable presentation from a stored verifiable credential.
+  // GeneratePresentationByID swagger:route POST /verifiable/presentation/generatebyid verifiable generatePresentationByIDReq
+  //
+  // Generates the verifiable presentation from a stored verifiable credential.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: presentationRes
+  rpc generatePresentationByID(GeneratePresentationByIDReq) returns (PresentationRes) {}
+
+  // RemoveCredentialByName will remove a VC that matches the specified name from the verifiable store.
+  // RemoveCredentialByName swagger:route POST /verifiable/credential/remove/name/{name} verifiable removeCredentialByNameReq
+  //
+  // Removes a verifiable credential by name.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: emptyResponse
+  rpc removeCredentialByName(RemoveCredentialByNameReq) returns (api.common.types.EmptyResponse) {}
+
+  // RemovePresentationByName will remove a VP that matches the specified name from the verifiable store.
+  // RemovePresentationByName swagger:route POST /verifiable/presentation/remove/name/{name} verifiable removePresentationByNameReq
+  //
+  // Removes a verifiable presentation by name.
+  //
+  // Responses:
+  //    default: genericError
+  //        200: emptyResponse
+  rpc removePresentationByName(RemovePresentationByNameReq) returns (api.common.types.EmptyResponse) {}
+}
